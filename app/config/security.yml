@@ -11,11 +11,8 @@ security:
         ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
-        in_memory:
-            memory:
-                users:
-                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
-                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+        oauth:
+            id: shoplo.user_provider
 
     firewalls:
         dev:
@@ -23,21 +20,16 @@ security:
             security: false
 
         login:
-            pattern:  ^/demo/secured/login$
-            security: false
+            pattern:  ^/logowanie$
+            anonymous: true
 
-        secured_area:
-            pattern:    ^/demo/secured/
-            form_login:
-                check_path: /demo/secured/login_check
-                login_path: /demo/secured/login
-            logout:
-                path:   /demo/secured/logout
-                target: /demo/
-            #anonymous: ~
-            #http_basic:
-            #    realm: "Secured Demo Area"
+        shoplo:
+            pattern:    ^/
+            oauth:
+                resource_owners:
+                    shoplo: "/logowanie/shoplo"
+                login_path:        /logowanie
+                failure_path:      /logowanie
+                oauth_user_provider:
+                    service: shoplo.user_provider
 
-    access_control:
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-        #- { path: ^/_internal/secure, roles: IS_AUTHENTICATED_ANONYMOUSLY, ip: 127.0.0.1 }

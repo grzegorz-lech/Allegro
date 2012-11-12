@@ -57,3 +57,25 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+# OAuth
+hwi_oauth:
+    firewall_name: shoplo
+    resource_owners:
+        shoplo:
+            type:                oauth1
+            client_id:           GIPYVL7BQKgnttHGpb1XpJlgk9FQPIJX
+            client_secret:       JubMSum8SpMXZ4qcpUseV6uiLuyQDNGo
+            request_token_url:   https://api.shoplo.com/services/oauth/request_token
+            access_token_url:    https://api.shoplo.com/services/oauth/access_token
+            authorization_url:   https://api.shoplo.com/services/oauth/authorize
+            infos_url:           https://api.shoplo.com/services/shop
+            user_response_class: HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse
+            paths:
+                identifier:     shop.name
+                nickname:       shop.name
+                realname:       shop.name
+
+services:
+    shoplo.user_provider:
+        parent: hwi_oauth.user.provider

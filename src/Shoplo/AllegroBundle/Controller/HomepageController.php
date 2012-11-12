@@ -10,4 +10,11 @@ class HomepageController extends Controller
     {
         return $this->redirect($this->generateUrl('shoplo_allegro_settings'));
     }
+
+    public function loginAction()
+    {
+        $url = $this->container->get('hwi_oauth.security.oauth_utils')->getAuthorizationUrl('shoplo');
+
+        return $this->redirect($url);
+    }
 }
