@@ -1,0 +1,7 @@
+parameters:
+#    shoplo_allegro.example.class: Shoplo\AllegroBundle\Example
+
+services:
+#    shoplo_allegro.example:
+#        class: %shoplo_allegro.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

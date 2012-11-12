@@ -1,0 +1,7 @@
+shoplo_allegro_homepage:
+    pattern:  /
+    defaults: { _controller: ShoploAllegroBundle:Homepage:index }
+
+shoplo_allegro_settings:
+    pattern:  /ustawienia
+    defaults: { _controller: ShoploAllegroBundle:Settings:index }

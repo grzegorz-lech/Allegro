@@ -1,13 +1,64 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
-    <body>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Allegro</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% block stylesheets %}
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.1/css/bootstrap.no-icons.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css" rel="stylesheet">
+        {% stylesheets '@ShoploAllegroBundle/Resources/public/css/sticky.css' %}
+        <link href="{{ asset_url }}" rel="stylesheet">
+        {% endstylesheets %}
+    {% endblock %}
+
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    {% block icons %}
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144"
+              href="{{ asset('apple-touch-icon-144-precomposed.png') }}">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114"
+              href="{{ asset('apple-touch-icon-114-precomposed.png') }}">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72"
+              href="{{ asset('apple-touch-icon-72-precomposed.png') }}">
+        <link rel="apple-touch-icon-precomposed" href="{{ asset('apple-touch-icon-57-precomposed.png') }}">
+    {% endblock %}
+</head>
+
+<body>
+
+<div id="wrap">
+
+    <div class="container">
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+    </div>
+
+    <div id="push"></div>
+</div>
+
+{% block footer %}
+<div id="footer">
+    <div class="container">
+        <p class="muted credit">
+            <a href="http://www.shoplo.com">
+                <span class="icon icon-chevron-left"></span>
+                wróć do sklepu
+            </a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+{% endblock %}
+
+</body>
 </html>
