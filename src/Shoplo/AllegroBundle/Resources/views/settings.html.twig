@@ -4,5 +4,63 @@
     <div class="page-header">
         <h1>Witaj w aplikacji Integracja z Allegro</h1>
     </div>
+
     <p class="lead">Uzupełnij ustawienia aplikacji i zacznij wystawiać przedmioty</p>
+
+    <div class="accordion">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                    <span class="icon icon-user"></span> Dane konta Allegro
+                </a>
+            </div>
+            {% if step == 1 %}
+            <div id="collapseOne" class="accordion-body collapse in">
+                <div class="accordion-inner">
+                    <form class="form-horizontal" action="{{ path('shoplo_allegro_settings') }}" method="post" {{ form_enctype(form) }}>
+                        <div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+                            <label class="control-label" for="form_username">Nazwa użytkownika</label>
+
+                            <div class="controls">
+                                {{ form_widget(form.username) }}
+                            </div>
+                        </div>
+                        <div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+                            <label class="control-label" for="form_password">Hasło</label>
+
+                            <div class="controls">
+                                {{ form_widget(form.password) }}
+                                <span class="help-block">
+                                    <small>
+                                        <span class="icon icon-lock"></span> Twoje hasło będzie przechowywane w formie zaszyfrowanej oraz wykorzystywane wyłącznie do komunikacji z Allegro.
+                                    </small>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn btn-primary">Zaloguj się</button>
+                            </div>
+                        </div>
+                        {{ form_rest(form) }}
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                    <span class="icon icon-cogs"></span> Ustawienia aukcji
+                </a>
+            </div>
+            {% if step == 2 %}
+            <div id="collapseTwo" class="accordion-body collapse in">
+                <div class="accordion-inner">
+                    Test
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

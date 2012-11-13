@@ -79,3 +79,7 @@ hwi_oauth:
 services:
     shoplo.user_provider:
         parent: hwi_oauth.user.provider
+
+# Allegro
+shoplo_allegro:
+    key: 0c7bc59c1

@@ -8,4 +8,4 @@ shoplo_allegro_login:
 
 shoplo_allegro_settings:
     pattern:  /ustawienia
-    defaults: { _controller: ShoploAllegroBundle:Settings:index }
+    defaults: { _controller: ShoploAllegroBundle:Settings:login }
