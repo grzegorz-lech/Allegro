@@ -1,0 +1,13 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>Witaj {{ shop.shop_owner }}</h1>
+    </div>
+
+    <p class="lead">
+        {{ shop.company_name }}<br>
+        {{ shop.address1 }}<br>
+        {{ shop.zip_code }} {{ shop.city }}
+    </p>
+{% endblock %}

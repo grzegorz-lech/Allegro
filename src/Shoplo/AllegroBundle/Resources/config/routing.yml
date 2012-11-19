@@ -3,9 +3,16 @@ shoplo_allegro_homepage:
     defaults: { _controller: ShoploAllegroBundle:Homepage:index }
 
 shoplo_allegro_login:
-    pattern:  /logowanie
+    pattern:  /zaloguj
     defaults: { _controller: ShoploAllegroBundle:Homepage:login }
+
+shoplo_allegro_logout:
+    pattern:  /wyloguj
 
 shoplo_allegro_settings:
     pattern:  /ustawienia
     defaults: { _controller: ShoploAllegroBundle:Settings:login }
+
+shoplo_allegro_settings_profile:
+    pattern:  /ustawienia/profil
+    defaults: { _controller: ShoploAllegroBundle:Settings:profile }

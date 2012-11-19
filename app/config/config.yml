@@ -64,17 +64,17 @@ hwi_oauth:
     resource_owners:
         shoplo:
             type:                oauth1
-            client_id:           GIPYVL7BQKgnttHGpb1XpJlgk9FQPIJX
-            client_secret:       JubMSum8SpMXZ4qcpUseV6uiLuyQDNGo
+            client_id:           %oauth_consumer_key%
+            client_secret:       %oauth_consumer_secret%
             request_token_url:   https://api.shoplo.com/services/oauth/request_token
             access_token_url:    https://api.shoplo.com/services/oauth/access_token
             authorization_url:   https://api.shoplo.com/services/oauth/authorize
             infos_url:           https://api.shoplo.com/services/shop
             user_response_class: HWI\Bundle\OAuthBundle\OAuth\Response\PathUserResponse
             paths:
-                identifier:     shop.name
+                identifier:     shop.id
                 nickname:       shop.name
-                realname:       shop.name
+                realname:       shop.shop_owner
 
 services:
     shoplo.user_provider:
@@ -82,4 +82,8 @@ services:
 
 # Allegro
 shoplo_allegro:
-    key: 0c7bc59c1
+    allegro:
+        key: 0c7bc59c1
+    shoplo:
+        key: %oauth_consumer_key%
+        secret: %oauth_consumer_secret%

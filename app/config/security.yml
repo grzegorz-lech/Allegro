@@ -20,16 +20,19 @@ security:
             security: false
 
         login:
-            pattern:  ^/logowanie$
+            pattern:  ^/zaloguj$
             anonymous: true
 
         shoplo:
             pattern:    ^/
             oauth:
                 resource_owners:
-                    shoplo: "/logowanie/shoplo"
-                login_path:        /logowanie
-                failure_path:      /logowanie
+                    shoplo: /zaloguj/shoplo
+                login_path:         /zaloguj
+                failure_path:       /zaloguj
+                success_handler:    login_handler
                 oauth_user_provider:
-                    service: shoplo.user_provider
-
+                    service:    shoplo.user_provider
+            logout:
+                path:   /wyloguj
+                target: /

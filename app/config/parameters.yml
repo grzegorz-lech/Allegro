@@ -1,15 +1,18 @@
 parameters:
-    database_driver:   pdo_mysql
-    database_host:     localhost
-    database_port:     ~
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
+    database_driver:        pdo_mysql
+    database_host:          127.0.0.1
+    database_port:          ~
+    database_name:          allegro
+    database_user:          allegro
+    database_password:      allegro
 
-    mailer_transport:  smtp
-    mailer_host:       localhost
-    mailer_user:       ~
-    mailer_password:   ~
+    mailer_transport:       smtp
+    mailer_host:            localhost
+    mailer_user:            ~
+    mailer_password:        ~
 
-    locale:            en
-    secret:            ThisTokenIsNotSoSecretChangeIt
+    locale:                 pl
+    secret:                 ThisTokenIsNotSoSecretChangeIt
+
+    oauth_consumer_key:     GIPYVL7BQKgnttHGpb1XpJlgk9FQPIJX
+    oauth_consumer_secret:  JubMSum8SpMXZ4qcpUseV6uiLuyQDNGo

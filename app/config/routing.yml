@@ -1,6 +1,6 @@
 hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
-    prefix:   /logowanie
+    prefix:   /zaloguj
 
 shoplo_allegro:
     resource: "@ShoploAllegroBundle/Resources/config/routing.yml"

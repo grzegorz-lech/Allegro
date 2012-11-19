@@ -4,6 +4,10 @@ namespace Shoplo\AllegroBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
+use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * User
@@ -23,9 +27,32 @@ class User
     private $id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="shop_id", type="integer")
+     */
+    private $shopId;
+
+    /**
+     * @param int $shopId
+     */
+    public function setShopId($shopId)
+    {
+        $this->shopId = $shopId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getShopId()
+    {
+        return $this->shopId;
+    }
+
+    /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=16)
+     * @ORM\Column(name="username", type="string", unique=true, length=16)
      *
      * @Assert\NotBlank()
      */
@@ -133,5 +160,20 @@ class User
         $password = base64_encode($password);
 
         return $password;
+    }
+
+    public function addRole($role, OAuthToken $token, SessionInterface $session)
+    {
+        // Add extra role
+        $roles = $token->getRoles();
+        $role  = new Role($role);
+        array_push($roles, $role);
+
+        // Create new token
+        $token = new OAuthToken($token->getAccessToken(), $roles);
+
+        // Save session
+        $session->set('_security_shoplo', serialize($token));
+        $session->save();
     }
 }

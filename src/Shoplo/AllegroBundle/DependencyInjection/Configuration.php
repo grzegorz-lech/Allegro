@@ -20,8 +20,27 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode    = $treeBuilder->root('shoplo_allegro');
 
-        $rootNode->children()
-            ->scalarNode('key')->isRequired()->end()
+        $rootNode
+            ->children()
+                ->arrayNode('allegro')
+                    ->isRequired()
+                    ->children()
+                        ->scalarNode('key')
+                            ->isRequired()
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('shoplo')
+                    ->isRequired()
+                    ->children()
+                        ->scalarNode('key')
+                            ->isRequired()
+                        ->end()
+                        ->scalarNode('secret')
+                            ->isRequired()
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

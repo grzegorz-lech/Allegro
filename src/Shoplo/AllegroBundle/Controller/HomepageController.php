@@ -3,12 +3,20 @@
 namespace Shoplo\AllegroBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use JMS\SecurityExtraBundle\Annotation\Secure;
+use Symfony\Component\HttpFoundation\Request;
 
 class HomepageController extends Controller
 {
-    public function indexAction()
+    /**
+     * @Secure(roles="ROLE_ADMIN")
+     */
+    public function indexAction(Request $request)
     {
-        return $this->redirect($this->generateUrl('shoplo_allegro_settings'));
+        $shoplo = $this->container->get('shoplo');
+        $shop   = $shoplo->get('shop');
+
+        return $this->render('ShoploAllegroBundle::homepage.html.twig', array('shop' => $shop));
     }
 
     public function loginAction()
