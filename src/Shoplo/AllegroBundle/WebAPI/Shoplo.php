@@ -13,19 +13,35 @@ class Shoplo extends \OAuth
         $token = $security->getToken();
         $token = $token->getAccessToken();
 
-        // TODO: Read key/secret from config
         parent::__construct($key, $secret);
 
         $this->setToken($token['oauth_token'], $token['oauth_token_secret']);
     }
 
-    public function get($uri)
+    /**
+     * @param string $uri
+     * @param int $id
+     * @return array
+     * @throws \OAuthException
+     */
+    public function get($uri, $id = null)
     {
         $url = sprintf('%s/%s', self::GATEWAY, $uri);
+
+        if (null !== $id) {
+            $url .= '/' . $id;
+        }
+
         $this->fetch($url);
         $json = $this->getLastResponse();
         $data = json_decode($json, true);
 
-        return $data[$uri];
+        if (isset($data['status']) && $data['status'] == 'err') {
+            throw new \OAuthException($data['error_msg'], $data['error']);
+        }
+
+        $data = array_shift($data);
+
+        return $data;
     }
 }

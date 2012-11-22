@@ -2,12 +2,48 @@
 
 {% block body %}
     <div class="page-header">
-        <h1>Witaj {{ shop.shop_owner }}</h1>
+        <h1>Wystaw przedmioty na Allegro</h1>
     </div>
 
-    <p class="lead">
-        {{ shop.company_name }}<br>
-        {{ shop.address1 }}<br>
-        {{ shop.zip_code }} {{ shop.city }}
-    </p>
+    <div class="media">
+        <a class="pull-left">
+            <img src="//placehold.it/60/ff5a/fff.png&text=1" alt="1" width="60" height="60" class="img-circle">
+        </a>
+
+        <div class="media-body">
+            <h4 class="media-heading">Przejdź do listy produktów</h4>
+            Zaloguj się do panelu i przejdź do listy produktów.
+            {% image '@ShoploAllegroBundle/Resources/public/img/product_list.png' %}
+            <img src="{{ asset_url }}" alt="Lista produktów" width="610" height="340"/>
+            {% endimage %}
+        </div>
+    </div>
+    <div class="media">
+        <a class="pull-left">
+            <img src="//placehold.it/60/ff5a/fff.png&text=2" alt="2" width="60" height="60" class="img-circle">
+        </a>
+
+        <div class="media-body">
+            <h4 class="media-heading">Wybierz produkty</h4>
+            Zaznacz produkty, które chcesz wystawić na Allegro. Możesz zaznaczyć dowolną ilość produktów i wystawić je
+            na sprzedaż za jednym razem.
+            {% image '@ShoploAllegroBundle/Resources/public/img/product_select.png' %}
+            <img src="{{ asset_url }}" alt="Lista produktów" width="610" height="435"/>
+            {% endimage %}
+        </div>
+    </div>
+    <div class="media">
+        <a class="pull-left">
+            <img src="//placehold.it/60/ff5a/fff.png&text=3" alt="3" width="60" height="60" class="img-circle">
+        </a>
+
+        <div class="media-body">
+            <h4 class="media-heading">Wystaw na Allegro</h4>
+            Wybierz opcję "Wystaw na Allegro" i kliknij w przycisk "Zapisz". Zostaniesz przeniesiony wprost do kreatora
+            aukcji, który pozwoli Ci na określenie szczegółów sprzedaży.
+            {% image '@ShoploAllegroBundle/Resources/public/img/product_export.png' %}
+            <img src="{{ asset_url }}" alt="Lista produktów" width="610" height="435"/>
+            {% endimage %}
+        </div>
+    </div>
 {% endblock %}

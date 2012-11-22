@@ -11,12 +11,20 @@ class HomepageController extends Controller
     /**
      * @Secure(roles="ROLE_ADMIN")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
+    {
+        return $this->render('ShoploAllegroBundle::homepage.html.twig');
+    }
+
+    /**
+     * @Secure(roles="ROLE_USER")
+     */
+    public function footerAction()
     {
         $shoplo = $this->container->get('shoplo');
         $shop   = $shoplo->get('shop');
 
-        return $this->render('ShoploAllegroBundle::homepage.html.twig', array('shop' => $shop));
+        return $this->render('ShoploAllegroBundle::footer.html.twig', array('shop' => $shop));
     }
 
     public function loginAction()

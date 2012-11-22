@@ -43,16 +43,7 @@
 </div>
 
 {% block footer %}
-<div id="footer">
-    <div class="container">
-        <p class="muted credit">
-            <a href="http://www.shoplo.com">
-                <span class="icon icon-chevron-left"></span>
-                wróć do sklepu
-            </a>
-        </p>
-    </div>
-</div>
+    {% render "ShoploAllegroBundle:Homepage:footer" %}
 {% endblock %}
 
 {% block javascripts %}
