@@ -6,7 +6,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 
 class Shoplo extends \OAuth
 {
-    const GATEWAY = 'https://api.shoplo.com/services';
+    const GATEWAY = 'http://api.shoplo.com/services';
 
     public function __construct($key, $secret, SecurityContext $security)
     {
