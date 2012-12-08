@@ -11,8 +11,14 @@ class HomepageController extends Controller
     /**
      * @Secure(roles="ROLE_ADMIN")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
+        if ($ids = $request->query->get('ids')) {
+            $ids = explode(',', $ids);
+
+            return $this->redirect($this->generateUrl('shoplo_allegro_wizard', array('product' => $ids)));
+        }
+
         return $this->render('ShoploAllegroBundle::homepage.html.twig');
     }
 

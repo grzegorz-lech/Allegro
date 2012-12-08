@@ -1,0 +1,70 @@
+{% extends "::base.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets 'http://imperavi.com/js/redactor/redactor.css' %}
+    <link href="{{ asset_url }}" rel="stylesheet">
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts 'http://imperavi.com/js/redactor/redactor.js' %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script>
+        $(function () {
+            $("img[rel=popover]").popover({
+                html: true,
+                placement: 'right',
+                trigger: 'hover'
+            });
+
+            $('.wysiwyg').redactor({
+                buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'file', 'table', 'link', '|', 'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule'],
+                minHeight: 200
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>Wystaw produkty na Allegro</h1>
+    </div>
+
+
+    {% for product in products %}
+        <img src="http://src.sencha.io/jpg100/140/140/{{ product.thumbnail }}" class="img-rounded" rel="popover"
+             data-content="{% for category in product.categories %}{{ category.title }}{{ "<br>"|e }}{% endfor %}"
+             data-original-title="{{ product.name }}">
+    {% endfor %}
+
+    <h3>Wygląd aukcji</h3>
+    <form action="{{ path('shoplo_allegro_wizard', {product: ids}) }}" method="post" {{ form_enctype(form) }}>
+        <div class="row">
+            {% for i in range(0,2) %}
+                <div class="span1 offset1">
+                    <p align="center">
+                        <input type="radio" value="{{ i }}" required="required" name="form[layout]" id="form_layout_{{ i }}"{% if i == 0 %} checked="checked"{% endif %}><br>
+                        <br>
+                        <label for="form_layout_{{ i }}">
+                        <img src="http://placehold.it/75x100&text={{ i+1 }}">
+                        </label>
+                    </p>
+                </div>
+            {% endfor %}
+            {% do form.layout.setRendered %}
+        </div>
+
+        <p>
+            {{ form_widget(form.description, { 'attr': {'class': 'wysiwyg'} }) }}
+        </p>
+
+        <p>
+            <button class="btn btn-large btn-block btn-primary" type="submit">Wystaw na Allegro</button>
+        </p>
+
+        {{ form_rest(form) }}
+    </form>
+{% endblock %}

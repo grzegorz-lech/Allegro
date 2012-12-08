@@ -16,3 +16,7 @@ shoplo_allegro_settings:
 shoplo_allegro_settings_profile:
     pattern:  /ustawienia/profil
     defaults: { _controller: ShoploAllegroBundle:Settings:profile }
+
+shoplo_allegro_wizard:
+    pattern:  /kreator
+    defaults: { _controller: ShoploAllegroBundle:Wizard:index }
