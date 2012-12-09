@@ -1,10 +1,10 @@
 parameters:
     database_driver:        pdo_mysql
-    database_host:          127.0.0.1
+    database_host:          allegro.nexis.pl
     database_port:          ~
-    database_name:          allegro
+    database_name:          allegro_dev
     database_user:          allegro
-    database_password:      allegro
+    database_password:      fUeFXQKKNJ8LYaxmxZ5Fdo878cu9C85A
 
     mailer_transport:       smtp
     mailer_host:            localhost
