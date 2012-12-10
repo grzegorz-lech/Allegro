@@ -38,6 +38,13 @@ class Login implements AuthenticationSuccessHandlerInterface
 
             if ($user instanceof User) {
                 $user->addRole('ROLE_ADMIN', $token, $request->getSession());
+
+                // Remember last access token
+                $token = $token->getAccessToken();
+                $user->setOauthToken($token['oauth_token']);
+                $user->setOauthTokenSecret($token['oauth_token_secret']);
+                $em->persist($user);
+                $em->flush();
             } else {
                 $response->setTargetUrl($this->router->generate('shoplo_allegro_settings'));
             }
