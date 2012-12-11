@@ -130,4 +130,32 @@ class Allegro extends \SoapClient
     {
         return $this->country;
     }
+
+    /**
+     * @param string $code
+     * @return int
+     * @throws \InvalidArgumentException
+     */
+    public function getCountryCode($code)
+    {
+        $code  = mb_strtolower($code);
+        $codes = array(
+            'pl' => 1, // Polska (allegro.pl)
+            'by' => 22, // Białoruś (allegro.by)
+            'bg' => 34, // Bułgaria (aukro.bg)
+            'cz' => 56, // Czechy (aukro.cz)
+            'kz' => 107, // Kazachstan (allegro.kz)
+            'ru' => 168, // Rosja (molotok.ru)
+            'sk' => 181, // Słowacja (aukro.sk)
+            'ua' => 209, // Ukraina (rosyjski) (aukro.ua)
+            'xx' => 228, // WebAPI (testwebapi.pl)
+            'ua' => 232, // Ukraina (ukraiński) (ua.aukro.ua) TODO: Język?
+        );
+
+        if (isset($codes[$code])) {
+            return $codes[$code];
+        }
+
+        throw new \InvalidArgumentException();
+    }
 }
