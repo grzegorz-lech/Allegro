@@ -7,7 +7,9 @@
 
     <div class="media">
         <a class="pull-left">
-            <img src="http://placehold.it/60/ff5a/fff.png&text=1" alt="1" width="60" height="60" class="img-circle">
+            {% image 'http://placehold.it/60/ff5a/fff.png&text=1' %}
+            <img src="{{ asset_url }}" alt="1" width="60" height="60" class="img-circle">
+            {% endimage %}
         </a>
 
         <div class="media-body">
@@ -20,7 +22,9 @@
     </div>
     <div class="media">
         <a class="pull-left">
-            <img src="http://placehold.it/60/ff5a/fff.png&text=2" alt="2" width="60" height="60" class="img-circle">
+            {% image 'http://placehold.it/60/ff5a/fff.png&text=2' %}
+            <img src="{{ asset_url }}" alt="2" width="60" height="60" class="img-circle">
+            {% endimage %}
         </a>
 
         <div class="media-body">
@@ -34,7 +38,9 @@
     </div>
     <div class="media">
         <a class="pull-left">
-            <img src="http://placehold.it/60/ff5a/fff.png&text=3" alt="3" width="60" height="60" class="img-circle">
+            {% image 'http://placehold.it/60/ff5a/fff.png&text=3' %}
+            <img src="{{ asset_url }}" alt="3" width="60" height="60" class="img-circle">
+            {% endimage %}
         </a>
 
         <div class="media-body">
