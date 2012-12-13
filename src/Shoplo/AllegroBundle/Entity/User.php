@@ -34,6 +34,52 @@ class User
     private $shopId;
 
     /**
+     * @param string $oauthToken
+     */
+    public function setOauthToken($oauthToken)
+    {
+        $this->oauthToken = $oauthToken;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOauthToken()
+    {
+        return $this->oauthToken;
+    }
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="oauth_token", type="string", unique=true, length=64)
+     */
+    private $oauthToken;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="oauth_token_secret", type="string", unique=true, length=64)
+     */
+    private $oauthTokenSecret;
+
+    /**
+     * @param string $oauthTokenSecret
+     */
+    public function setOauthTokenSecret($oauthTokenSecret)
+    {
+        $this->oauthTokenSecret = $oauthTokenSecret;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOauthTokenSecret()
+    {
+        return $this->oauthTokenSecret;
+    }
+
+    /**
      * @param int $shopId
      */
     public function setShopId($shopId)

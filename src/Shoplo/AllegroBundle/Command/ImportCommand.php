@@ -1,56 +1,57 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: grzegorzlech
- * Date: 12-12-10
- * Time: 09:07
- * To change this template use File | Settings | File Templates.
- */
 
 namespace Shoplo\AllegroBundle\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand as Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Shoplo\AllegroBundle\WebAPI\Shoplo;
+use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
+use Shoplo\AllegroBundle\Entity\User;
+use Doctrine\ORM\EntityNotFoundException;
 
 class ImportCommand extends Command
 {
-	protected function configure()
-	{
-		$this
-			->setName('allegro:import')
-			->setDescription('Import auctions from Allegro')
-		;
-	}
+    protected function configure()
+    {
+        $this->setName('allegro:import');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$auctions = array(
-			12 => array(
-				'id'		=> 	2860421339,
-				'shop_id'	=>	1,
-			),
-		);
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $shoplo = $this->getShop(629);
+        $shop   = $shoplo->get('shop');
 
-		foreach ( $auctions as $auction )
-		{
+        $output->writeln($shop['domain']);
+    }
 
+    /**
+     * @param int $shopId
+     * @throws EntityNotFoundException
+     * @return Shoplo
+     */
+    private function getShop($shopId)
+    {
+        $em         = $this->getContainer()->get('doctrine')->getManager();
+        $repository = $em->getRepository('ShoploAllegroBundle:User');
+        $user       = $repository->findOneBy(array('shopId' => $shopId));
 
+        if (!$user instanceof User) {
+            throw new EntityNotFoundException();
+        }
 
-			#TODO: pobranie aukcji z allegro
+        $token    = new OAuthToken(array(
+            'oauth_token'        => $user->getOauthToken(),
+            'oauth_token_secret' => $user->getOauthTokenSecret()
+        ));
+        $security = $this->getContainer()->get('security.context');
+        $security->setToken($token);
 
-			#TODO: zapis do Shoplo
+        $key    = $this->getContainer()->getParameter('oauth_consumer_key');
+        $secret = $this->getContainer()->getParameter('oauth_consumer_secret');
 
-			$shoplo = Shoplo::getByShopId($auction['shop_id']);
-
-
-			$data = array();
-			$result = $shoplo->post('orders', $data);
-		}
-
-		$output->writeln('Hello World');
-	}
+        return new Shoplo($key, $secret, $security);
+    }
 }

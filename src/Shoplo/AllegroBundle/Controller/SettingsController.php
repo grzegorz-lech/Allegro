@@ -11,10 +11,13 @@ class SettingsController extends Controller
 {
     public function loginAction(Request $request)
     {
+        $shoplo   = $this->container->get('shoplo');
+        $shop     = $shoplo->get('shop');
+        $allegro  = $this->container->get('allegro');
         $user     = new User();
         $security = $this->get('security.context');
         $token    = $security->getToken();
-        $user->setCountry(1); // 1 = Polska
+        $user->setCountry($allegro->getCountryCode($shop['country']));
         $user->setShopId($token->getUsername());
 
         if ($security->isGranted('ROLE_ADMIN')) {
