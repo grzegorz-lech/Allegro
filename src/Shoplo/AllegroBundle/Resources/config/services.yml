@@ -2,6 +2,7 @@ parameters:
     shoplo.webapi.class: Shoplo\AllegroBundle\WebAPI\Shoplo
     shoplo_allegro.webapi.class: Shoplo\AllegroBundle\WebAPI\Allegro
     shoplo_allegro.login_handler.class: Shoplo\AllegroBundle\Authentication\Handler\Login
+    shoplo.user_provider.class: Shoplo\AllegroBundle\Security\Core\User\DoctrineUserProvider
 
 services:
     allegro:
@@ -12,6 +13,9 @@ services:
         arguments: [%shoplo.key%, %shoplo.secret%, @security.context]
     login_handler:
         class: %shoplo_allegro.login_handler.class%
-        arguments: [@router, @security.context, @doctrine]
+        arguments: [@router]
         tags:
             - { name: 'monolog.logger', channel: 'security' }
+    shoplo.user_provider:
+        class: %shoplo.user_provider.class%
+        arguments: [@doctrine]

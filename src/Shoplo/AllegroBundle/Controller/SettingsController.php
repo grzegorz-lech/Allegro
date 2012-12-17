@@ -9,22 +9,22 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 
 class SettingsController extends Controller
 {
+    /**
+     * @Secure(roles="ROLE_USER")
+     */
     public function loginAction(Request $request)
     {
-        $shoplo   = $this->container->get('shoplo');
-        $shop     = $shoplo->get('shop');
-        $allegro  = $this->container->get('allegro');
-        $user     = new User();
         $security = $this->get('security.context');
-        $token    = $security->getToken();
-        $user->setCountry($allegro->getCountryCode($shop['country']));
-        $user->setShopId($token->getUsername());
 
         if ($security->isGranted('ROLE_ADMIN')) {
             return $this->redirect($this->generateUrl('shoplo_allegro_settings_profile'));
         }
 
-        $form = $this->createFormBuilder($user)
+        $allegro = $this->container->get('allegro');
+        $shoplo  = $this->container->get('shoplo');
+        $shop    = $shoplo->get('shop');
+        $user    = $security->getToken()->getUser()->setCountry($allegro->getCountryCode($shop['country']));
+        $form    = $this->createFormBuilder($user)
             ->add('username', 'text')
             ->add('password', 'password')
             ->getForm();
@@ -33,14 +33,13 @@ class SettingsController extends Controller
             $form->bind($request);
 
             if ($form->isValid()) {
-                /** @var $allegro \Shoplo\AllegroBundle\WebAPI\Allegro */
-                $allegro = $this->container->get('allegro');
                 if ($allegro->login($form->getData())) {
+                    /** @var $user User */
                     $user = $form->getData();
 
                     // Save in DB
                     $em = $this->getDoctrine()->getManager();
-                    $em->persist($user);
+                    $em->merge($user);
                     $em->flush();
 
                     // Add role
@@ -51,10 +50,13 @@ class SettingsController extends Controller
             }
         }
 
-        return $this->render('ShoploAllegroBundle::settings.html.twig', array(
-            'form' => $form->createView(),
-            'step' => 1,
-        ));
+        return $this->render(
+            'ShoploAllegroBundle::settings.html.twig',
+            array(
+                'form' => $form->createView(),
+                'step' => 1,
+            )
+        );
     }
 
     /**

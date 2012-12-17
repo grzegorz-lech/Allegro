@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
@@ -14,7 +15,7 @@ use Symfony\Component\Security\Core\Role\Role;
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Shoplo\AllegroBundle\Entity\UserRepository")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var integer
@@ -33,11 +34,14 @@ class User
     private $shopId;
 
     /**
-     * @param string $oauthToken
+     * @param  string $oauthToken
+     * @return User
      */
     public function setOauthToken($oauthToken)
     {
         $this->oauthToken = $oauthToken;
+
+        return $this;
     }
 
     /**
@@ -63,11 +67,14 @@ class User
     private $oauthTokenSecret;
 
     /**
-     * @param string $oauthTokenSecret
+     * @param  string $oauthTokenSecret
+     * @return User
      */
     public function setOauthTokenSecret($oauthTokenSecret)
     {
         $this->oauthTokenSecret = $oauthTokenSecret;
+
+        return $this;
     }
 
     /**
@@ -79,11 +86,14 @@ class User
     }
 
     /**
-     * @param int $shopId
+     * @param  int  $shopId
+     * @return User
      */
     public function setShopId($shopId)
     {
         $this->shopId = $shopId;
+
+        return $this;
     }
 
     /**
@@ -97,7 +107,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", unique=true, length=16)
+     * @ORM\Column(name="username", type="string", unique=true, length=16, nullable=true)
      *
      * @Assert\NotBlank()
      */
@@ -106,7 +116,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=64)
+     * @ORM\Column(name="password", type="string", length=64, nullable=true)
      *
      * @Assert\NotBlank()
      */
@@ -115,18 +125,21 @@ class User
     /**
      * @var integer
      *
-     * @ORM\Column(name="country", type="integer")
+     * @ORM\Column(name="country", type="integer", nullable=true)
      *
      * @Assert\NotBlank()
      */
     private $country;
 
     /**
-     * @param int $country
+     * @param  int  $country
+     * @return User
      */
     public function setCountry($country)
     {
         $this->country = $country;
+
+        return $this;
     }
 
     /**
@@ -195,7 +208,7 @@ class User
             return $this->password;
         }
 
-        $length   = strlen($this->password);
+        $length = strlen($this->password);
         $password = '';
 
         for ($i = 0; $i < $length - 1; $i += 2) {
@@ -211,7 +224,7 @@ class User
     {
         // Add extra role
         $roles = $token->getRoles();
-        $role  = new Role($role);
+        $role = new Role($role);
         array_push($roles, $role);
 
         // Create new token
@@ -220,5 +233,42 @@ class User
         // Save session
         $session->set('_security_shoplo', serialize($token));
         $session->save();
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        $roles = array('ROLE_USER');
+
+        if ($this->getUsername()) {
+            $roles[] = 'ROLE_ADMIN';
+        }
+
+        return $roles;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return 'Shop #' . $this->getShopId();
+    }
+
+    /**
+     * @return null
+     */
+    public function getSalt()
+    {
+        return null;
+    }
+
+    /**
+     * @return void
+     */
+    public function eraseCredentials()
+    {
     }
 }

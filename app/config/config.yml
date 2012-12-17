@@ -76,10 +76,6 @@ hwi_oauth:
                 nickname:       shop.name
                 realname:       shop.shop_owner
 
-services:
-    shoplo.user_provider:
-        parent: hwi_oauth.user.provider
-
 # Allegro
 shoplo_allegro:
     allegro:

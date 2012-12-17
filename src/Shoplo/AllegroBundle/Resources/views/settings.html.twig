@@ -19,14 +19,14 @@
                 <div class="accordion-inner">
                     <form class="form-horizontal" action="{{ path('shoplo_allegro_settings') }}" method="post" {{ form_enctype(form) }}>
                         <div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-                            <label class="control-label" for="form_username">Nazwa użytkownika</label>
+                            {{ form_label(form.username, 'Nazwa użytkownika', {'label_attr': {'class': 'control-label'}}) }}
 
                             <div class="controls">
                                 {{ form_widget(form.username) }}
                             </div>
                         </div>
                         <div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-                            <label class="control-label" for="form_password">Hasło</label>
+                            {{ form_label(form.password, 'Hasło', {'label_attr': {'class': 'control-label'}}) }}
 
                             <div class="controls">
                                 {{ form_widget(form.password) }}
