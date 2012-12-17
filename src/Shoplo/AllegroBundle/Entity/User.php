@@ -5,7 +5,6 @@ namespace Shoplo\AllegroBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Symfony\Component\Security\Core\Role\Role;
 
@@ -151,7 +150,7 @@ class User
     /**
      * Set username
      *
-     * @param string $username
+     * @param  string $username
      * @return User
      */
     public function setUsername($username)
@@ -174,7 +173,7 @@ class User
     /**
      * Set password
      *
-     * @param string $password
+     * @param  string $password
      * @return User
      */
     public function setPassword($password)
@@ -187,7 +186,7 @@ class User
     /**
      * Get password
      *
-     * @param bool $encoded
+     * @param  bool   $encoded
      * @return string
      */
     public function getPassword($encoded = false)

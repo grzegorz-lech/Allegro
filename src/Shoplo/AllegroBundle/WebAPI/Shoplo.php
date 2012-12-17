@@ -18,9 +18,9 @@ class Shoplo extends \OAuth
         $this->setToken($token['oauth_token'], $token['oauth_token_secret']);
     }
 
-	/**
-     * @param string $uri
-     * @param int $id
+    /**
+     * @param  string          $uri
+     * @param  int             $id
      * @return array
      * @throws \OAuthException
      */
@@ -45,20 +45,20 @@ class Shoplo extends \OAuth
         return $data;
     }
 
-	public function post($uri, $data=array())
-	{
-		$url = sprintf('%s', self::GATEWAY, $uri);
+    public function post($uri, $data=array())
+    {
+        $url = sprintf('%s', self::GATEWAY, $uri);
 
-		$this->fetch($url, $data, 'POST');
-		$json = $this->getLastResponse();
-		$data = json_decode($json, true);
+        $this->fetch($url, $data, 'POST');
+        $json = $this->getLastResponse();
+        $data = json_decode($json, true);
 
-		if (isset($data['status']) && $data['status'] == 'err') {
-			throw new \OAuthException($data['error_msg'], $data['error']);
-		}
+        if (isset($data['status']) && $data['status'] == 'err') {
+            throw new \OAuthException($data['error_msg'], $data['error']);
+        }
 
-		$data = array_shift($data);
+        $data = array_shift($data);
 
-		return $data;
-	}
+        return $data;
+    }
 }

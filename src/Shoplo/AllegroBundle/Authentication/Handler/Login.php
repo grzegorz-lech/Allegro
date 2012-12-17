@@ -10,8 +10,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Router;
 use Doctrine\Bundle\DoctrineBundle\Registry as Doctrine;
 use Shoplo\AllegroBundle\Entity\User;
-use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
-use Symfony\Component\Security\Core\Role\Role;
 
 class Login implements AuthenticationSuccessHandlerInterface
 {
