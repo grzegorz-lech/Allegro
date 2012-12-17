@@ -132,6 +132,34 @@ class User implements UserInterface
     private $country;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="last_event_id", type="integer")
+     *
+     * @Assert\NotBlank()
+     */
+    private $lastEventId;
+
+    /**
+     * @param  int  $lastEventId
+     * @return User
+     */
+    public function setLastEventId($lastEventId)
+    {
+        $this->lastEventId = $lastEventId;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastEventId()
+    {
+        return $this->lastEventId;
+    }
+
+    /**
      * @param  int  $country
      * @return User
      */
@@ -208,7 +236,7 @@ class User implements UserInterface
             return $this->password;
         }
 
-        $length = strlen($this->password);
+        $length   = strlen($this->password);
         $password = '';
 
         for ($i = 0; $i < $length - 1; $i += 2) {
@@ -224,7 +252,7 @@ class User implements UserInterface
     {
         // Add extra role
         $roles = $token->getRoles();
-        $role = new Role($role);
+        $role  = new Role($role);
         array_push($roles, $role);
 
         // Create new token

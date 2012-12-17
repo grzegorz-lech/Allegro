@@ -45,7 +45,7 @@ class Shoplo extends \OAuth
         return $data;
     }
 
-    public function post($uri, $data=array())
+    public function post($uri, $data = array())
     {
         $url = sprintf('%s', self::GATEWAY, $uri);
 
