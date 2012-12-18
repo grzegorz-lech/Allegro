@@ -1,0 +1,36 @@
+{% extends "::base.html.twig" %}
+
+{% block container_class %} wide{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+
+	{% javascripts '@ShoploAllegroBundle/Resources/public/js/category.js' %}
+		<script type="text/javascript">
+			var url = '{{ path('shoplo_allegro_get_category_path') }}';
+		</script>
+		<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>Zmapuj kategorie z Allegro</h1>
+    </div>
+
+	<form action="" method="" class="form-inline map-allegro">
+		{% for category in shoplo_categories %}
+		<div class="control-group clear">
+			<input type="text" id="disabledInput" value="{{category.name}}" name="map[{{category.id}}]" disabled="disabled" />
+
+			<select class="allegro" id="allegro-{{category.id}}" class="span2">
+				<option value="0">Wybierz kategorię</option>
+				{% for category in allegro_categories %}
+				<option value="{{category.id}}">{{category.name}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		{% endfor %}
+
+	</form>
+{% endblock %}

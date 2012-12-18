@@ -186,6 +186,17 @@ class Allegro extends \SoapClient
         return $this->session;
     }
 
+
+	public function getCategories($offset=0, $limit=50)
+	{
+		return $this->doGetCatsDataLimit($this->country, 0, $this->key, $offset, $limit);
+	}
+
+	public function getCategoryPath($categoryId)
+	{
+		return $this->doGetCategoryPath($this->session['session-handle-part'], 101359);
+	}
+
     /**
      * Metoda pobiera informacje z dziennika zdarzeń
      *
@@ -197,16 +208,17 @@ class Allegro extends \SoapClient
         $deals = array();
 
         foreach ($this->doGetSiteJournalDeals($this->session['session-handle-part'], $lastEventId) as $deal) {
-            $deals[] = (new Deal())
-                ->setEventId($deal->{'deal-event-id'})
-                ->setEventType($deal->{'deal-event-type'})
-                ->setEventTime(new \DateTime('@' . $deal->{'deal-event-time'}))
-                ->setId($deal->{'deal-id'})
-                ->setTransactionId($deal->{'deal-transaction-id'})
-                ->setSellerId($deal->{'deal-seller-id'})
-                ->setItemId($deal->{'deal-item-id'})
-                ->setBuyerId($deal->{'deal-buyer-id'})
-                ->setQuantity($deal->{'deal-quantity'});
+            $dealObject = new Deal();
+			$dealObject->setEventId($deal->{'deal-event-id'})
+				->setEventType($deal->{'deal-event-type'})
+				->setEventTime(new \DateTime('@' . $deal->{'deal-event-time'}))
+				->setId($deal->{'deal-id'})
+				->setTransactionId($deal->{'deal-transaction-id'})
+				->setSellerId($deal->{'deal-seller-id'})
+				->setItemId($deal->{'deal-item-id'})
+				->setBuyerId($deal->{'deal-buyer-id'})
+				->setQuantity($deal->{'deal-quantity'});
+			$deals[] = $dealObject;
         }
 
         return $deals;
