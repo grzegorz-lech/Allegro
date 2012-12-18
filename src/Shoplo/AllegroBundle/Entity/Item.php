@@ -15,9 +15,8 @@ class Item
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -40,7 +39,7 @@ class Item
      *
      * @ORM\Column(name="quantity_sold", type="integer")
      */
-    private $quantity_sold;
+    private $quantity_sold = 0;
 
     /**
      * @var \DateTime
@@ -55,6 +54,17 @@ class Item
      * @ORM\Column(name="end_at", type="datetimetz")
      */
     private $end_at;
+
+    /**
+     * @param integer $id
+     * @return Item
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * Get id
