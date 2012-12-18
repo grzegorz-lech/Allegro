@@ -138,7 +138,7 @@ class User implements UserInterface
      *
      * @Assert\NotBlank()
      */
-    private $lastEventId;
+    private $lastEventId = 0;
 
     /**
      * @param  int  $lastEventId
