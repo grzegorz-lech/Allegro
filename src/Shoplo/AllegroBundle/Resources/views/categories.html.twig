@@ -6,9 +6,6 @@
 	{{ parent() }}
 
 	{% javascripts '@ShoploAllegroBundle/Resources/public/js/category.js' %}
-		<script type="text/javascript">
-			var url = '{{ path('shoplo_allegro_get_category_path') }}';
-		</script>
 		<script src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 {% endblock %}
