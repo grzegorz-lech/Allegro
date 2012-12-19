@@ -5,6 +5,12 @@
     {% stylesheets 'http://imperavi.com/js/redactor/redactor.css' %}
     <link href="{{ asset_url }}" rel="stylesheet">
     {% endstylesheets %}
+    <style type="text/css">
+        body .redactor_toolbar li a.redactor_btn_list {
+        {% image '@ShoploAllegroBundle/Resources/public/img/shoplo.png' %} background: url({{ asset_url }}) no-repeat;
+        {% endimage %}
+        }
+    </style>
 {% endblock %}
 
 {% block javascripts %}
@@ -15,14 +21,52 @@
     <script>
         $(function () {
             $("img[rel=popover]").popover({
-                html: true,
-                placement: 'right',
-                trigger: 'hover'
+                html:true,
+                placement:'right',
+                trigger:'hover'
             });
 
             $('.wysiwyg').redactor({
-                buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'file', 'table', 'link', '|', 'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule'],
-                minHeight: 200
+                buttons:['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'file', 'table', 'link', '|', 'fontcolor', 'backcolor', '|', 'alignment', '|', 'horizontalrule'],
+                minHeight:200,
+                buttonsAdd:["|", "list"],
+                buttonsCustom:{
+                    list:{
+                        title:"Właściwości produktów z Shoplo",
+                        dropdown:{
+                            product_name:{
+                                title:'Nazwa produktu',
+                                callback:function (e) {
+                                    e.insertHtml('{product_name}')
+                                }
+                            },
+                            product_short_description:{
+                                title:'Opis (krótki)',
+                                callback:function (e) {
+                                    e.insertHtml('{product_short_description}')
+                                }
+                            },
+                            product_description:{
+                                title:'Opis (długi)',
+                                callback:function (e) {
+                                    e.insertHtml('{product_description}')
+                                }
+                            },
+                            product_sku:{
+                                title:'Kod producenta',
+                                callback:function (e) {
+                                    e.insertHtml('{product_sku}')
+                                }
+                            },
+                            product_price:{
+                                title:'Cena',
+                                callback:function (e) {
+                                    e.insertHtml('{product_price}')
+                                }
+                            }
+                        }
+                    }
+                }
             });
         });
     </script>
@@ -46,10 +90,11 @@
             {% for i in range(0,2) %}
                 <div class="span1 offset1">
                     <p align="center">
-                        <input type="radio" value="{{ i }}" required="required" name="form[layout]" id="form_layout_{{ i }}"{% if i == 0 %} checked="checked"{% endif %}><br>
+                        <input type="radio" value="{{ i }}" required="required" name="form[layout]"
+                               id="form_layout_{{ i }}"{% if i == 0 %} checked="checked"{% endif %}><br>
                         <br>
                         <label for="form_layout_{{ i }}">
-                        <img src="http://placehold.it/75x100&text={{ i+1 }}">
+                            <img src="http://placehold.it/75x100&text={{ i+1 }}">
                         </label>
                     </p>
                 </div>

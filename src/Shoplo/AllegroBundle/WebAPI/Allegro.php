@@ -179,11 +179,11 @@ class Allegro extends \SoapClient
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getSession()
     {
-        return $this->session;
+        return $this->session['session-handle-part'];
     }
 
 
