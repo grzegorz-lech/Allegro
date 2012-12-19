@@ -3,11 +3,12 @@
 namespace Shoplo\AllegroBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * CategoryAllegro
  *
- * @ORM\Table()
+ * @ORM\Table(indexes={@ORM\Index(name="country", columns={"country_id"})})
  * @ORM\Entity(repositoryClass="Shoplo\AllegroBundle\Entity\CategoryAllegroRepository")
  */
 class CategoryAllegro
@@ -28,9 +29,13 @@ class CategoryAllegro
     private $name;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="parent", type="integer")
+     * @ORM\OneToMany(targetEntity="CategoryAllegro", mappedBy="parent")
+     */
+    private $children;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CategoryAllegro", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
@@ -41,29 +46,43 @@ class CategoryAllegro
      */
     private $position;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="country_id", type="integer")
+     */
+    private $country_id;
+
+    /**
+     * @return CategoryAllegro
+     */
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
+    /**
+     * Set id
+     *
+     * @param integer $id
+     * @return CategoryAllegro
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
     }
-
-	/**
-	 * Set id
-	 *
-	 * @param integer $id
-	 * @return CategoryAllegro
-	 */
-	public function setId($id)
-	{
-		$this->id = $id;
-
-		return $this;
-	}
 
     /**
      * Set name
@@ -74,14 +93,14 @@ class CategoryAllegro
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -91,20 +110,20 @@ class CategoryAllegro
     /**
      * Set parent
      *
-     * @param integer $parent
+     * @param CategoryAllegro $parent
      * @return CategoryAllegro
      */
-    public function setParent($parent)
+    public function setParent(CategoryAllegro $parent)
     {
         $this->parent = $parent;
-    
+
         return $this;
     }
 
     /**
      * Get parent
      *
-     * @return integer 
+     * @return CategoryAllegro
      */
     public function getParent()
     {
@@ -120,17 +139,40 @@ class CategoryAllegro
     public function setPosition($position)
     {
         $this->position = $position;
-    
+
         return $this;
     }
 
     /**
      * Get position
      *
-     * @return integer 
+     * @return integer
      */
     public function getPosition()
     {
         return $this->position;
+    }
+
+    /**
+     * Set country_id
+     *
+     * @param integer $countryId
+     * @return CategoryAllegro
+     */
+    public function setCountryId($countryId)
+    {
+        $this->country_id = $countryId;
+
+        return $this;
+    }
+
+    /**
+     * Get country_id
+     *
+     * @return integer
+     */
+    public function getCountryId()
+    {
+        return $this->country_id;
     }
 }

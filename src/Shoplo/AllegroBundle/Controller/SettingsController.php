@@ -76,7 +76,7 @@ class SettingsController extends Controller
 		$allegroCategories = $this->getDoctrine()
 			->getRepository('ShoploAllegroBundle:CategoryAllegro')
 			->findBy(
-			array('parent'=>0),
+            array('country_id' => $allegro->getCountry(), 'parent' => null),
 			array('position'=>'ASC')
 		);
 
@@ -170,7 +170,7 @@ class SettingsController extends Controller
 		$allegroCategories = $this->getDoctrine()
 			->getRepository('ShoploAllegroBundle:CategoryAllegro')
 			->findBy(
-			array('parent'=>$id),
+            array('country_id' => $allegro->getCountry(), 'parent' => $id),
 			array('position'=>'ASC')
 		);
 
