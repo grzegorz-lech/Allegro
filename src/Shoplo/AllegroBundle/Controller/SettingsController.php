@@ -20,7 +20,7 @@ class SettingsController extends Controller
         $security = $this->get('security.context');
 
         if ($security->isGranted('ROLE_ADMIN')) {
-            return $this->redirect($this->generateUrl('shoplo_allegro_settings_profile'));
+            //return $this->redirect($this->generateUrl('shoplo_allegro_settings_profile'));
         }
 
         $allegro = $this->container->get('allegro');
@@ -57,7 +57,7 @@ class SettingsController extends Controller
             'ShoploAllegroBundle::settings.html.twig',
             array(
                 'form' => $form->createView(),
-                'step' => 1,
+                'step' => 2,
             )
         );
     }

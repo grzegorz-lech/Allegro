@@ -4,6 +4,11 @@ body {
     /* The html and body elements cannot have any padding or margin. */
 }
 
+body {
+    background: url(../img/bg.png) center top #C0DEED;
+    padding-top: 60px;
+    position: relative;
+}
 /* Wrapper for page content to push down footer */
 #wrap {
     min-height: 100%;
@@ -23,6 +28,11 @@ body {
     background-color: #f5f5f5;
 }
 
+#adminNavBar {
+    top: 0;
+    position: absolute;
+}
+
 /* Lastly, apply responsive CSS fixes as necessary */
 @media (max-width: 767px) {
     #footer {
@@ -39,17 +49,148 @@ body {
 
 .container {
     width: auto;
-    max-width: 680px;
+    width: 960px;
 }
 
 .container .credit {
     margin: 20px 0;
 }
 
-.container.wide {
-    max-width: 960px;
+.container.central {
+    width: 680px;
 }
 
+.alignCenter {
+    text-align: center;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.alignLeft {
+    text-align: left;
+}
+
+.box {
+    padding: 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background: #fff;
+}
+
+.icon-settings {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    background: url(../img/icons_sprite.png) no-repeat;
+}
+.icon-settings.profile {
+    background-position: 0 0;
+}
+.icon-settings.location {
+    background-position: 0 25px;
+}
+.icon-settings.payments {
+    background-position: 0 50px;
+}
+.icon-settings.settings {
+    background-position: 0 75px;
+}
+.icon-settings.shipping {
+    background-position: 0 100px;
+}
+
+/* Initial settings */
+.init-settings {
+    margin-top: 40px;
+}
+.init-settings .accordion-heading {
+    color: #fff;
+    text-shadow: 0 -1px 0 #eee inset;
+    border-color: #f28c1d;
+    background: #f28c1d;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f28c1d), to(#f36c03));
+    background: -moz-linear-gradient(#f28c1d, #f36c03);
+    background: linear-gradient(#f28c1d, #f36c03);
+    -pie-background: linear-gradient(#f28c1d, #f36c03);
+    border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+}
+.init-settings .disabled .accordion-heading {
+    color: #606060;
+    text-shadow: 0 -1px 0 #666 inset;
+    border-color: #7a7a7a;
+    background: #cecece;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#cecece), to(#8f8f8f));
+    background: -moz-linear-gradient(#cecece, #8f8f8f);
+    background: linear-gradient(#cecece, #8f8f8f);
+    -pie-background: linear-gradient(#cecece, #8f8f8f);
+}
+.init-settings .done .accordion-heading {
+    color: #b3c498;
+    text-shadow: 0 -1px 0 #d2e4b5 inset;
+    border-color: #c6d47d;
+    background: #eff7d0;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#eff7d0), to(#e1edc9));
+    background: -moz-linear-gradient(#eff7d0, #e1edc9);
+    background: linear-gradient(#eff7d0, #e1edc9);
+    -pie-background: linear-gradient(#eff7d0, #e1edc9);
+}
+.init-settings .accordion-group {
+    border: none;
+    margin-bottom: 0;
+}
+.init-settings .accordion-heading a {
+    color: #fff;
+    cursor: default;
+}
+.init-settings .disabled .accordion-heading a {
+    color: #606060;
+}
+.init-settings .done .accordion-heading a {
+    color: #b3c498;
+}
+.init-settings .accordion-heading a:hover {
+    text-decoration: none;
+}
+.init-settings .accordion-body {
+    margin: 0 10px;
+    background: url(../img/form_bg.jpg) center top #f5f5f5;
+}
+.init-settings .control-group {
+    border-bottom: 1px solid #E2E2E2;
+    box-shadow: 0 1px 0 #fff;
+    -moz-box-shadow: 0 1px 0 #fff;
+    -webkit-box-shadow: 0 1px 0 #fff;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+.init-settings .control-group .control-label {
+    text-align: left;
+}
+.init-settings button {
+    display: block;
+    margin: 0 auto;
+}
+.init-settings .btn-primary {
+    color: #000;
+    font-weight: bold;
+    text-shadow: 0 -1px 0 #2c1b13 inset;
+    border-color: #ffe141;
+    background: #ffe141;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#ffe141), to(#fccf04));
+    background: -moz-linear-gradient(#ffe141, #fccf04);
+    background: linear-gradient(#ffe141, #fccf04);
+    -pie-background: linear-gradient(#ffe141, #fccf04);
+}
+.init-settings .icon-settings {
+    float: right;
+}
+
+/* Category mapping */
 .map-allegro select {
     margin-right: 5px;
 }
