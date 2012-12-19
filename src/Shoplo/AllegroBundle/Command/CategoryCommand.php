@@ -21,9 +21,8 @@ class CategoryCommand extends Command
         107 => 'Kazachstan',
         168 => 'Rosja',
         181 => 'Słowacja',
-        209 => 'Ukraina (rosyjski)',
+        209 => 'Ukraina', // = 232
         228 => 'Test WebAPI',
-        232 => 'Ukraina (ukraiński)',
     );
 
     protected function configure()
