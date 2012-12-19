@@ -45,3 +45,11 @@ body {
 .container .credit {
     margin: 20px 0;
 }
+
+.container.wide {
+    max-width: 960px;
+}
+
+.map-allegro select {
+    margin-right: 5px;
+}

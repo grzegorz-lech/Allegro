@@ -17,6 +17,10 @@ shoplo_allegro_settings_profile:
     pattern:  /ustawienia/profil
     defaults: { _controller: ShoploAllegroBundle:Settings:profile }
 
+shoplo_allegro_get_category_path:
+    pattern:  /kategoria/sciezka
+    defaults: { _controller: ShoploAllegroBundle:Settings:getCategoryChildren }
+
 shoplo_allegro_wizard:
     pattern:  /kreator
     defaults: { _controller: ShoploAllegroBundle:Wizard:index }

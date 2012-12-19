@@ -40,7 +40,7 @@ class DoctrineUserProvider extends OAuthUserProvider
     }
 
     /**
-     * @param  int                       $shopId
+     * @param  int $shopId
      * @return User
      * @throws UsernameNotFoundException
      */
