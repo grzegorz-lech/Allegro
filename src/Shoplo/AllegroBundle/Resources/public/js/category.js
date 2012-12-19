@@ -22,7 +22,7 @@ function selectCategory(handler)
     }
 
     $.ajax({
-        url: url+'?category_id='+category_id,
+        url: Routing.generate('shoplo_allegro_get_category_path', { id: category_id }),
         dataType: 'json',
         success: function(data, status){
             $(handler).nextUntil().remove();

@@ -18,8 +18,12 @@ shoplo_allegro_settings_profile:
     defaults: { _controller: ShoploAllegroBundle:Settings:profile }
 
 shoplo_allegro_get_category_path:
-    pattern:  /kategoria/sciezka
+    pattern:  /allegro/kategoria/{id}.json
     defaults: { _controller: ShoploAllegroBundle:Settings:getCategoryChildren }
+    requirements:
+        id: \d+
+    options:
+        expose: true
 
 shoplo_allegro_wizard:
     pattern:  /kreator

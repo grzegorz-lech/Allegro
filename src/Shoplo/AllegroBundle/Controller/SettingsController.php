@@ -76,7 +76,7 @@ class SettingsController extends Controller
 		$allegroCategories = $this->getDoctrine()
 			->getRepository('ShoploAllegroBundle:CategoryAllegro')
 			->findBy(
-			array('parent'=>0),
+            array('country_id' => $allegro->getCountry(), 'parent' => null),
 			array('position'=>'ASC')
 		);
 
@@ -161,17 +161,16 @@ class SettingsController extends Controller
 		//return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
     }
 
-	public function getCategoryChildrenAction()
+	public function getCategoryChildrenAction($id)
 	{
 		$user = $this->getUser();
 		$allegro = $this->container->get('allegro');
 		$allegro->login($user);
 
-		$categoryId = $this->getRequest()->get('category_id', 0);
 		$allegroCategories = $this->getDoctrine()
 			->getRepository('ShoploAllegroBundle:CategoryAllegro')
 			->findBy(
-			array('parent'=>$categoryId),
+            array('country_id' => $allegro->getCountry(), 'parent' => $id),
 			array('position'=>'ASC')
 		);
 
@@ -191,7 +190,7 @@ class SettingsController extends Controller
 
 		$json = json_encode($categories);
 		$response = new Response();
-		$response->headers->set('Content-Type', 'application/json');
+		$response->headers->set('Content-Type', 'application/json; charset=utf-8');
 		$response->setContent($json);
 
 		return $response;

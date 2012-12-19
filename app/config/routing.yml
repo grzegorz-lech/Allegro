@@ -2,6 +2,9 @@ hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
     prefix:   /zaloguj
 
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+
 shoplo_allegro:
     resource: "@ShoploAllegroBundle/Resources/config/routing.yml"
     prefix:   /
