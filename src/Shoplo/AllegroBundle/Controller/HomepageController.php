@@ -33,6 +33,17 @@ class HomepageController extends Controller
         return $this->render('ShoploAllegroBundle::footer.html.twig', array('shop' => $shop));
     }
 
+	/**
+	 * @Secure(roles="ROLE_USER")
+	 */
+	public function navbarAction()
+	{
+		$shoplo = $this->container->get('shoplo');
+		$shop   = $shoplo->get('shop');
+
+		return $this->render('ShoploAllegroBundle::navbar.html.twig', array('shop' => $shop));
+	}
+
     public function loginAction()
     {
         $url = $this->container->get('hwi_oauth.security.oauth_utils')->getAuthorizationUrl('shoplo');

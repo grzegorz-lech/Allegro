@@ -2,6 +2,14 @@
 
 {% block container_class %} central{% endblock %}
 
+{% block javascripts %}
+	{{ parent() }}
+
+	{% javascripts '@ShoploAllegroBundle/Resources/public/js/settings.js' %}
+	<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock %}
+
 {% block body %}
     <h2 class="alignCenter">Witaj w aplikacji Integracja z Allegro</h2>
 
@@ -152,56 +160,74 @@
 							{{ form_label(form.username, 'Promocja produktu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
-								<input type="checkbox" name="promotion" />
+								<div class="ez-checkbox">
+									<input type="checkbox" name="promotion" class="ez-hide" />
+								</div>
 							</div>
 						</div>
 
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Pogrubienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+						<div class="show-promotion hide">
 
-							<div class="controls alignRight">
-								<input type="checkbox" name="bold" />
+							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+								{{ form_label(form.username, 'Pogrubienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+
+								<div class="controls alignRight">
+									<div class="ez-checkbox">
+										<input type="checkbox" name="bold" class="ez-hide" />
+									</div>
+								</div>
 							</div>
-						</div>
 
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Miniaturka', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+								{{ form_label(form.username, 'Miniaturka', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
-							<div class="controls alignRight">
-								<input type="checkbox" name="thumbnail" />
+								<div class="controls alignRight">
+									<div class="ez-checkbox">
+										<input type="checkbox" name="thumbnail" class="ez-hide" />
+									</div>
+								</div>
 							</div>
-						</div>
 
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Podświetlenie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+								{{ form_label(form.username, 'Podświetlenie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
-							<div class="controls alignRight">
-								<input type="checkbox" name="highlight" />
+								<div class="controls alignRight">
+									<div class="ez-checkbox">
+										<input type="checkbox" name="highlight" class="ez-hide" />
+									</div>
+								</div>
 							</div>
-						</div>
 
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Wyróżnienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+								{{ form_label(form.username, 'Wyróżnienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
-							<div class="controls alignRight">
-								<input type="checkbox" name="highlight" />
+								<div class="controls alignRight">
+									<div class="ez-checkbox">
+										<input type="checkbox" name="highlight" class="ez-hide" />
+									</div>
+								</div>
 							</div>
-						</div>
 
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Strona kategorii', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+								{{ form_label(form.username, 'Strona kategorii', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
-							<div class="controls alignRight">
-								<input type="checkbox" name="highlight" />
+								<div class="controls alignRight">
+									<div class="ez-checkbox">
+										<input type="checkbox" name="category-page" class="ez-hide" />
+									</div>
+								</div>
 							</div>
-						</div>
 
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Strona główna Allegro', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+								{{ form_label(form.username, 'Strona główna Allegro', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
-							<div class="controls alignRight">
-								<input type="checkbox" name="homepage" />
+								<div class="controls alignRight">
+									<div class="ez-checkbox">
+										<input type="checkbox" name="homepage" class="ez-hide" />
+									</div>
+								</div>
 							</div>
+
 						</div>
 
 						<button type="submit" class="btn btn-primary">Gotowe</button>

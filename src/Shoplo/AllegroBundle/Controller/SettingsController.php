@@ -57,7 +57,7 @@ class SettingsController extends Controller
             'ShoploAllegroBundle::settings.html.twig',
             array(
                 'form' => $form->createView(),
-                'step' => 2,
+                'step' => 3,
             )
         );
     }

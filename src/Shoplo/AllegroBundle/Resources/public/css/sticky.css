@@ -80,6 +80,31 @@ body {
     background: #fff;
 }
 
+.ez-hide {
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.ez-checkbox {
+    background: transparent url(../img/radio_inputs.png) 0 0 no-repeat;
+    display: inline-block;
+    width: 71px;
+    height: 32px;
+    zoom: 1;
+    *display: inline;
+    cursor: pointer;
+}
+.ez-checked {
+    background-position: 0 -32px;
+}
+.ez-checkbox .ez-hide {
+    width: 30px;
+    height: 24px;
+    cursor: pointer;
+}
+.ez-checkbox.ez-checked .ez-hide {
+    margin-left: 35px;
+}
+
 .icon-settings {
     width: 25px;
     height: 25px;
