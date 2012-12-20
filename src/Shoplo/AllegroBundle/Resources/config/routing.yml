@@ -10,8 +10,22 @@ shoplo_allegro_logout:
     pattern:  /wyloguj
 
 shoplo_allegro_settings:
-    pattern:  /ustawienia
+    pattern: /ustawienia
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: shoplo_allegro_settings_login
+
+shoplo_allegro_settings_login:
+    pattern:  /ustawienia/logowanie
     defaults: { _controller: ShoploAllegroBundle:Settings:login }
+
+shoplo_allegro_settings_location:
+    pattern:  /ustawienia/lokalizacja
+    defaults: { _controller: ShoploAllegroBundle:Settings:location }
+
+shoplo_allegro_settings_auction:
+    pattern:  /ustawienia/aukcja
+    defaults: { _controller: ShoploAllegroBundle:Settings:auction }
 
 shoplo_allegro_settings_profile:
     pattern:  /ustawienia/profil
