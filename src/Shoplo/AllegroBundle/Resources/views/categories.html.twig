@@ -11,35 +11,38 @@
 {% endblock %}
 
 {% block body %}
-    <div class="page-header">
-        <h2>Zmapuj kategorie z Allegro</h2>
-    </div>
+	<div class="box">
+		<h2>Zmapuj kategorie z Allegro</h2>
 
-	<div class="alert alert-error hide">
-		Każda kategoria z Shoplo musi być przypisana do kategorii z Allegro.
+		<div class="space"></div>
+
+		<div class="alert alert-error hide">
+			Każda kategoria z Shoplo musi być przypisana do kategorii z Allegro.
+		</div>
+
+		<form action="" method="post" class="form-inline map-allegro">
+			<div class="control-group clear">
+				<label class="span2">Kategorie Shoplo</label>
+				<label>Kategorie Allegro</label>
+			</div>
+			{% for category in shoplo_categories %}
+			<div class="control-group clear">
+				<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
+				<input type="hidden" name="map[{{category.id}}]" value="0" class="map" />
+
+				<select class="allegro" id="allegro-{{category.id}}" name="allegro[{{category.id}}]" class="span2">
+					<option value="0">Wybierz kategorię</option>
+					{% for category in allegro_categories %}
+					<option value="{{category.id}}">{{category.name}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			{% endfor %}
+			<p>
+				<input type="submit" value="Zapisz" class="btn btn-primary" />
+				<a href="" class="btn btn-link">Anuluj</a>
+			</p>
+		</form>
+
 	</div>
-
-	<form action="" method="post" class="form-inline map-allegro">
-		<div class="control-group clear">
-			<label class="span2">Kategorie Shoplo</label>
-			<label>Kategorie Allegro</label>
-		</div>
-		{% for category in shoplo_categories %}
-		<div class="control-group clear">
-			<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
-			<input type="hidden" name="map[{{category.id}}]" value="0" class="map" />
-
-			<select class="allegro" id="allegro-{{category.id}}" name="allegro[{{category.id}}]" class="span2">
-				<option value="0">Wybierz kategorię</option>
-				{% for category in allegro_categories %}
-				<option value="{{category.id}}">{{category.name}}</option>
-				{% endfor %}
-			</select>
-		</div>
-		{% endfor %}
-		<p>
-			<input type="submit" value="Zapisz" class="btn btn-primary" />
-			<a href="" class="btn btn-link">Anuluj</a>
-		</p>
-	</form>
 {% endblock %}

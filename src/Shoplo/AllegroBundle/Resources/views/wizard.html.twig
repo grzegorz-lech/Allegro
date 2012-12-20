@@ -73,43 +73,306 @@
 {% endblock %}
 
 {% block body %}
-    <div class="page-header">
-        <h1>Wystaw produkty na Allegro</h1>
-    </div>
+	<form action="{{ path('shoplo_allegro_wizard', {product: ids}) }}" method="post" {{ form_enctype(form) }}>
+		<div class="box">
+			<h3>Wystaw produkty na Allegro</h3>
 
+			{% for product in products %}
+			<img src="http://src.sencha.io/jpg100/50/50/{{ product.thumbnail }}" class="img-rounded" rel="popover"
+				 data-content="{% for category in product.categories %}{{ category.title }}{{ "<br>"|e }}{% endfor %}"
+				 data-original-title="{{ product.name }}">
+			{% endfor %}
+		</div>
 
-    {% for product in products %}
-        <img src="http://src.sencha.io/jpg100/140/140/{{ product.thumbnail }}" class="img-rounded" rel="popover"
-             data-content="{% for category in product.categories %}{{ category.title }}{{ "<br>"|e }}{% endfor %}"
-             data-original-title="{{ product.name }}">
-    {% endfor %}
+		<div class="box">
+			<h3>Ustawienia aukcji</h3>
 
-    <h3>Wygląd aukcji</h3>
-    <form action="{{ path('shoplo_allegro_wizard', {product: ids}) }}" method="post" {{ form_enctype(form) }}>
-        <div class="row">
-            {% for i in range(0,2) %}
-                <div class="span1 offset1">
-                    <p align="center">
-                        <input type="radio" value="{{ i }}" required="required" name="form[layout]"
-                               id="form_layout_{{ i }}"{% if i == 0 %} checked="checked"{% endif %}><br>
-                        <br>
-                        <label for="form_layout_{{ i }}">
-                            <img src="http://placehold.it/75x100&text={{ i+1 }}">
-                        </label>
-                    </p>
-                </div>
-            {% endfor %}
-            {% do form.layout.setRendered %}
-        </div>
+			<div class="row">
+				<div class="control-group span3">
+					<label for="issueDate" class="control-label">Data wystawienia:</label>
+					<div class="controls">
+						<input type="text" name="issue-date" id="issueDate" />
+					</div>
+				</div>
 
-        <p>
-            {{ form_widget(form.description, { 'attr': {'class': 'wysiwyg'} }) }}
-        </p>
+				<div class="control-group span3">
+					<label for="profile" class="control-label">Pobierz ustawienia z profilu:</label>
+					<div class="controls">
+						<select name="profile" id="profile">
+							<option value="1">Domyślny profil</option>
+							<option value="2">Profil promocyjny</option>
+							<option value="3">Utwórz nowy profil</option>
+							<option value="4">Bez profilu ustawię recznie</option>
+						</select>
+					</div>
+				</div>
+			</div>
 
-        <p>
-            <button class="btn btn-large btn-block btn-primary" type="submit">Wystaw na Allegro</button>
-        </p>
+			<div class="form-inline">
+				<div class="control-group">
+					<label for="quantity" class="control-label">Liczba sztuk:</label>
+					<div class="controls">
+						<input type="text" name="quantity" id="quantity" class="span1" />
 
-        {{ form_rest(form) }}
-    </form>
+						<label class="checkbox">
+							<input type="checkbox" name="all-stock" id="allStock" />
+							wszystkie z magazynu
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="control-group span2">
+					<label for="period" class="control-label">Czas trwania:</label>
+					<div class="controls">
+						<select name="period" id="period" class="span2">
+							<option value="1">1 dzień</option>
+							<option value="3">3 dni</option>
+							<option value="7">7 dni</option>
+							<option value="14">14 dni</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="control-group span3">
+					<label for="type" class="control-label">Rodzaj aukcji:</label>
+					<div class="controls">
+						<select name="type" id="type">
+							<option value="1">Tylko Kup Teraz</option>
+							<option value="2">Tylko licytacja</option>
+							<option value="3">Aukcja z licytacją Kup Teraz</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<br />
+
+			<h4>Wyróżnienia</h4>
+
+			<div class="row">
+				<div class="control-group span2">
+					<div class="controls">
+						<label class="checkbox" for="promotionBold">
+							<input type="checkbox" name="promotion-bold" id="promotionBold" />
+							Pogrubienie
+						</label>
+					</div>
+				</div>
+
+				<div class="control-group span2">
+					<div class="controls">
+						<label class="checkbox" for="promotionDistinction">
+							<input type="checkbox" name="promotion-distinction" id="promotionDistinction" />
+							Wyróżnienie
+						</label>
+					</div>
+				</div>
+
+				<div class="control-group span2">
+					<div class="controls">
+						<label class="checkbox" for="promotionHighlight">
+							<input type="checkbox" name="promotion-highlight" id="promotionHighlight" />
+							Podświetlenie
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="control-group span2">
+					<div class="controls">
+						<label class="checkbox" for="promotionThumbnail">
+							<input type="checkbox" name="promotion-thumbnail" id="promotionThumbnail" />
+							Miniaturka
+						</label>
+					</div>
+				</div>
+
+				<div class="control-group span2">
+					<div class="controls">
+						<label class="checkbox" for="promotionHomePage">
+							<input type="checkbox" name="promotion-home-page" id="promotionHomePage" />
+							Strona główna
+						</label>
+					</div>
+				</div>
+
+				<div class="control-group span2">
+					<div class="controls">
+						<label class="checkbox" for="promotionCategoryPage">
+							<input type="checkbox" name="promotion-category-page" id="promotionCategoryPage" />
+							Strona kategorii
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<br />
+
+			<h4>Opcje transportu</h4>
+
+			<div class="row">
+				<div class="control-group span2">
+					<div class="controls">
+						<label class="checkbox" for="shippingInfo">
+							<input type="checkbox" name="shipping-info" id="shippingInfo" />
+							Dodatkowe informacje
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="control-group span3">
+					<div class="controls">
+						<label class="checkbox" for="shippingAbroad">
+							<input type="checkbox" name="shipping-abroad" id="shippingAbroad" />
+							Zgadzam się na wysyłkę za granicę
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<br />
+
+			<h4>Formy płatności</h4>
+
+			<div class="row">
+				<div class="control-group span3">
+					<div class="controls">
+						<label class="checkbox" for="paymentTransfer">
+							<input type="checkbox" name="payment-transfer" id="paymentTransfer" />
+							Wpłata na konto bankowe
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="control-group span3">
+					<div class="controls">
+						<label class="checkbox" for="paymentPayu">
+							<input type="checkbox" name="payment-payu" id="paymentPayu" />
+							Płatność PayU
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="control-group span3">
+					<div class="controls">
+						<label class="checkbox" for="paymentOther">
+							<input type="checkbox" name="payment-other" id="paymentOther" />
+							Inne rodzaje płatności
+						</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="control-group span3">
+					<div class="controls">
+						<label class="checkbox" for="paymentVat">
+							<input type="checkbox" name="payment-vat" id="paymentVat" />
+							Wystawiam faktury VAT
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="box">
+			<h3>Wygląd aukcji</h3>
+
+				<div class="row">
+					{% for i in range(0,2) %}
+					<div class="span1 offset1">
+						<p align="center">
+							<input type="radio" value="{{ i }}" required="required" name="form[layout]"
+								   id="form_layout_{{ i }}"{% if i == 0 %} checked="checked"{% endif %}><br>
+							<br>
+							<label for="form_layout_{{ i }}">
+								<img src="http://placehold.it/75x100&text={{ i+1 }}">
+							</label>
+						</p>
+					</div>
+					{% endfor %}
+					{% do form.layout.setRendered %}
+				</div>
+
+				<div class="row">
+					<div class="control-group span5">
+						<label for="auctionTitle" class="control-label">Tytuł aukcji:</label>
+						<div class="controls">
+							<input type="text" name="auction-title" id="auctionTitle" class="span4" value="Okazja {product_name} od Super Sprzedawcy!!!" />
+						</div>
+					</div>
+				</div>
+
+				<div class="form-inline">
+					<div class="control-group">
+						<label for="price" class="control-label">Cena produktów:</label>
+						<div class="controls">
+							<select name="price" id="price">
+								<option value="1">Tak jak w sklepie</option>
+								<option value="2">Powiększona o prowizję Allegro</option>
+								<option value="3">Powiększona o</option>
+								<option value="4">Pomniejszona o</option>
+							</select>
+
+							<input type="text" name="provision" class="span1 hide" />
+						</div>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label">Treść aukcji:</label>
+					<div class="controls">
+						{{ form_widget(form.description, { 'attr': {'class': 'wysiwyg'} }) }}
+					</div>
+				</div>
+		</div>
+
+		<div class="box">
+			<h3>Zdjęcia aukcji</h3>
+
+			<div class="row">
+				<ul class="inline">
+					<li>
+						<span class="mask alignCenter">
+							<a href="">
+								<span class="icon icon-plus"></span>Dodaj zdjęcia
+							</a>
+						</span>
+					</li>
+					{% for product in products %}
+						<li>
+							<span class="mask">
+								<img src="http://src.sencha.io/jpg100/140/140/{{ product.thumbnail }}" class="img-rounded" rel="popover">
+							</span>
+
+							<p class="alignCenter">
+								<a href="" class="delete">
+									<span class="icon icon-remove"></span>
+								</a>
+							</p>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			<br />
+
+			{{ form_rest(form) }}
+		</div>
+
+		<p class="alignCenter">
+			<button class="btn btn-large btn-orange" type="submit">Wystaw na Allegro</button>
+			<a href="">Anuluj</a>
+		</p>
+
+	</form>
 {% endblock %}
