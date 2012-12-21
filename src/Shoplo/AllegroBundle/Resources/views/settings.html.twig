@@ -19,13 +19,13 @@
         <div class="accordion-group{% if step != 1 %}{% if step > 1 %} done{% else %} disabled{% endif %}{% endif %}">
             <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                    <span class="icon-settings profile"></span> Dane konta Allegro
+                    Dane konta Allegro <span class="icon icon-user pull-right"></span>
                 </a>
             </div>
             {% if step == 1 %}
             <div id="collapseOne" class="accordion-body collapse in">
                 <div class="accordion-inner">
-                    <form class="form-horizontal" action="{{ path('shoplo_allegro_settings') }}" method="post" {{ form_enctype(form) }}>
+                    <form class="form-horizontal" action="{{ path('shoplo_allegro_settings_login') }}" method="post" {{ form_enctype(form) }}>
                         <div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
                             {{ form_label(form.username, 'Nazwa użytkownika', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
@@ -48,7 +48,7 @@
 						</p>
 
 
-                        <button type="submit" class="btn btn-primary">Gotowe</button>
+                        <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
 
                         {{ form_rest(form) }}
                     </form>
@@ -59,45 +59,40 @@
         <div class="accordion-group{% if step != 2 %}{% if step > 2 %} done{% else %} disabled{% endif %}{% endif %}">
             <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                    <span class="icon-settings location"></span> Lokalizacja
+                    Lokalizacja <span class="icon icon-map-marker pull-right"></span>
                 </a>
             </div>
             {% if step == 2 %}
             <div id="collapseTwo" class="accordion-body collapse in">
                 <div class="accordion-inner">
-					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings') }}" method="post" {{ form_enctype(form) }}>
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Województwo', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings_location') }}" method="post" {{ form_enctype(form) }}>
+						<div class="control-group">
+							{{ form_label(form.state, 'Województwo', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
-							<div class="controls alignRight">
-								<select name="province">
-									<option value="1">Dolnośląskie</option>
-									<option value="2">Małopolskie</option>
-									<option value="3">Mazowieckie</option>
-									<option value="4">Świętokrzyskie</option>
-									<option value="5">Śląskie</option>
-									<option value="6">Wielkopolskie</option>
-								</select>
+                            <div class="controls alignRight">
+                                {{ form_widget(form.state) }}
 							</div>
 						</div>
 						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.password, 'Miejscowość', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							{{ form_label(form.city, 'Miejscowość', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
-								{{ form_widget(form.username) }}
+								{{ form_widget(form.city) }}
 							</div>
 						</div>
 
 						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.password, 'Kod pocztowy', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							{{ form_label(form.zipcode, 'Kod pocztowy', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
-								{{ form_widget(form.password) }}
+								{{ form_widget(form.zipcode) }}
 							</div>
 						</div>
 
 
-						<button type="submit" class="btn btn-primary">Zrobione</button>
+                        <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
+
+                        {{ form_rest(form) }}
 					</form>
                 </div>
             </div>
@@ -107,7 +102,7 @@
 		<div class="accordion-group{% if step != 3 %}{% if step > 3 %} done{% else %} disabled{% endif %}{% endif %}">
 			<div class="accordion-heading">
 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#collapseThree">
-					<span class="icon-settings settings"></span> Ustawienia aukcji
+					Ustawienia aukcji <span class="icon icon-cogs pull-right"></span>
 				</a>
 			</div>
 			{% if step == 3 %}
@@ -115,27 +110,22 @@
 				<div class="accordion-inner">
 					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings') }}" method="post" {{ form_enctype(form) }}>
 						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Czas trwania aukcji', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							{{ form_label(form.duration, 'Czas trwania aukcji', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
-								<select name="period">
-									<option value="3">3 dni</option>
-									<option value="7">7 dni</option>
-									<option value="10">10 dni</option>
-									<option value="14">14 dni</option>
-								</select>
+								{{ form_widget(form.duration) }}
 							</div>
 						</div>
 						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.password, 'Liczba sztuk', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							{{ form_label(form.duration, 'Liczba sztuk', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
-								{{ form_widget(form.username) }}
+								{{ form_widget(form.duration) }}
 							</div>
 						</div>
 
 						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Forma sprzedaży', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							{{ form_label(form.duration, 'Forma sprzedaży', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
 								<select name="type">
@@ -147,7 +137,7 @@
 						</div>
 
 						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Jednostka produktu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							{{ form_label(form.duration, 'Jednostka produktu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
 								<select name="measures">
@@ -157,7 +147,7 @@
 						</div>
 
 						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.username, 'Promocja produktu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+							{{ form_label(form.duration, 'Promocja produktu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
 								<div class="ez-checkbox">
@@ -169,7 +159,7 @@
 						<div class="show-promotion hide">
 
 							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.username, 'Pogrubienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+								{{ form_label(form.duration, 'Pogrubienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 								<div class="controls alignRight">
 									<div class="ez-checkbox">
@@ -179,7 +169,7 @@
 							</div>
 
 							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.username, 'Miniaturka', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+								{{ form_label(form.duration, 'Miniaturka', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 								<div class="controls alignRight">
 									<div class="ez-checkbox">
@@ -189,7 +179,7 @@
 							</div>
 
 							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.username, 'Podświetlenie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+								{{ form_label(form.duration, 'Podświetlenie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 								<div class="controls alignRight">
 									<div class="ez-checkbox">
@@ -199,7 +189,7 @@
 							</div>
 
 							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.username, 'Wyróżnienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+								{{ form_label(form.duration, 'Wyróżnienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 								<div class="controls alignRight">
 									<div class="ez-checkbox">
@@ -209,7 +199,7 @@
 							</div>
 
 							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.username, 'Strona kategorii', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+								{{ form_label(form.duration, 'Strona kategorii', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 								<div class="controls alignRight">
 									<div class="ez-checkbox">
@@ -219,7 +209,7 @@
 							</div>
 
 							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.username, 'Strona główna Allegro', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+								{{ form_label(form.duration, 'Strona główna Allegro', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 								<div class="controls alignRight">
 									<div class="ez-checkbox">
@@ -230,7 +220,9 @@
 
 						</div>
 
-						<button type="submit" class="btn btn-primary">Gotowe</button>
+                        <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
+
+                        {{ form_rest(form) }}
 					</form>
 				</div>
 			</div>
@@ -240,7 +232,7 @@
 		<div class="accordion-group{% if step != 4 %}{% if step > 4 %} done{% else %} disabled{% endif %}{% endif %}">
 			<div class="accordion-heading">
 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion4" href="#collapseFour">
-					<span class="icon-settings payments"></span> Płatności
+					Płatności <span class="icon icon-credit-card pull-right"></span>
 				</a>
 			</div>
 			{% if step == 4 %}
@@ -268,7 +260,9 @@
 							</label>
 						</div>
 
-						<button type="submit" class="btn btn-primary">Gotowe</button>
+                        <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
+
+                        {{ form_rest(form) }}
 					</form>
 				</div>
 			</div>
@@ -278,7 +272,7 @@
 		<div class="accordion-group{% if step != 5 %}{% if step > 5 %} done{% else %} disabled{% endif %}{% endif %}">
 			<div class="accordion-heading">
 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion5" href="#collapseFive">
-					<span class="icon-settings shipping"></span> Transport
+					Transport <span class="icon icon-truck pull-right"></span>
 				</a>
 			</div>
 			{% if step == 5 %}
@@ -306,7 +300,9 @@
 							</label>
 						</div>
 
-						<button type="submit" class="btn btn-primary">Gotowe</button>
+                        <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
+
+                        {{ form_rest(form) }}
 					</form>
 				</div>
 			</div>

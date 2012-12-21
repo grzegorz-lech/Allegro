@@ -257,6 +257,7 @@ class User implements UserInterface
 
         // Create new token
         $token = new OAuthToken($token->getAccessToken(), $roles);
+        $token->setUser($this);
 
         // Save session
         $session->set('_security_shoplo', serialize($token));

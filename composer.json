@@ -19,7 +19,8 @@
         "jms/security-extra-bundle": "1.2.*",
         "jms/di-extra-bundle": "1.1.*",
         "hwi/oauth-bundle": "dev-master",
-        "friendsofsymfony/jsrouting-bundle": "1.1.0"
+        "friendsofsymfony/jsrouting-bundle": "1.1.0",
+        "ext-apc": "*"
     },
     "scripts": {
         "post-install-cmd": [

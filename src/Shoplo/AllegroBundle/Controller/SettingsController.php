@@ -3,6 +3,7 @@
 namespace Shoplo\AllegroBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Shoplo\AllegroBundle\WebAPI\Allegro;
 use Shoplo\AllegroBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation\Secure;
@@ -20,7 +21,7 @@ class SettingsController extends Controller
         $security = $this->get('security.context');
 
         if ($security->isGranted('ROLE_ADMIN')) {
-            //return $this->redirect($this->generateUrl('shoplo_allegro_settings_profile'));
+            return $this->redirect($this->generateUrl('shoplo_allegro_settings_location'));
         }
 
         $allegro = $this->container->get('allegro');
@@ -48,8 +49,118 @@ class SettingsController extends Controller
                     // Add role
                     $user->addRole('ROLE_ADMIN', $security->getToken(), $request->getSession());
 
-                    return $this->redirect($this->generateUrl('shoplo_allegro_settings_profile'));
+                    return $this->redirect($this->generateUrl('shoplo_allegro_settings_location'));
                 }
+            }
+        }
+
+        return $this->render(
+            'ShoploAllegroBundle::settings.html.twig',
+            array(
+                'form' => $form->createView(),
+                'step' => 1,
+            )
+        );
+    }
+
+    /**
+     * @Secure(roles="ROLE_ADMIN")
+     */
+    public function locationAction(Request $request)
+    {
+        /** @var $allegro Allegro */
+        $allegro = $this->get('allegro');
+        $user    = $this->getUser();
+        $allegro->login($user);
+        $states = array();
+        foreach ($allegro->doGetStatesInfo($allegro->getCountry(), $allegro->getKey()) as $state) {
+            $states[$state->{'state-id'}] = $state->{'state-name'};
+        }
+
+        // Województwo na podstawie GeoAPI
+        $shop            = $this->get('shoplo')->get('shop');
+        $preferredStates = array();
+        $url             = 'http://geoapi.goldenline.pl/?' . http_build_query(
+            array(
+                'method'   => 'geo.city.getByZipCode',
+                'zip_code' => $shop['zip_code'],
+            )
+        );
+        if (false !== $json = @file_get_contents($url)) {
+            if (false !== $data = json_decode($json, true)) {
+                if (false !== $key = array_search($data['province'], $states)) {
+                    $preferredStates[] = $key;
+                }
+            }
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('state', 'choice', array('choices' => $states, 'preferred_choices' => $preferredStates))
+            ->add('city', 'text', array('data' => $shop['city']))
+            ->add(
+            'zipcode',
+            'text',
+            array('data' => $shop['zip_code'], 'attr' => array('pattern' => '[0-9]{2}-[0-9]{3}'))
+        )
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+
+            if ($form->isValid()) {
+                /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
+                $session = $this->get('session');
+                $session->set('default_profile', $form->getData());
+
+                return $this->redirect($this->generateUrl('shoplo_allegro_settings_auction'));
+            }
+        }
+
+        return $this->render(
+            'ShoploAllegroBundle::settings.html.twig',
+            array(
+                'form' => $form->createView(),
+                'step' => 2,
+            )
+        );
+    }
+
+    /**
+     * @Secure(roles="ROLE_ADMIN")
+     */
+    public function auctionAction(Request $request)
+    {
+        /** @var $allegro Allegro */
+        $allegro = $this->get('allegro');
+        $user    = $this->getUser();
+        $allegro->login($user);
+        $fields = $allegro->getSellFormFields();
+
+        // Czas trwania
+        $durations = array_combine(
+            explode('|', $fields[4]->{'sell-form-opts-values'}),
+            explode('|', $fields[4]->{'sell-form-desc'})
+        );
+        $durations = array_map(
+            function ($value) {
+                return $value . ' dni';
+            },
+            $durations
+        );
+
+        $form = $this->createFormBuilder()
+            ->add('duration', 'choice', array('choices' => $durations))
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+
+            if ($form->isValid()) {
+                /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
+                $session = $this->get('session');
+                $session->set('default_profile', $form->getData());
+
+
             }
         }
 
@@ -67,65 +178,62 @@ class SettingsController extends Controller
      */
     public function profileAction()
     {
-		$user = $this->getUser();
+        $user = $this->getUser();
 
-		$allegro = $this->container->get('allegro');
-		$allegro->login($user);
+        $allegro = $this->container->get('allegro');
+        $allegro->login($user);
 
-		$shoploCategories = $this->container->get('shoplo')->get('categories');
-		$allegroCategories = $this->getDoctrine()
-			->getRepository('ShoploAllegroBundle:CategoryAllegro')
-			->findBy(
+        $shoploCategories  = $this->container->get('shoplo')->get('categories');
+        $allegroCategories = $this->getDoctrine()
+            ->getRepository('ShoploAllegroBundle:CategoryAllegro')
+            ->findBy(
             array('country_id' => $allegro->getCountry(), 'parent' => null),
-			array('position'=>'ASC')
-		);
+            array('position' => 'ASC')
+        );
 
 
-		if ( $this->getRequest()->isMethod('POST') )
-		{
-			$params = $this->getRequest()->request->all();
+        if ($this->getRequest()->isMethod('POST')) {
+            $params = $this->getRequest()->request->all();
 
 
-			$shoplo  = $this->container->get('shoplo');
-			$shop    = $shoplo->get('shop');
+            $shoplo = $this->container->get('shoplo');
+            $shop   = $shoplo->get('shop');
 
 
-			$allegroCategoryIds = array_values($params['map']);
-			$allegroCategories = $this->getDoctrine()
-				->getRepository('ShoploAllegroBundle:CategoryAllegro')
-				->findBy(
-				array('id'=>$allegroCategoryIds)
-			);
-			$allegroCategoriesMap = array();
-			foreach ( $allegroCategories as $ac )
-			{
-				$allegroCategoriesMap[$ac->getId()] = $ac;
-			}
+            $allegroCategoryIds   = array_values($params['map']);
+            $allegroCategories    = $this->getDoctrine()
+                ->getRepository('ShoploAllegroBundle:CategoryAllegro')
+                ->findBy(
+                array('id' => $allegroCategoryIds)
+            );
+            $allegroCategoriesMap = array();
+            foreach ($allegroCategories as $ac) {
+                $allegroCategoriesMap[$ac->getId()] = $ac;
+            }
 
 
-			$em = $this->getDoctrine()->getManager();
-			foreach ( $shoploCategories as $sc )
-			{
-				$allegroCategory = $allegroCategoriesMap[$params['map'][$sc['id']]];
-				$c = new Category();
-				$c->setAllegroId($allegroCategory->getId());
-				$c->setAllegroName($allegroCategory->getName());
-				$c->setAllegroParent($allegroCategory->getParent());
-				$c->setAllegroPosition($allegroCategory->getPosition());
-				$c->setShopId($shop['id']);
-				$c->setShoploId($sc['id']);
-				$c->setShoploName($sc['name']);
-				$c->setShoploParent($sc['parent']);
-				$c->setShoploPosition($sc['pos']);
+            $em = $this->getDoctrine()->getManager();
+            foreach ($shoploCategories as $sc) {
+                $allegroCategory = $allegroCategoriesMap[$params['map'][$sc['id']]];
+                $c               = new Category();
+                $c->setAllegroId($allegroCategory->getId());
+                $c->setAllegroName($allegroCategory->getName());
+                $c->setAllegroParent($allegroCategory->getParent());
+                $c->setAllegroPosition($allegroCategory->getPosition());
+                $c->setShopId($shop['id']);
+                $c->setShoploId($sc['id']);
+                $c->setShoploName($sc['name']);
+                $c->setShoploParent($sc['parent']);
+                $c->setShoploPosition($sc['pos']);
 
-				$em->persist($c);
-			}
-			$em->flush();
+                $em->persist($c);
+            }
+            $em->flush();
 
-			// TODO: set success message to user
+            // TODO: set success message to user
 
-			return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
-		}
+            return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+        }
 
 //		$em = $this->getDoctrine()->getManager();
 //		foreach ( $allegroCategories as $a )
@@ -150,49 +258,50 @@ class SettingsController extends Controller
 //		$em->flush();
 
 
-		return $this->render(
-			'ShoploAllegroBundle::categories.html.twig',
-			array(
-				'shoplo_categories'  => $shoploCategories,
-				'allegro_categories' => $allegroCategories,
-			)
-		);
+        return $this->render(
+            'ShoploAllegroBundle::categories.html.twig',
+            array(
+                'shoplo_categories'  => $shoploCategories,
+                'allegro_categories' => $allegroCategories,
+            )
+        );
 
-		//return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+        //return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
     }
 
-	public function getCategoryChildrenAction($id)
-	{
-		$user = $this->getUser();
-		$allegro = $this->container->get('allegro');
-		$allegro->login($user);
+    public function getCategoryChildrenAction($id)
+    {
+        $user    = $this->getUser();
+        $allegro = $this->container->get('allegro');
+        $allegro->login($user);
 
-		$allegroCategories = $this->getDoctrine()
-			->getRepository('ShoploAllegroBundle:CategoryAllegro')
-			->findBy(
+        $allegroCategories = $this->getDoctrine()
+            ->getRepository('ShoploAllegroBundle:CategoryAllegro')
+            ->findBy(
             array('country_id' => $allegro->getCountry(), 'parent' => $id),
-			array('position'=>'ASC')
-		);
+            array('position' => 'ASC')
+        );
 
-		$categories = array();
-		foreach ( $allegroCategories as $ac )
-		{
-			$categories[] = array(
-				'id'	=>	$ac->getId(),
-				'name'	=>	$ac->getName(),
-				'childs_count'	=>	count($this->getDoctrine()
-					->getRepository('ShoploAllegroBundle:CategoryAllegro')
-					->findBy(
-					array('parent'=>$ac->getId())
-				))
-			);
-		}
+        $categories = array();
+        foreach ($allegroCategories as $ac) {
+            $categories[] = array(
+                'id'           => $ac->getId(),
+                'name'         => $ac->getName(),
+                'childs_count' => count(
+                    $this->getDoctrine()
+                        ->getRepository('ShoploAllegroBundle:CategoryAllegro')
+                        ->findBy(
+                        array('parent' => $ac->getId())
+                    )
+                )
+            );
+        }
 
-		$json = json_encode($categories);
-		$response = new Response();
-		$response->headers->set('Content-Type', 'application/json; charset=utf-8');
-		$response->setContent($json);
+        $json     = json_encode($categories);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json; charset=utf-8');
+        $response->setContent($json);
 
-		return $response;
-	}
+        return $response;
+    }
 }

@@ -124,7 +124,7 @@ class Allegro extends \SoapClient
         $version = 0;
 
         foreach ($system as $status) {
-            $status = (array) $status;
+            $status = (array)$status;
             if ($this->getCountry() == $status['country-id']) {
                 $version = $status['ver-key'];
                 break;
@@ -187,15 +187,15 @@ class Allegro extends \SoapClient
     }
 
 
-	public function getCategories($offset=0, $limit=50)
-	{
-		return $this->doGetCatsDataLimit($this->country, 0, $this->key, $offset, $limit);
-	}
+    public function getCategories($offset = 0, $limit = 50)
+    {
+        return $this->doGetCatsDataLimit($this->country, 0, $this->key, $offset, $limit);
+    }
 
-	public function getCategoryPath($categoryId)
-	{
-		return $this->doGetCategoryPath($this->session['session-handle-part'], 101359);
-	}
+    public function getCategoryPath($categoryId)
+    {
+        return $this->doGetCategoryPath($this->session['session-handle-part'], 101359);
+    }
 
     /**
      * Metoda pobiera informacje z dziennika zdarzeń
@@ -209,16 +209,16 @@ class Allegro extends \SoapClient
 
         foreach ($this->doGetSiteJournalDeals($this->session['session-handle-part'], $lastEventId) as $deal) {
             $dealObject = new Deal();
-			$dealObject->setEventId($deal->{'deal-event-id'})
-				->setEventType($deal->{'deal-event-type'})
-				->setEventTime(new \DateTime('@' . $deal->{'deal-event-time'}))
-				->setId($deal->{'deal-id'})
-				->setTransactionId($deal->{'deal-transaction-id'})
-				->setSellerId($deal->{'deal-seller-id'})
-				->setItemId($deal->{'deal-item-id'})
-				->setBuyerId($deal->{'deal-buyer-id'})
-				->setQuantity($deal->{'deal-quantity'});
-			$deals[] = $dealObject;
+            $dealObject->setEventId($deal->{'deal-event-id'})
+                ->setEventType($deal->{'deal-event-type'})
+                ->setEventTime(new \DateTime('@' . $deal->{'deal-event-time'}))
+                ->setId($deal->{'deal-id'})
+                ->setTransactionId($deal->{'deal-transaction-id'})
+                ->setSellerId($deal->{'deal-seller-id'})
+                ->setItemId($deal->{'deal-item-id'})
+                ->setBuyerId($deal->{'deal-buyer-id'})
+                ->setQuantity($deal->{'deal-quantity'});
+            $deals[] = $dealObject;
         }
 
         return $deals;
@@ -269,11 +269,11 @@ class Allegro extends \SoapClient
     {
         try {
             // TODO: zapis danych sprzedazowych do bazy
-            $result = (array) $this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
+            $result = (array)$this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
         } catch (\SoapFault $sf) {
             if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
                 if ($this->doLogin()) {
-                    $result = (array) $this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
+                    $result = (array)$this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
                 } else {
                     return false;
                 }
@@ -284,11 +284,11 @@ class Allegro extends \SoapClient
 
         $auctions = array();
         foreach ($result as $buyersInfo) {
-            $buyersInfo = (array) $buyersInfo;
+            $buyersInfo = (array)$buyersInfo;
             $buyers     = array();
             foreach ($buyersInfo['users-post-buy-data'] as $buyer) {
-                $buyer                                  = (array) $buyer;
-                $buyer['user-data']                     = (array) $buyer['user-data'];
+                $buyer                                  = (array)$buyer;
+                $buyer['user-data']                     = (array)$buyer['user-data'];
                 $buyers[$buyer['user-data']['user-id']] = $buyer;
             }
             $auctions[] = array(
@@ -362,5 +362,22 @@ class Allegro extends \SoapClient
             'wire_transfer'       => 'Zwykły przelew',
             'not_specified'       => 'Nie określony',
         );
+    }
+
+    public function getSellFormFields()
+    {
+        $cacheKey = sprintf('[%s][%d]', __FUNCTION__, $this->getCountry());
+        if (false === $fields = apc_fetch($cacheKey)) {
+            $fields = $this->doGetSellFormFieldsExt($this->getCountry(), 0, $this->getKey());
+            apc_store($cacheKey, $fields);
+        }
+
+        // Rewrite keys
+        $output = array();
+        foreach ($fields['sell-form-fields'] as $field) {
+            $output[$field->{'sell-form-id'}] = $field;
+        }
+
+        return $output;
     }
 }
