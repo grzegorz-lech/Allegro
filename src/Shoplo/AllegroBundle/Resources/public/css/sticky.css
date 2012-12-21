@@ -103,6 +103,10 @@ body {
     background: linear-gradient(#ffe141, #fccf04);
     -pie-background: linear-gradient(#ffe141, #fccf04);
 }
+.box.orange {
+    background: #f5760a;
+    color: #fff;
+}
 
 .ez-hide {
     opacity: 0;
@@ -229,6 +233,16 @@ body {
 }
 
 /* Wizard */
+.summaryBox.sidebar {
+    width: 212px;
+    margin-left: 710px;
+    position: absolute;
+    top: auto;
+}
+.summaryBox.sidebar.sticked {
+    position: fixed;
+    top: 10px;
+}
 ul.inline {
     list-style: none;
 }
@@ -245,6 +259,14 @@ ul.inline li .mask {
 }
 ul.inline li a:hover {
     text-decoration:none;
+}
+.summaryBox.sidebar ul li {
+    font-size: 12px;
+}
+.summaryBox .summary {
+    font-weight: bold;
+    border-top: 1px solid #ff9909;
+    padding: 15px 0 0;
 }
 
 /* Category mapping */
