@@ -71,7 +71,12 @@ body {
 .alignLeft {
     text-align: left;
 }
-
+.floatRight {
+    float: right;
+}
+.floatLeft {
+    float: left;
+}
 .box {
     padding: 10px;
     -moz-border-radius: 5px;
@@ -107,6 +112,26 @@ body {
     background: #f5760a;
     color: #fff;
 }
+.box table.table thead {
+    background: #f5f5f5;
+}
+.box table.table td {
+    border-bottom: 1px solid #F3F3F3;
+    border-top: none;
+    height: 50px;
+    vertical-align: middle;
+}
+.box table.table td.alignCenter {
+    text-align: center;
+}
+
+/* Actions */
+a.action { margin-left:5px; margin-right:0 !important; width:13px; height:13px; }
+a.action .ico { width:13px; height:13px; display:inline-block; background: url(../img/panel/action_icons_sprite.png) no-repeat !important; }
+a.actionDelete .ico { background-position: 0 0px !important; }
+a.actionEdit .ico { background-position: 0 -13px !important; }
+a.actionReorder .ico { background-position: 0 -26px !important; }
+a.actionDrag .ico { background-position: 0 -39px !important; }
 
 .ez-hide {
     opacity: 0;
