@@ -42,13 +42,14 @@ $(function(){
 
 function calculatePrice()
 {
-    var quantity = $('.summaryBox .unstyled').data('quantity');
+    var itemQuantity = $('#stock-quantity').val() ? $('#stock-quantity').val() : 1;
+    var productsQuantity = $('.summaryBox .unstyled').data('quantity');
 
     // promocja przedmiotow
     $('input.promotion').each(function(){
         if ( $(this).is(':checked') ) {
             if ( $('.summaryBox .unstyled #promotion'+$(this).data('id')).length == 0 ) {
-                $('<li class="row offset1" id="promotion'+$(this).data('id')+'"><div class="span7 alignRight">'+$(this).parents('.controls').find('.title').text()+'</div><div class="span5 alignRight"><span class="quantity">'+quantity+'</span> x <span class="price">'+$(this).data('price')+'</span>zł</div></li>').appendTo('.summaryBox .unstyled');
+                $('<li class="row offset1" id="promotion'+$(this).data('id')+'"><div class="span7 alignRight">'+$(this).parents('.controls').find('.title').text()+'</div><div class="span5 alignRight"><span class="quantity">'+productsQuantity+'</span> x <span class="price">'+$(this).data('price')+'</span>zł</div></li>').appendTo('.summaryBox .unstyled');
             }
         }
         else {
@@ -58,6 +59,7 @@ function calculatePrice()
 
     // czyste koszty wystawienia przedmiotow
     $('.product-category').each(function(){
+        $('li#product'+$(this).data('product-id')).find('.quantity').text(itemQuantity);
         $('li#product'+$(this).data('product-id')).find('.price').text( $(this).find('option:selected').data('price') );
     });
 

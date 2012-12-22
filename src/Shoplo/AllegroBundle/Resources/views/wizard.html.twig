@@ -94,10 +94,10 @@
 					<div class="box">
 						<h3>Wystaw produkty na Allegro</h3>
 
-						{% for product in products %}
-						<img src="http://src.sencha.io/jpg100/50/50/{{ product.thumbnail }}" class="img-rounded" rel="popover"
-							 data-content="{% for category in product.categories %}{{ category.title }}{{ "<br>"|e }}{% endfor %}"
-							 data-original-title="{{ product.name }}">
+						{% for variant in variants %}
+						<img src="http://src.sencha.io/jpg100/50/50/{{ variant.thumbnail }}" class="img-rounded" rel="popover"
+							 data-content="{% for category in variant.categories %}{{ category.title }}{{ "<br>"|e }}{% endfor %}"
+							 data-original-title="{{ variant.product_name }}">
 						{% endfor %}
 					</div>
 
@@ -370,10 +370,10 @@
 									</a>
 								</span>
 								</li>
-								{% for product in products %}
+								{% for variant in variants %}
 								<li>
 									<span class="mask">
-										<img src="http://src.sencha.io/jpg100/140/140/{{ product.thumbnail }}" class="img-rounded" rel="popover">
+										<img src="http://src.sencha.io/jpg100/140/140/{{ variant.thumbnail }}" class="img-rounded" rel="popover">
 									</span>
 
 									<p class="alignCenter">
@@ -395,16 +395,16 @@
 					<div class="box">
 						<h3>Wystaw produkty w kategorii</h3>
 
-						{% for product in products %}
+						{% for variant in variants %}
 							<div class="form-horizontal">
 								<div class="control-group">
 									<label class="control-label span5">
-										<img src="http://src.sencha.io/jpg100/30/30/{{ product.thumbnail }}" class="img-rounded">
-										{{product.name}}:&nbsp;&nbsp;
+										<img src="http://src.sencha.io/jpg100/30/30/{{ variant.thumbnail }}" class="img-rounded">
+										{{variant.product_name}}:&nbsp;&nbsp;
 									</label>
 									<div class="controls">
-										<select name="category[{{product.id}}]" class="product-category" data-product-id="{{product.id}}">
-											{% for category in product.categories %}
+										<select name="category[{{variant.id}}]" class="product-category" data-variant-id="{{variant.id}}">
+											{% for category in variant.categories %}
 											<option value="{{category.id}}" data-price="{{category.price}}">{{category.title}}</option>
 											{% endfor %}
 										</select>
@@ -424,14 +424,14 @@
 			<div class="span3 box orange summaryBox sidebar">
 				<h4>Koszt wystawienia</h4>
 
-				<ul class="unstyled" data-quantity="{{ products_count }}">
-					{% for product in products %}
-					<li class="row offset1" id="product{{product.id}}">
+				<ul class="unstyled" data-quantity="{{ variants_count }}">
+					{% for variant in variants %}
+					<li class="row offset1" id="product{{variant.id}}">
 						<div class="span7 alignRight">
-							{{ product.name }}
+							{{ variant.product_name }}
 						</div>
 						<div class="span5 alignRight">
-							<span class="quantity">1</span> x <span class="price">{{product.auction_price}}</span>zł
+							<span class="quantity">1</span> x <span class="price">{{variant.auction_price}}</span>zł
 						</div>
 					</li>
 					{% endfor %}
@@ -450,7 +450,7 @@
 						Razem
 					</div>
 					<div class="span5 alignRight">
-						<span class="price-all">{{ init_price }}</span> zł
+						<span class="price-all">{{ total_price }}</span> zł
 					</div>
 				</div>
 			</div>

@@ -63,29 +63,37 @@ class WizardController extends Controller
 		);*/
 
         // Informacje o produktach
+		$allegro  = $this->get('allegro');
         $shoplo   = $this->container->get('shoplo');
-        $products = array();
-		$auctionPrice = 0;
+        $variants = array();
+		$totalPrice = 0;
         foreach ($ids as $id) {
             $product    = $shoplo->get('products', $id);
-			# TODO: zmapować kategorie z Shoplo na kategorie z Allegro
-			$product['categories'] = array(
-				array(
-					'id'	=>	1,
-					'title'	=>	'Elektronika',
-					'price'	=>	0.3, // cena za wystawienie w danej kategorii
-				),
-				array(
-					'id'	=>	2,
-					'title'	=>	'Odzież, Obuwie, Dodatki',
-					'price'	=>	0.5,
-				),
-			);
+			# TODO: zmapować kategorie z Shoplo na kategorie z Allegro - na razie jest na sztywno to nadpisane
+			foreach ( $product['variants'] as $variant )
+			{
+				$price = bcdiv($variant['price'], 100, 2);
+				$categories = array(
+					array(
+						'id'	=>	1,
+						'title'	=>	'Elektronika',
+						'price'	=>	$allegro->calculateAuctionPrice( $price, array(1,2,3) ), // cena za wystawienie w danej kategorii
+					),
+					array(
+						'id'	=>	2,
+						'title'	=>	'Odzież, Obuwie, Dodatki',
+						'price'	=>	$allegro->calculateAuctionPrice( $price, array(1,2,3) ),
+					),
+				);
+				$variant['categories'] = $categories;
+				$variant['auction_price'] = $categories[0]['price'];
+				$variant['thumbnail'] = $product['thumbnail'];
+				$variants[$variant['id']] = $variant;
 
-			$product['auction_price'] = $product['categories'][0]['price'];
+				$totalPrice += $categories[0]['price'];
+			}
+
 			$products[] = $product;
-
-			$auctionPrice += $product['categories'][0]['price'];
         }
 
         $wizard = new Wizard();
@@ -136,9 +144,9 @@ class WizardController extends Controller
             array(
                 'form'     => $form->createView(),
                 'ids'      => $ids,
-                'products' => $products,
-				'products_count'	=>	count($products),
-				'init_price'		=>	sprintf("%0.2f", $auctionPrice),
+                'variants' => $variants,
+				'variants_count'	=>	count($variants),
+				'total_price'		=>	sprintf("%0.2f", $totalPrice),
             )
         );
     }
