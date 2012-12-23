@@ -424,7 +424,7 @@
 			<div class="span3 box orange summaryBox sidebar">
 				<h4>Koszt wystawienia</h4>
 
-				<ul class="unstyled" data-quantity="{{ variants_count }}">
+				<ul class="unstyled" data-quantity="{{ variants|length }}">
 					{% for variant in variants %}
 					<li class="row offset1" id="product{{variant.id}}">
 						<div class="span7 alignRight">

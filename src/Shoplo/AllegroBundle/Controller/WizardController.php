@@ -145,7 +145,6 @@ class WizardController extends Controller
                 'form'     => $form->createView(),
                 'ids'      => $ids,
                 'variants' => $variants,
-				'variants_count'	=>	count($variants),
 				'total_price'		=>	sprintf("%0.2f", $totalPrice),
             )
         );
