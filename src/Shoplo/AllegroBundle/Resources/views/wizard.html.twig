@@ -95,7 +95,7 @@
 						<h3>Wystaw produkty na Allegro</h3>
 
 						{% for variant in variants %}
-						<img src="http://src.sencha.io/jpg100/50/50/{{ variant.thumbnail }}" class="img-rounded" rel="popover"
+						<img src="http://src.sencha.io/50/50/{{ variant.thumbnail }}" class="img-rounded" rel="popover"
 							 data-content="{% for category in variant.categories %}{{ category.title }}{{ "<br>"|e }}{% endfor %}"
 							 data-original-title="{{ variant.product_name }}">
 						{% endfor %}
@@ -373,7 +373,7 @@
 								{% for variant in variants %}
 								<li>
 									<span class="mask">
-										<img src="http://src.sencha.io/jpg100/140/140/{{ variant.thumbnail }}" class="img-rounded" rel="popover">
+										<img src="http://src.sencha.io/140/140/{{ variant.thumbnail }}" class="img-rounded" rel="popover">
 									</span>
 
 									<p class="alignCenter">
@@ -399,7 +399,7 @@
 							<div class="form-horizontal">
 								<div class="control-group">
 									<label class="control-label span5">
-										<img src="http://src.sencha.io/jpg100/30/30/{{ variant.thumbnail }}" class="img-rounded">
+										<img src="http://src.sencha.io/30/30/{{ variant.thumbnail }}" class="img-rounded">
 										{{variant.product_name}}:&nbsp;&nbsp;
 									</label>
 									<div class="controls">
