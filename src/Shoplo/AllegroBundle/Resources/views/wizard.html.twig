@@ -431,7 +431,7 @@
 							{{ variant.product_name }}
 						</div>
 						<div class="span5 alignRight">
-							<span class="quantity">1</span> x <span class="price">{{ variant.auction_price|number_format(2, ',', '') }}</span> zł
+							<span class="quantity">1</span> x <span class="price">{{variant.auction_price}}</span>zł
 						</div>
 					</li>
 					{% endfor %}
@@ -450,7 +450,7 @@
 						Razem
 					</div>
 					<div class="span5 alignRight">
-						<span class="price-all">{{ total_price|number_format(2, ',', '') }}</span> zł
+						<span class="price-all">{{ total_price }}</span> zł
 					</div>
 				</div>
 			</div>
