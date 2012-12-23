@@ -10,6 +10,22 @@
 	{% endjavascripts %}
 {% endblock %}
 
+{% form_theme form _self %}
+
+{% block form_row %}
+    {% for child in form.children %}
+        <div class="control-group">
+            {{ form_label(child, null, {'label_attr': {'class': 'control-label alignLeft'}}) }}
+
+            <div class="controls alignRight">
+                <div class="ez-checkbox">
+                    {{ form_widget(child, {'attr': {'class': 'ez-hide'}}) }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
 {% block body %}
     <h2 class="alignCenter">Witaj w aplikacji Integracja z Allegro</h2>
 
@@ -108,116 +124,27 @@
 			{% if step == 3 %}
 			<div id="collapseThree" class="accordion-body collapse in">
 				<div class="accordion-inner">
-					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings') }}" method="post" {{ form_enctype(form) }}>
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
+					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings_auction') }}" method="post" {{ form_enctype(form) }}>
+						<div class="control-group">
 							{{ form_label(form.duration, 'Czas trwania aukcji', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
 								{{ form_widget(form.duration) }}
 							</div>
 						</div>
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.duration, 'Liczba sztuk', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
-							<div class="controls alignRight">
-								{{ form_widget(form.duration) }}
-							</div>
-						</div>
-
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.duration, 'Forma sprzedaży', {'label_attr': {'class': 'control-label alignLeft'}}) }}
-
-							<div class="controls alignRight">
-								<select name="type">
-									<option value="1">Aukcja z licytacją</option>
-									<option value="2">Kup Teraz!</option>
-									<option value="3">Aukcja z licytacją lub Kup Teraz!</option>
-								</select>
-							</div>
-						</div>
-
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.duration, 'Jednostka produktu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
-
-							<div class="controls alignRight">
-								<select name="measures">
-									<option value="1">Sztuki</option>
-								</select>
-							</div>
-						</div>
-
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							{{ form_label(form.duration, 'Promocja produktu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+						<div class="control-group">
+							{{ form_label(form.promotions, 'Promocja produktu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
 								<div class="ez-checkbox">
-									<input type="checkbox" name="promotion" class="ez-hide" />
+									<input type="checkbox" id="promotion" class="ez-hide" />
 								</div>
 							</div>
 						</div>
 
 						<div class="show-promotion hide">
-
-							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.duration, 'Pogrubienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
-
-								<div class="controls alignRight">
-									<div class="ez-checkbox">
-										<input type="checkbox" name="bold" class="ez-hide" />
-									</div>
-								</div>
-							</div>
-
-							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.duration, 'Miniaturka', {'label_attr': {'class': 'control-label alignLeft'}}) }}
-
-								<div class="controls alignRight">
-									<div class="ez-checkbox">
-										<input type="checkbox" name="thumbnail" class="ez-hide" />
-									</div>
-								</div>
-							</div>
-
-							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.duration, 'Podświetlenie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
-
-								<div class="controls alignRight">
-									<div class="ez-checkbox">
-										<input type="checkbox" name="highlight" class="ez-hide" />
-									</div>
-								</div>
-							</div>
-
-							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.duration, 'Wyróżnienie', {'label_attr': {'class': 'control-label alignLeft'}}) }}
-
-								<div class="controls alignRight">
-									<div class="ez-checkbox">
-										<input type="checkbox" name="highlight" class="ez-hide" />
-									</div>
-								</div>
-							</div>
-
-							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.duration, 'Strona kategorii', {'label_attr': {'class': 'control-label alignLeft'}}) }}
-
-								<div class="controls alignRight">
-									<div class="ez-checkbox">
-										<input type="checkbox" name="category-page" class="ez-hide" />
-									</div>
-								</div>
-							</div>
-
-							<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-								{{ form_label(form.duration, 'Strona główna Allegro', {'label_attr': {'class': 'control-label alignLeft'}}) }}
-
-								<div class="controls alignRight">
-									<div class="ez-checkbox">
-										<input type="checkbox" name="homepage" class="ez-hide" />
-									</div>
-								</div>
-							</div>
-
+                            {{ form_row(form.promotions) }}
 						</div>
 
                         <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
@@ -238,27 +165,9 @@
 			{% if step == 4 %}
 			<div id="collapseFour" class="accordion-body collapse in">
 				<div class="accordion-inner">
-					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings') }}" method="post" {{ form_enctype(form) }}>
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							<label for="payment-odbior-osobisty">
-								<input type="checkbox" name="payments['odbior-osobisty]" id="payment-odbior-osobisty" />
-								Płatność przy odbiorze
-							</label>
-						</div>
+					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings_payment') }}" method="post" {{ form_enctype(form) }}>
 
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							<label for="payment-payu">
-								<input type="checkbox" name="payments['payu]" id="payment-payu" />
-								Płatność PayU
-							</label>
-						</div>
-
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							<label for="payment-transfer">
-								<input type="checkbox" name="payments['transfer]" id="payment-transfer" />
-								Wpłata na konto
-							</label>
-						</div>
+                        {{ form_row(form.payments) }}
 
                         <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
 
@@ -278,27 +187,9 @@
 			{% if step == 5 %}
 			<div id="collapseFive" class="accordion-body collapse in">
 				<div class="accordion-inner">
-					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings') }}" method="post" {{ form_enctype(form) }}>
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							<label for="payment-odbior-osobisty">
-								<input type="checkbox" name="shipping['own]" id="payment-odbior-osobisty" />
-								Odbiór osobisty
-							</label>
-						</div>
+					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings_delivery') }}" method="post" {{ form_enctype(form) }}>
 
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							<label for="payment-payu">
-								<input type="checkbox" name="shipping['courier]" id="payment-payu" />
-								Kurier
-							</label>
-						</div>
-
-						<div class="control-group{% if app.request.method == 'POST' %} error{% endif %}">
-							<label for="payment-payu">
-								<input type="checkbox" name="shipping['poczta]" id="payment-payu" />
-								Poczta polska
-							</label>
-						</div>
+                        {{ form_row(form.delivery) }}
 
                         <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
 

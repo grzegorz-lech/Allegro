@@ -3,6 +3,7 @@
 namespace Shoplo\AllegroBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Shoplo\AllegroBundle\Entity\Profile;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
 use Shoplo\AllegroBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
@@ -137,30 +138,44 @@ class SettingsController extends Controller
         $fields = $allegro->getSellFormFields();
 
         // Czas trwania
-        $durations = array_combine(
+        $preferredDurations = array();
+        $durations          = array_combine(
             explode('|', $fields[4]->{'sell-form-opts-values'}),
             explode('|', $fields[4]->{'sell-form-desc'})
         );
-        $durations = array_map(
+        $durations          = array_map(
             function ($value) {
                 return $value . ' dni';
             },
             $durations
         );
+        if (false !== $key = array_search('10 dni', $durations)) {
+            $preferredDurations[] = $key;
+        }
+
+        // Opcje dodatkowe
+        $promotions = array_combine(
+            explode('|', $fields[15]->{'sell-form-opts-values'}),
+            explode('|', $fields[15]->{'sell-form-desc'})
+        );
 
         $form = $this->createFormBuilder()
-            ->add('duration', 'choice', array('choices' => $durations))
+            ->add('duration', 'choice', array('choices' => $durations, 'preferred_choices' => $preferredDurations))
+            ->add('promotions', 'choice', array('choices' => $promotions, 'multiple' => true, 'expanded' => true))
             ->getForm();
 
         if ($request->isMethod('POST')) {
             $form->bind($request);
 
             if ($form->isValid()) {
+                $data               = $form->getData();
+                $data['promotions'] = array_sum($data['promotions']); // TODO: Symfony way
+
                 /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
                 $session = $this->get('session');
-                $session->set('default_profile', $form->getData());
+                $session->set('default_profile', array_merge($session->get('default_profile'), $data));
 
-
+                return $this->redirect($this->generateUrl('shoplo_allegro_settings_payment'));
             }
         }
 
@@ -169,6 +184,117 @@ class SettingsController extends Controller
             array(
                 'form' => $form->createView(),
                 'step' => 3,
+            )
+        );
+    }
+
+    /**
+     * @Secure(roles="ROLE_ADMIN")
+     */
+    public function paymentAction(Request $request)
+    {
+        /** @var $allegro Allegro */
+        $allegro = $this->get('allegro');
+        $user    = $this->getUser();
+        $allegro->login($user);
+        $fields = $allegro->getSellFormFields();
+
+        // Sposób płatności
+        $payments = array_combine(
+            explode('|', $fields[14]->{'sell-form-opts-values'}),
+            explode('|', $fields[14]->{'sell-form-desc'})
+        );
+        $payments = array_filter(
+            $payments,
+            function ($payment) {
+                return $payment !== '-';
+            }
+        );
+
+        $form = $this->createFormBuilder()
+            ->add('payments', 'choice', array('choices' => $payments, 'multiple' => true, 'expanded' => true))
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+
+            if ($form->isValid()) {
+                $data             = $form->getData();
+                $data['payments'] = array_sum($data['payments']); // TODO: Symfony way
+
+                /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
+                $session = $this->get('session');
+                $session->set('default_profile', array_merge($session->get('default_profile'), $data));
+
+                return $this->redirect($this->generateUrl('shoplo_allegro_settings_delivery'));
+            }
+        }
+
+        return $this->render(
+            'ShoploAllegroBundle::settings.html.twig',
+            array(
+                'form' => $form->createView(),
+                'step' => 4,
+            )
+        );
+    }
+
+    /**
+     * @Secure(roles="ROLE_ADMIN")
+     */
+    public function deliveryAction(Request $request)
+    {
+        /** @var $allegro Allegro */
+        $allegro = $this->get('allegro');
+        $user    = $this->getUser();
+        $allegro->login($user);
+        $fields = $allegro->getSellFormFields();
+
+        // Sposób płatności
+        $delivery = array_combine(
+            explode('|', $fields[35]->{'sell-form-opts-values'}),
+            explode('|', $fields[35]->{'sell-form-desc'})
+        );
+        $delivery = array_filter(
+            $delivery,
+            function ($d) {
+                return $d !== '-';
+            }
+        );
+
+        $form = $this->createFormBuilder()
+            ->add('delivery', 'choice', array('choices' => $delivery, 'multiple' => true, 'expanded' => true))
+            ->getForm();
+
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+
+            if ($form->isValid()) {
+                $data             = $form->getData();
+                $data['delivery'] = array_sum($data['delivery']); // TODO: Symfony way
+
+                /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
+                $session = $this->get('session');
+                $data    = array_merge($session->get('default_profile'), $data);
+                $em      = $this->getDoctrine()->getManager();
+                $profile = new Profile($data);
+
+                $profile
+                    ->setUserId($this->getUser()->getId())
+                    ->setName('Domyślny');
+
+                $em->persist($profile);
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+            }
+        }
+
+        return $this->render(
+            'ShoploAllegroBundle::settings.html.twig',
+            array(
+                'form' => $form->createView(),
+                'step' => 5,
             )
         );
     }
