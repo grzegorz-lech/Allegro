@@ -27,7 +27,7 @@ monolog:
             type:       swift_mailer
             from_email: sebastian@nexis.pl
             to_email:   sebastian@nexis.pl
-            subject:    [Allegro] Internal Server Error
+            subject:    "[Allegro] Internal Server Error"
             level:      debug
 
 assetic:
