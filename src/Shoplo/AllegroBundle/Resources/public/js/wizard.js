@@ -1,11 +1,23 @@
 $(function(){
     $('#dp').datepicker();
 
-
+    /* AUCTION PRICE */
     calculatePrice();
     $('#stock-quantity').keyup(calculatePrice);
     $('input.promotion').click(calculatePrice);
     $('select.product-category').change(calculatePrice);
+    $('#all-stock').click(function(){
+        if ( $(this).is(':checked') ) {
+            $('#stock-quantity').attr('disabled', true);
+        }
+        else {
+            $('#stock-quantity').attr('disabled', false);
+        }
+        calculatePrice();
+    });
+
+    /* AUCTION PROFILE */
+    $('#profile').change( changeProfile );
 
     /* FLOATING SIDEBAR */
     if ($('.sidebar').length) {
@@ -63,6 +75,16 @@ function calculatePrice()
         $('li#product'+$(this).data('product-id')).find('.price').text( $(this).find('option:selected').data('price') );
     });
 
+    $('ul li.variant').each(function(){
+        if( $('#all-stock').is(':checked') ) {
+            var quantity = $(this).data('quantity');
+        }
+        else {
+            var quantity = $(this).data('quantity') < itemQuantity ? $(this).data('quantity') : itemQuantity;
+        }
+        $(this).find('.quantity').text(quantity);
+    });
+
     var sum = 0;
     $('.summaryBox .unstyled li').each(function(){
         sum += (parseInt($(this).find('.quantity').text()) * parseFloat($(this).find('.price').text()));
@@ -71,4 +93,14 @@ function calculatePrice()
 
 
     $('.summaryBox .price-all').text( parseFloat(sum).toFixed(2) );
+}
+
+function changeProfile()
+{
+    if ( $('select[name=profile] option:selected').val() <= 0 ) {
+        $('.profile').show();
+    }
+    else {
+        $('.profile').hide();
+    }
 }

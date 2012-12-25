@@ -127,7 +127,7 @@ body {
 
 /* Actions */
 a.action { margin-left:5px; margin-right:0 !important; width:13px; height:13px; }
-a.action .ico { width:13px; height:13px; display:inline-block; background: url(../img/panel/action_icons_sprite.png) no-repeat !important; }
+a.action .ico { width:13px; height:13px; display:inline-block; background: url(../img/action_icons_sprite.png) no-repeat !important; }
 a.actionDelete .ico { background-position: 0 0px !important; }
 a.actionEdit .ico { background-position: 0 -13px !important; }
 a.actionReorder .ico { background-position: 0 -26px !important; }
@@ -270,21 +270,41 @@ a.actionDrag .ico { background-position: 0 -39px !important; }
 }
 ul.inline {
     list-style: none;
+    margin-left: 0;
 }
 ul.inline li {
     float: left;
     margin-right: 5px;
 }
-ul.inline li .mask {
+ul.inline.medium li {
+    height: 150px;
+    margin-bottom: 10px;
+}
+ul.inline.medium li .mask {
     width: 140px;
     height: 140px;
     line-height: 140px;
     vertical-align: middle;
     display: inline-block;
 }
+ul.inline.mini li {
+    height: 60px;
+    margin-bottom: 10px;
+}
+ul.inline.mini li .mask {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+    display: inline-block;
+}
 ul.inline li a:hover {
     text-decoration:none;
 }
+ul.inline li:hover a {
+    display: inline-block;
+}
+
 .summaryBox.sidebar ul li {
     font-size: 12px;
 }

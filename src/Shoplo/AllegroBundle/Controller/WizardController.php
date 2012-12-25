@@ -146,6 +146,7 @@ class WizardController extends Controller
                 'ids'      => $ids,
                 'variants' => $variants,
 				'variants_count'	=>	count($variants),
+				'products' 			=> $products,
 				'total_price'		=>	sprintf("%0.2f", $totalPrice),
             )
         );
