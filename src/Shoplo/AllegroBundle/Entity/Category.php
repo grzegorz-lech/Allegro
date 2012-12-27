@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Category
  *
- * @ORM\Table()
+ * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="shop_shoplo", columns={"shop_id", "shoplo_id"})}))
  * @ORM\Entity(repositoryClass="Shoplo\AllegroBundle\Entity\CategoryRepository")
  */
 class Category
@@ -21,12 +21,12 @@ class Category
      */
     private $id;
 
-	/**
-	 * @var integer
-	 *
-	 * @ORM\Column(name="shop_id", type="integer")
-	 */
-	private $shop_id;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="shop_id", type="integer")
+     */
+    private $shop_id;
 
     /**
      * @var integer
@@ -84,52 +84,51 @@ class Category
      */
     private $shoplo_position;
 
-
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
     }
 
-	/**
-	 * @param int $shop_id
-	 */
-	public function setShopId($shopId)
-	{
-		$this->shop_id = $shopId;
+    /**
+     * @param int $shop_id
+     */
+    public function setShopId($shopId)
+    {
+        $this->shop_id = $shopId;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getShopId()
-	{
-		return $this->shop_id;
-	}
+    /**
+     * @return int
+     */
+    public function getShopId()
+    {
+        return $this->shop_id;
+    }
 
     /**
      * Set allegro_id
      *
-     * @param integer $allegroId
+     * @param  integer  $allegroId
      * @return Category
      */
     public function setAllegroId($allegroId)
     {
         $this->allegro_id = $allegroId;
-    
+
         return $this;
     }
 
     /**
      * Get allegro_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getAllegroId()
     {
@@ -139,20 +138,20 @@ class Category
     /**
      * Set allegro_name
      *
-     * @param string $allegroName
+     * @param  string   $allegroName
      * @return Category
      */
     public function setAllegroName($allegroName)
     {
         $this->allegro_name = $allegroName;
-    
+
         return $this;
     }
 
     /**
      * Get allegro_name
      *
-     * @return string 
+     * @return string
      */
     public function getAllegroName()
     {
@@ -162,20 +161,20 @@ class Category
     /**
      * Set allegro_parent
      *
-     * @param integer $allegroParent
+     * @param  integer  $allegroParent
      * @return Category
      */
     public function setAllegroParent($allegroParent)
     {
         $this->allegro_parent = $allegroParent;
-    
+
         return $this;
     }
 
     /**
      * Get allegro_parent
      *
-     * @return integer 
+     * @return integer
      */
     public function getAllegroParent()
     {
@@ -185,20 +184,20 @@ class Category
     /**
      * Set allegro_position
      *
-     * @param integer $allegroPosition
+     * @param  integer  $allegroPosition
      * @return Category
      */
     public function setAllegroPosition($allegroPosition)
     {
         $this->allegro_position = $allegroPosition;
-    
+
         return $this;
     }
 
     /**
      * Get allegro_position
      *
-     * @return integer 
+     * @return integer
      */
     public function getAllegroPosition()
     {
@@ -208,20 +207,20 @@ class Category
     /**
      * Set shoplo_id
      *
-     * @param integer $shoploId
+     * @param  integer  $shoploId
      * @return Category
      */
     public function setShoploId($shoploId)
     {
         $this->shoplo_id = $shoploId;
-    
+
         return $this;
     }
 
     /**
      * Get shoplo_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getShoploId()
     {
@@ -231,20 +230,20 @@ class Category
     /**
      * Set shoplo_name
      *
-     * @param string $shoploName
+     * @param  string   $shoploName
      * @return Category
      */
     public function setShoploName($shoploName)
     {
         $this->shoplo_name = $shoploName;
-    
+
         return $this;
     }
 
     /**
      * Get shoplo_name
      *
-     * @return string 
+     * @return string
      */
     public function getShoploName()
     {
@@ -254,20 +253,20 @@ class Category
     /**
      * Set shoplo_parent
      *
-     * @param integer $shoploParent
+     * @param  integer  $shoploParent
      * @return Category
      */
     public function setShoploParent($shoploParent)
     {
         $this->shoplo_parent = $shoploParent;
-    
+
         return $this;
     }
 
     /**
      * Get shoplo_parent
      *
-     * @return integer 
+     * @return integer
      */
     public function getShoploParent()
     {
@@ -277,20 +276,20 @@ class Category
     /**
      * Set shoplo_position
      *
-     * @param integer $shoploPosition
+     * @param  integer  $shoploPosition
      * @return Category
      */
     public function setShoploPosition($shoploPosition)
     {
         $this->shoplo_position = $shoploPosition;
-    
+
         return $this;
     }
 
     /**
      * Get shoplo_position
      *
-     * @return integer 
+     * @return integer
      */
     public function getShoploPosition()
     {

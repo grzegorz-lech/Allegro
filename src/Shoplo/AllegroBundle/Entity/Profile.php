@@ -44,6 +44,13 @@ class Profile
     private $state;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="country", type="integer")
+     */
+    private $country;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=255)
@@ -86,7 +93,7 @@ class Profile
     private $delivery;
 
     /**
-     * @param array $data
+     * @param  array                     $data
      * @throws \InvalidArgumentException
      * @return Profile
      */
@@ -107,7 +114,7 @@ class Profile
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -117,7 +124,7 @@ class Profile
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string  $name
      * @return Profile
      */
     public function setName($name)
@@ -140,20 +147,20 @@ class Profile
     /**
      * Set user_id
      *
-     * @param integer $userId
+     * @param  integer $userId
      * @return Profile
      */
     public function setUserId($userId)
     {
         $this->user_id = $userId;
-    
+
         return $this;
     }
 
     /**
      * Get user_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getUserId()
     {
@@ -163,20 +170,20 @@ class Profile
     /**
      * Set state
      *
-     * @param integer $state
+     * @param  integer $state
      * @return Profile
      */
     public function setState($state)
     {
         $this->state = $state;
-    
+
         return $this;
     }
 
     /**
      * Get state
      *
-     * @return integer 
+     * @return integer
      */
     public function getState()
     {
@@ -184,22 +191,45 @@ class Profile
     }
 
     /**
+     * Set country
+     *
+     * @param  integer $country
+     * @return Profile
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return integer
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
      * Set city
      *
-     * @param string $city
+     * @param  string  $city
      * @return Profile
      */
     public function setCity($city)
     {
         $this->city = $city;
-    
+
         return $this;
     }
 
     /**
      * Get city
      *
-     * @return string 
+     * @return string
      */
     public function getCity()
     {
@@ -209,20 +239,20 @@ class Profile
     /**
      * Set zipcode
      *
-     * @param string $zipcode
+     * @param  string  $zipcode
      * @return Profile
      */
     public function setZipcode($zipcode)
     {
         $this->zipcode = $zipcode;
-    
+
         return $this;
     }
 
     /**
      * Get zipcode
      *
-     * @return string 
+     * @return string
      */
     public function getZipcode()
     {
@@ -232,20 +262,20 @@ class Profile
     /**
      * Set duration
      *
-     * @param integer $duration
+     * @param  integer $duration
      * @return Profile
      */
     public function setDuration($duration)
     {
         $this->duration = $duration;
-    
+
         return $this;
     }
 
     /**
      * Get duration
      *
-     * @return integer 
+     * @return integer
      */
     public function getDuration()
     {
@@ -255,20 +285,20 @@ class Profile
     /**
      * Set promotions
      *
-     * @param integer $promotions
+     * @param  integer $promotions
      * @return Profile
      */
     public function setPromotions($promotions)
     {
         $this->promotions = $promotions;
-    
+
         return $this;
     }
 
     /**
      * Get promotions
      *
-     * @return integer 
+     * @return integer
      */
     public function getPromotions()
     {
@@ -278,20 +308,20 @@ class Profile
     /**
      * Set payments
      *
-     * @param integer $payments
+     * @param  integer $payments
      * @return Profile
      */
     public function setPayments($payments)
     {
         $this->payments = $payments;
-    
+
         return $this;
     }
 
     /**
      * Get payments
      *
-     * @return integer 
+     * @return integer
      */
     public function getPayments()
     {
@@ -301,20 +331,20 @@ class Profile
     /**
      * Set delivery
      *
-     * @param integer $delivery
+     * @param  integer $delivery
      * @return Profile
      */
     public function setDelivery($delivery)
     {
         $this->delivery = $delivery;
-    
+
         return $this;
     }
 
     /**
      * Get delivery
      *
-     * @return integer 
+     * @return integer
      */
     public function getDelivery()
     {

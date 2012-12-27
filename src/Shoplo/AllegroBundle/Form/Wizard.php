@@ -3,13 +3,14 @@
 namespace Shoplo\AllegroBundle\Form;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Shoplo\AllegroBundle\Entity\Profile;
 
 class Wizard
 {
     /**
-     * @Assert\NotNull()
+     * @Assert\NotBlank()
      */
-    protected $layout;
+    protected $title;
 
     /**
      * @Assert\NotBlank()
@@ -17,19 +18,19 @@ class Wizard
     protected $description;
 
     /**
-     * @param int $layout
+     * @param string $title
      */
-    public function setLayout($layout)
+    public function setTitle($title)
     {
-        $this->layout = $layout;
+        $this->title = $title;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getLayout()
+    public function getTitle()
     {
-        return $this->layout;
+        return $this->title;
     }
 
     /**
@@ -48,7 +49,7 @@ class Wizard
         return $this->description;
     }
 
-    public function export(array $product, array &$variant)
+    public function export(Profile $profile, array $product, array &$variant, $categoryId)
     {
         $fields = array();
 
@@ -72,22 +73,23 @@ class Wizard
             $variant['sku'],
             number_format($variant['price'] / 100, 2, ',', ''),
         );
+        $title       = str_ireplace($search, $replace, $this->getTitle());
         $description = str_ireplace($search, $replace, $this->getDescription());
 
-        $fields[] = $this->createField(1, $variant['product_name']); // TODO: Tytuł
-        $fields[] = $this->createField(2, 1874); // TODO: Kategoria
-        $fields[] = $this->createField(4, 0); // TODO: Czas trwania aukcji (0 => 3d)
-        $fields[] = $this->createField(5, (int)$variant['quantity']); // TODO: Liczba sztuk
-        $fields[] = $this->createField(8, round($variant['price'] / 100, 2)); // TODO: Cena "Kup Teraz"
-        $fields[] = $this->createField(9, 228); // TODO: Kraj
-        $fields[] = $this->createField(10, 213); // TODO: Województwo
-        $fields[] = $this->createField(11, 'Warszawa'); // TODO: Miasto
-        $fields[] = $this->createField(12, 1); // TODO: Transport
-        $fields[] = $this->createField(13, 1); // TODO: Opcje dot. transportu (2^x)
-        $fields[] = $this->createField(14, 1); // TODO: Formy płatności (2^x)
-        $fields[] = $this->createField(32, '02-495'); // TODO: Kod pocztowy
+        $fields[] = $this->createField(1, $title);
+        $fields[] = $this->createField(2, (int) $categoryId);
+        $fields[] = $this->createField(4, $profile->getDuration());
+        $fields[] = $this->createField(5, (int) $variant['quantity']);
+        $fields[] = $this->createField(8, round($variant['price'] / 100, 2));
+        $fields[] = $this->createField(9, $profile->getCountry());
+        $fields[] = $this->createField(10, $profile->getState());
+        $fields[] = $this->createField(11, $profile->getCity());
+        $fields[] = $this->createField(12, 1);
+        $fields[] = $this->createField(13, $profile->getDelivery());
+        $fields[] = $this->createField(14, $profile->getPayments());
+        $fields[] = $this->createField(32, $profile->getZipcode());
         $fields[] = $this->createField(24, $description);
-        $fields[] = $this->createField(29, 0); // TODO: Forma sprzedaży (Aukcja lub Kup Teraz | Sklep)
+        $fields[] = $this->createField(29, 0);
         $fields[] = $this->createField(44, 16.10); // TODO: Kurier
 
         // Zdjęcia
@@ -108,9 +110,9 @@ class Wizard
     }
 
     /**
-     * @param int $id
-     * @param mixed $value
-     * @param bool $image
+     * @param  int   $id
+     * @param  mixed $value
+     * @param  bool  $image
      * @return array
      */
     private function createField($id, $value, $image = false)

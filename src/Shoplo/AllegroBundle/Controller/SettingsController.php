@@ -110,8 +110,10 @@ class SettingsController extends Controller
 
             if ($form->isValid()) {
                 /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
-                $session = $this->get('session');
-                $session->set('default_profile', $form->getData());
+                $session         = $this->get('session');
+                $data            = $form->getData();
+                $data['country'] = $this->getUser()->getCountry();
+                $session->set('default_profile', $data);
 
                 return $this->redirect($this->generateUrl('shoplo_allegro_settings_auction'));
             }
@@ -302,14 +304,14 @@ class SettingsController extends Controller
     /**
      * @Secure(roles="ROLE_ADMIN")
      */
-    public function profileAction()
+    public function mappingAction(Request $request)
     {
-        $user = $this->getUser();
-
+        $user    = $this->getUser();
         $allegro = $this->container->get('allegro');
         $allegro->login($user);
 
-        $shoploCategories  = $this->container->get('shoplo')->get('categories');
+        $shoplo            = $this->get('shoplo');
+        $shoploCategories  = $shoplo->get('categories');
         $allegroCategories = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:CategoryAllegro')
             ->findBy(
@@ -317,82 +319,71 @@ class SettingsController extends Controller
             array('position' => 'ASC')
         );
 
+        // TODO: Pobranie i wyświetlenie już zmapowanych kategorii
+
+        $form = $this->createFormBuilder()
+            ->add(
+            'categories',
+            'collection',
+            array(
+                'type'      => 'integer',
+                'allow_add' => true,
+            )
+        )
+            ->getForm();
 
         if ($this->getRequest()->isMethod('POST')) {
-            $params = $this->getRequest()->request->all();
+            $form->bind($request);
 
+            if ($form->isValid()) {
+                $data                 = $form->getData();
+                $allegroCategories    = $this->getDoctrine()
+                    ->getRepository('ShoploAllegroBundle:CategoryAllegro')
+                    ->findBy(array('id' => $data['categories']));
+                $allegroCategoriesMap = array();
+                foreach ($allegroCategories as $ac) {
+                    /** @var $ac CategoryAllegro */
+                    $allegroCategoriesMap[$ac->getId()] = $ac;
+                }
 
-            $shoplo = $this->container->get('shoplo');
-            $shop   = $shoplo->get('shop');
+                $shop  = $shoplo->get('shop');
+                $em    = $this->getDoctrine()->getManager();
+                $query = $em->createQuery(
+                    'DELETE FROM ShoploAllegroBundle:Category c WHERE c.shop_id = ' . $shop['id']
+                );
+                $query->execute();
 
+                foreach ($shoploCategories as $sc) {
+                    /** @var $allegroCategory CategoryAllegro */
+                    $allegroCategory = $allegroCategoriesMap[$data['categories'][$sc['id']]];
+                    $c               = new Category();
+                    $c->setAllegroId($allegroCategory->getId());
+                    $c->setAllegroName($allegroCategory->getName());
+                    $c->setAllegroParent($allegroCategory->getParent()->getId());
+                    $c->setAllegroPosition($allegroCategory->getPosition());
+                    $c->setShopId($shop['id']);
+                    $c->setShoploId($sc['id']);
+                    $c->setShoploName($sc['name']);
+                    $c->setShoploParent($sc['parent']);
+                    $c->setShoploPosition($sc['pos']);
 
-            $allegroCategoryIds   = array_values($params['map']);
-            $allegroCategories    = $this->getDoctrine()
-                ->getRepository('ShoploAllegroBundle:CategoryAllegro')
-                ->findBy(
-                array('id' => $allegroCategoryIds)
-            );
-            $allegroCategoriesMap = array();
-            foreach ($allegroCategories as $ac) {
-                $allegroCategoriesMap[$ac->getId()] = $ac;
+                    $em->persist($c);
+                }
+
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
             }
-
-
-            $em = $this->getDoctrine()->getManager();
-            foreach ($shoploCategories as $sc) {
-                $allegroCategory = $allegroCategoriesMap[$params['map'][$sc['id']]];
-                $c               = new Category();
-                $c->setAllegroId($allegroCategory->getId());
-                $c->setAllegroName($allegroCategory->getName());
-                $c->setAllegroParent($allegroCategory->getParent());
-                $c->setAllegroPosition($allegroCategory->getPosition());
-                $c->setShopId($shop['id']);
-                $c->setShoploId($sc['id']);
-                $c->setShoploName($sc['name']);
-                $c->setShoploParent($sc['parent']);
-                $c->setShoploPosition($sc['pos']);
-
-                $em->persist($c);
-            }
-            $em->flush();
-
-            // TODO: set success message to user
-
-            return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
         }
-
-//		$em = $this->getDoctrine()->getManager();
-//		foreach ( $allegroCategories as $a )
-//		{
-//			$em->remove($a);
-//		}
-//		$em->flush();
-//
-//		$allegroCategories = $allegro->getCategories();
-//		foreach ( $allegroCategories['cats-list'] as $a )
-//		{
-//			$cat = (array) $a;
-//
-//			$c = new CategoryAllegro();
-//			$c->setId($cat['cat-id']);
-//			$c->setName($cat['cat-name']);
-//			$c->setParent($cat['cat-parent']);
-//			$c->setPosition($cat['cat-position']);
-//
-//			$em->persist($c);
-//		}
-//		$em->flush();
-
 
         return $this->render(
             'ShoploAllegroBundle::categories.html.twig',
             array(
+                'form'               => $form->createView(),
                 'shoplo_categories'  => $shoploCategories,
                 'allegro_categories' => $allegroCategories,
             )
         );
-
-        //return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
     }
 
     public function getCategoryChildrenAction($id)

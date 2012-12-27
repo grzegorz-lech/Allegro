@@ -6,7 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand as Command;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Sensio\Bundle\GeneratorBundle\Command\Helper\DialogHelper;
 use Doctrine\ORM\EntityManager;
 use Shoplo\AllegroBundle\Entity\CategoryAllegro;

@@ -124,7 +124,7 @@ class Allegro extends \SoapClient
         $version = 0;
 
         foreach ($system as $status) {
-            $status = (array)$status;
+            $status = (array) $status;
             if ($this->getCountry() == $status['country-id']) {
                 $version = $status['ver-key'];
                 break;
@@ -185,7 +185,6 @@ class Allegro extends \SoapClient
     {
         return $this->session['session-handle-part'];
     }
-
 
     public function getCategories($offset = 0, $limit = 50)
     {
@@ -269,11 +268,11 @@ class Allegro extends \SoapClient
     {
         try {
             // TODO: zapis danych sprzedazowych do bazy
-            $result = (array)$this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
+            $result = (array) $this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
         } catch (\SoapFault $sf) {
             if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
                 if ($this->doLogin()) {
-                    $result = (array)$this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
+                    $result = (array) $this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
                 } else {
                     return false;
                 }
@@ -284,11 +283,11 @@ class Allegro extends \SoapClient
 
         $auctions = array();
         foreach ($result as $buyersInfo) {
-            $buyersInfo = (array)$buyersInfo;
+            $buyersInfo = (array) $buyersInfo;
             $buyers     = array();
             foreach ($buyersInfo['users-post-buy-data'] as $buyer) {
-                $buyer                                  = (array)$buyer;
-                $buyer['user-data']                     = (array)$buyer['user-data'];
+                $buyer                                  = (array) $buyer;
+                $buyer['user-data']                     = (array) $buyer['user-data'];
                 $buyers[$buyer['user-data']['user-id']] = $buyer;
             }
             $auctions[] = array(
@@ -381,42 +380,42 @@ class Allegro extends \SoapClient
         return $output;
     }
 
-	/**
-	 * Oblicza cene za wystawienie przedmiotu w zaleznosci od tego w jakiej kategorii znajduje sie przedmiot
-	 * @param $categoryPath - cala galaz kategorii
-	 * @param $price
-	 * @param $quantity
-	 * @return string provision
-	 */
-	public function calculateAuctionPrice($price, $categoryPath, $quantity=1)
-	{
-		# TODO: przypisać id kategorii z produkcji
-		$categoriesMedia = array(
-			'1'		=>	'Książki i Komiksy',
-			'2'		=>	'Płyty 3D',
-			'3'		=>	'Płyty Blue-ray',
-			'4'		=>	'Płyty DVD',
-			'5'		=>	'Płyty VCD',
-		);
-		$common = array_intersect($categoryPath, $categoriesMedia);
-		switch ( $price )
-		{
-			case $price < 9.99:
-				$provision = !empty($common) ? 0.05 : 0.08;
-				break;
-			case $price < 24.99:
-				$provision = !empty($common) ? 0.08 : 0.13;
-				break;
-			case $price < 49.99:
-				$provision = !empty($common) ? 0.10 : 0.25;
-				break;
-			case $price < 249.99:
-				$provision = !empty($common) ? 0.15 : 0.50;
-				break;
-			default:
-				$provision = !empty($common) ? 0.20 : 1.00;
-				break;
-		}
-		return bcmul($provision, $quantity, 2);
-	}
+    /**
+     * Oblicza cene za wystawienie przedmiotu w zaleznosci od tego w jakiej kategorii znajduje sie przedmiot
+     * @param $categoryPath - cala galaz kategorii
+     * @param $price
+     * @param $quantity
+     * @return string provision
+     */
+    public function calculateAuctionPrice($price, $categoryPath, $quantity=1)
+    {
+        # TODO: przypisać id kategorii z produkcji
+        $categoriesMedia = array(
+            '1'		=>	'Książki i Komiksy',
+            '2'		=>	'Płyty 3D',
+            '3'		=>	'Płyty Blue-ray',
+            '4'		=>	'Płyty DVD',
+            '5'		=>	'Płyty VCD',
+        );
+        $common = array_intersect($categoryPath, $categoriesMedia);
+        switch ($price) {
+            case $price < 9.99:
+                $provision = !empty($common) ? 0.05 : 0.08;
+                break;
+            case $price < 24.99:
+                $provision = !empty($common) ? 0.08 : 0.13;
+                break;
+            case $price < 49.99:
+                $provision = !empty($common) ? 0.10 : 0.25;
+                break;
+            case $price < 249.99:
+                $provision = !empty($common) ? 0.15 : 0.50;
+                break;
+            default:
+                $provision = !empty($common) ? 0.20 : 1.00;
+                break;
+        }
+
+        return bcmul($provision, $quantity, 2);
+    }
 }

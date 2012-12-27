@@ -115,7 +115,7 @@ class ImportCommand extends Command
     }
 
     /**
-     * @param  User $user
+     * @param  User                    $user
      * @throws EntityNotFoundException
      * @return Shoplo
      */

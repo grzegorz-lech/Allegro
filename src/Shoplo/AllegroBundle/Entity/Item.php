@@ -56,7 +56,7 @@ class Item
     private $end_at;
 
     /**
-     * @param integer $id
+     * @param  integer $id
      * @return Item
      */
     public function setId($id)

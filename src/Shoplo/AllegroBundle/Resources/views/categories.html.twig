@@ -20,7 +20,7 @@
 			Każda kategoria z Shoplo musi być przypisana do kategorii z Allegro.
 		</div>
 
-		<form action="" method="post" class="form-inline map-allegro">
+		<form action="{{ path('shoplo_allegro_settings_mapping') }}" class="form-inline map-allegro" method="post" {{ form_enctype(form) }}>
 			<div class="control-group clear">
 				<label class="span2">Kategorie Shoplo</label>
 				<label>Kategorie Allegro</label>
@@ -30,7 +30,7 @@
 				<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
 				<input type="hidden" name="map[{{category.id}}]" value="0" class="map" />
 
-				<select class="allegro" id="allegro-{{category.id}}" name="allegro[{{category.id}}]" class="span2">
+				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2">
 					<option value="0">Wybierz kategorię</option>
 					{% for category in allegro_categories %}
 					<option value="{{category.id}}">{{category.name}}</option>
@@ -38,10 +38,15 @@
 				</select>
 			</div>
 			{% endfor %}
+            {% do form.categories.setRendered %}
+
 			<p>
 				<input type="submit" value="Zapisz" class="btn btn-primary" />
-				<a href="" class="btn btn-link">Anuluj</a>
 			</p>
+
+            {{ form_row(form.categories) }}
+
+            {{ form_rest(form) }}
 		</form>
 
 	</div>

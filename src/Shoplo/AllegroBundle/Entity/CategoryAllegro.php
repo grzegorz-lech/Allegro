@@ -64,7 +64,7 @@ class CategoryAllegro
     /**
      * Set id
      *
-     * @param integer $id
+     * @param  integer         $id
      * @return CategoryAllegro
      */
     public function setId($id)
@@ -87,7 +87,7 @@ class CategoryAllegro
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string          $name
      * @return CategoryAllegro
      */
     public function setName($name)
@@ -110,7 +110,7 @@ class CategoryAllegro
     /**
      * Set parent
      *
-     * @param CategoryAllegro $parent
+     * @param  CategoryAllegro $parent
      * @return CategoryAllegro
      */
     public function setParent(CategoryAllegro $parent)
@@ -133,7 +133,7 @@ class CategoryAllegro
     /**
      * Set position
      *
-     * @param integer $position
+     * @param  integer         $position
      * @return CategoryAllegro
      */
     public function setPosition($position)
@@ -156,7 +156,7 @@ class CategoryAllegro
     /**
      * Set country_id
      *
-     * @param integer $countryId
+     * @param  integer         $countryId
      * @return CategoryAllegro
      */
     public function setCountryId($countryId)

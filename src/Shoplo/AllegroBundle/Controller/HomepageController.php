@@ -19,12 +19,12 @@ class HomepageController extends Controller
             return $this->redirect($this->generateUrl('shoplo_allegro_wizard', array('product' => $ids)));
         }
 
-		$items = $this->getDoctrine()
-			->getRepository('ShoploAllegroBundle:Item')
-			->findAll(
-			array(),
-			array('id' => 'DESC')
-		);
+        $items = $this->getDoctrine()
+            ->getRepository('ShoploAllegroBundle:Item')
+            ->findAll(
+            array(),
+            array('id' => 'DESC')
+        );
 
         return $this->render('ShoploAllegroBundle::homepage.html.twig', array('items' => $items));
     }
@@ -40,16 +40,16 @@ class HomepageController extends Controller
         return $this->render('ShoploAllegroBundle::footer.html.twig', array('shop' => $shop));
     }
 
-	/**
-	 * @Secure(roles="ROLE_USER")
-	 */
-	public function navbarAction()
-	{
-		$shoplo = $this->container->get('shoplo');
-		$shop   = $shoplo->get('shop');
+    /**
+     * @Secure(roles="ROLE_USER")
+     */
+    public function navbarAction()
+    {
+        $shoplo = $this->container->get('shoplo');
+        $shop   = $shoplo->get('shop');
 
-		return $this->render('ShoploAllegroBundle::navbar.html.twig', array('shop' => $shop));
-	}
+        return $this->render('ShoploAllegroBundle::navbar.html.twig', array('shop' => $shop));
+    }
 
     public function loginAction()
     {

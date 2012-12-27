@@ -35,9 +35,9 @@ shoplo_allegro_settings_delivery:
     pattern:  /ustawienia/dostawa
     defaults: { _controller: ShoploAllegroBundle:Settings:delivery }
 
-shoplo_allegro_settings_profile:
-    pattern:  /ustawienia/profil
-    defaults: { _controller: ShoploAllegroBundle:Settings:profile }
+shoplo_allegro_settings_mapping:
+    pattern:  /ustawienia/kategorie
+    defaults: { _controller: ShoploAllegroBundle:Settings:mapping }
 
 shoplo_allegro_get_category_path:
     pattern:  /allegro/kategoria/{id}.json
