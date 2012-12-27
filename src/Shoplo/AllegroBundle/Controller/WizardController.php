@@ -19,7 +19,7 @@ class WizardController extends Controller
     {
         $ids = $request->query->get('product', array());
         $ids = !is_array($ids) ? explode(',', $ids) : $ids;
-        if (!is_array($ids)) {
+        if (empty($ids)) {
             throw $this->createNotFoundException('Product IDs missing');
         }
 
