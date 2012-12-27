@@ -99,7 +99,7 @@
 							{% for variant in variants %}
 								<li>
 									<span class="mask">
-										<img src="http://src.sencha.io/jpg100/50/50/{{ variant.thumbnail }}" class="img-rounded" rel="popover"
+										<img src="http://src.sencha.io/50/50/{{ variant.thumbnail }}" class="img-rounded" rel="popover"
 											 data-content="{% for category in variant.categories %}{{ category.title }}{{ "<br>"|e }}{% endfor %}"
 											 data-original-title="{{ variant.product_name }}">
 									</span>
@@ -388,7 +388,7 @@
 									{% for image in product.images %}
 										<li>
 											<span class="mask">
-												<img src="http://src.sencha.io/jpg100/140/140/{{ image.src}}" class="img-rounded" rel="popover">
+												<img src="http://src.sencha.io/140/140/{{ image.src}}" class="img-rounded" rel="popover">
 											</span>
 
 											<p class="alignCenter">
