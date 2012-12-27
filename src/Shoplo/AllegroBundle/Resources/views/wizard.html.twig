@@ -466,7 +466,7 @@
 						Razem
 					</div>
 					<div class="span5 alignRight">
-						<span class="price-all">{{ total_price }}</span> zł
+						<span class="price-all">{{ total_price|number_format(2, '.', ',') }}</span> zł
 					</div>
 				</div>
 			</div>

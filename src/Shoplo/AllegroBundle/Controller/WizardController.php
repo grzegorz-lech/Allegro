@@ -65,7 +65,7 @@ class WizardController extends Controller
         // Informacje o produktach
 		$allegro  = $this->get('allegro');
         $shoplo   = $this->container->get('shoplo');
-        $variants = array();
+        $variants = $products = array();
 		$totalPrice = 0;
         foreach ($ids as $id) {
             $product    = $shoplo->get('products', $id);
@@ -145,9 +145,8 @@ class WizardController extends Controller
                 'form'     => $form->createView(),
                 'ids'      => $ids,
                 'variants' => $variants,
-				'variants_count'	=>	count($variants),
 				'products' 			=> $products,
-				'total_price'		=>	sprintf("%0.2f", $totalPrice),
+				'total_price'		=>	$totalPrice,
             )
         );
     }
