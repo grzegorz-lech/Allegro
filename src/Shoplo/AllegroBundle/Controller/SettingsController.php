@@ -311,7 +311,8 @@ class SettingsController extends Controller
         $allegro->login($user);
 
         $shoplo            = $this->get('shoplo');
-        $shoploCategories  = $shoplo->get('categories');
+		$count = $shoplo->get('categories/count');
+		$shoploCategories  = $shoplo->get('categories', null, array('limit'=>$count));
         $allegroCategories = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:CategoryAllegro')
             ->findBy(

@@ -24,7 +24,7 @@ class Shoplo extends \OAuth
      * @return array
      * @throws \OAuthException
      */
-    public function get($uri, $id = null)
+    public function get($uri, $id = null, $data=array())
     {
         $url = sprintf('%s/%s', self::GATEWAY, $uri);
 
@@ -32,7 +32,7 @@ class Shoplo extends \OAuth
             $url .= '/' . $id;
         }
 
-        $this->fetch($url);
+        $this->fetch($url, $data);
         $json = $this->getLastResponse();
         $data = json_decode($json, true);
 
