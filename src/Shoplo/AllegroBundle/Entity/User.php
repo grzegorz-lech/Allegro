@@ -107,7 +107,7 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", unique=true, length=16, nullable=true)
+     * @ORM\Column(name="username", type="string", length=16, nullable=true)
      *
      * @Assert\NotBlank()
      */
