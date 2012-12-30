@@ -90,7 +90,7 @@
 	<div class="container-fluid">
 		<div class="row-fluid content">
 			<div class="span12">
-				<form action="{{ path('shoplo_allegro_wizard', {product: ids}) }}" method="post" {{ form_enctype(form) }}>
+				<form action="{{ path('shoplo_allegro_wizard', {product: ids}) }}#kategorie" method="post" {{ form_enctype(form) }}>
 					<div class="box">
 						<h3>Wystaw produkty na Allegro</h3>
 
@@ -417,7 +417,7 @@
                     #}
 
 					<div class="box">
-						<h3>Wystaw produkty w kategorii</h3>
+						<h3 id="kategorie">Wystaw produkty w kategorii</h3>
 
 						{% for variant in variants %}
 							<div class="form-horizontal">
@@ -429,11 +429,33 @@
 									<div class="controls">
 										<select name="category[{{variant.id}}]" class="product-category" data-variant-id="{{variant.id}}">
 											{% for category in variant.categories %}
-											<option value="{{category.getAllegroId()}}">{{ category.getAllegroName() }}</option>
+											<option value="{{category.getAllegroId()}}" {% if app.request.get('category') and attribute(app.request.get('category'), variant.id) == category.getAllegroId() %} selected="selected"{% endif %}>
+                                                {{ category.getAllegroName() }}
+                                            </option>
 											{% endfor %}
 										</select>
 									</div>
 								</div>
+                                {% if attribute(app.request.get('category'), variant.id) is defined %}
+                                    {% if attribute(app.request.get('category'), variant.id) is defined %}
+                                        {% if attribute(extras, attribute(app.request.get('category'), variant.id)) is defined %}
+                                            {% for field in attribute(extras, attribute(app.request.get('category'), variant.id)) %}
+                                                <div class="control-group">
+                                                    <label class="control-label span5" title="{{ field['title'] }}">
+                                                        {{ field['label'] }}:&nbsp;&nbsp;
+                                                    </label>
+                                                    <div class="controls">
+                                                        <select name="extras[{{ variant.id }}][{{ field['id'] }}]">
+                                                            {% for value, text in field['options'] %}
+                                                                <option value="{{ value }}">{{ text }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
 							</div>
 						{% endfor %}
 					</div>

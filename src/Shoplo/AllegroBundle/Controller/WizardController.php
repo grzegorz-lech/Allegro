@@ -3,6 +3,7 @@
 namespace Shoplo\AllegroBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use InvalidArgumentException;
 use Shoplo\AllegroBundle\Entity\Item;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use JMS\SecurityExtraBundle\Annotation\Secure;
@@ -55,6 +56,7 @@ class WizardController extends Controller
         }
 
         $wizard = new Wizard();
+        $extras = array();
         $form   = $this->createFormBuilder($wizard)
             ->add('title', 'text') // TODO: Ustawienie maksymalnej długości LIMIT_ALLEGRO-MAX(nazwa_wariantu)
             ->add('description', 'textarea')
@@ -72,11 +74,56 @@ class WizardController extends Controller
                     ->getRepository('ShoploAllegroBundle:Profile')
                     ->findOneBy(array('user_id' => $this->getUser()->getId()));
 
+                /** @var $allegro Allegro */
+                $allegro = $this->get('allegro');
+                $allegro->login($this->getUser());
+
                 foreach ($products as $product) {
                     foreach ($product['variants'] as $variant) {
                         $categoryId = $_POST['category'][$variant['id']];
                         $fields     = $wizard->export($profile, $product, $variant, $categoryId);
-                        $itemId     = $this->createAuction($fields);
+
+                        // Obsługa dodatkowych (wymaganych) pól Allegro
+                        $extraFields = $allegro->getCategoryFields($categoryId);
+
+                        if (isset($_POST['extras'][$variant['id']])) {
+                            foreach ($_POST['extras'][$variant['id']] as $key => $value) {
+                                $field = $extraFields[$key];
+
+                                switch ($field['sell-form-res-type']) {
+                                    case 1: // string
+                                        $fields[] = Wizard::createField($key, (string)$value);
+                                        break;
+                                    case 2: // integer
+                                        $fields[] = Wizard::createField($key, (int)$value);
+                                        break;
+                                    case 3: // float
+                                        $fields[] = Wizard::createField($key, (float)$value);
+                                        break;
+                                    case 7: // image (base64Binary)
+                                        $fields[] = Wizard::createField($key, $value, true);
+                                        break;
+                                    case 9: // datetime (Unix time)
+                                        $fields[] = Wizard::createField($key, $value);
+                                        break;
+                                    case 13: // date
+                                        $fields[] = Wizard::createField($key, $value);
+                                        break;
+                                }
+                            }
+                        }
+
+                        $missingFields = Allegro::getMissingFields($fields, $extraFields);
+
+                        if (!empty($missingFields)) {
+                            $extras[$categoryId] = $missingFields;
+                        }
+
+                        if (!empty($extras)) {
+                            continue;
+                        }
+
+                        $itemId = $this->createAuction($fields);
 
                         $item = new Item();
                         $item
@@ -92,7 +139,34 @@ class WizardController extends Controller
 
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+                if (empty($extras)) {
+                    return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+                }
+            }
+        }
+
+        if (!empty($extras)) {
+            foreach ($extras as $categoryId => $fields) {
+                foreach ($fields as $k => $field) {
+                    switch ($field['sell-form-type']) {
+                        case 4: // combobox
+                            $field = array(
+                                'id'      => $field['sell-form-id'],
+                                'label'   => $field['sell-form-title'],
+                                'title'   => $field['sell-form-field-desc'],
+                                'options' => array_combine(
+                                    explode('|', $field['sell-form-opts-values']),
+                                    explode('|', $field['sell-form-desc'])
+                                ),
+                            );
+                            break;
+
+                        default:
+                            throw new InvalidArgumentException;
+                    }
+
+                    $extras[$categoryId][$k] = $field;
+                }
             }
         }
 
@@ -100,6 +174,7 @@ class WizardController extends Controller
             'ShoploAllegroBundle::wizard.html.twig',
             array(
                 'form'     => $form->createView(),
+                'extras'   => $extras,
                 'ids'      => $ids,
                 'variants' => $variants,
                 'products' => $products,
