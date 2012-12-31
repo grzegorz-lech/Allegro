@@ -115,7 +115,7 @@ class Wizard
      * @param  bool  $image
      * @return array
      */
-    private function createField($id, $value, $image = false)
+    public static function createField($id, $value, $image = false)
     {
         $field = array(
             'fid'                => $id,

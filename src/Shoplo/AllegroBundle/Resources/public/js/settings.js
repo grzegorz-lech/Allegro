@@ -15,4 +15,10 @@ $(function () {
             $(this).find('input').attr('checked', 'checked');
         }
     });
+
+    $('button[type=submit]').click(function () {
+        $(this).attr('disabled', true);
+
+        return true;
+    });
 });
