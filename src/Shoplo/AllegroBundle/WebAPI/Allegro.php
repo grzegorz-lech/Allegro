@@ -389,13 +389,12 @@ class Allegro extends \SoapClient
      */
     public function calculateAuctionPrice($price, $categoryPath, $quantity=1)
     {
-        # TODO: przypisać id kategorii z produkcji
         $categoriesMedia = array(
-            '1'		=>	'Książki i Komiksy',
-            '2'		=>	'Płyty 3D',
-            '3'		=>	'Płyty Blue-ray',
-            '4'		=>	'Płyty DVD',
-            '5'		=>	'Płyty VCD',
+            '7'		=>	'Książki i Komiksy',
+            '98713'	=>	'Płyty 3D',
+            '89054'	=>	'Płyty Blue-ray',
+            '100075'=>	'Płyty DVD',
+            '20664'	=>	'Płyty VCD',
         );
         $common = array_intersect($categoryPath, $categoriesMedia);
         switch ($price) {
