@@ -3,6 +3,7 @@ parameters:
     shoplo_allegro.webapi.class: Shoplo\AllegroBundle\WebAPI\Allegro
     shoplo_allegro.login_handler.class: Shoplo\AllegroBundle\Authentication\Handler\Login
     shoplo.user_provider.class: Shoplo\AllegroBundle\Security\Core\User\DoctrineUserProvider
+    shoplo.twig_extension.class: Shoplo\AllegroBundle\Twig\BaseExtension
 
 services:
     allegro:
@@ -19,3 +20,7 @@ services:
     shoplo.user_provider:
         class: %shoplo.user_provider.class%
         arguments: [@doctrine]
+    allegro.twig.base_extension:
+        class: %shoplo.twig_extension.class%
+        tags:
+            - { name: twig.extension }

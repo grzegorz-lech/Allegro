@@ -2,60 +2,60 @@
 
 {% block body %}
 	{% if items %}
-		<div class="box">
-			<h3>
-				Twoje aukcje
-				<span class="floatRight">
-					<select name="filter">
-						<option value="1">Trwające</option>
-						<option value="0">Zakończone</option>
-					</select>
-				</span>
-			</h3>
+		<div class="container-fluid">
+			<div class="row-fluid content">
+				<div class="span10 box">
 
-			<table class="table">
-				<thead>
-					<tr>
-						<th colspan="2">&nbsp;</th>
-						<th>Koniec</th>
-						<th class="alignCenter">Sprzedanych</th>
-						<th class="alignCenter">Statystyki</th>
-						<th class="alignCenter">Koszt aukcji</th>
-						<th>&nbsp;</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#% for i in items %#}
-					<tr>
-						<td>
-							<img src="http://src.sencha.io/jpg100/50/50/http://static.shoplo.com/4091/products/th100/aaa4/118-kolorowe-tansowki.jpg" /></td>
-						<td>Wycieraczka wewnętrzna "Kolorowe tańsówki"</td>
-						<td class="alignCenter">za 3 dni</td>
-						<td class="alignCenter">3/5</td>
-						<td class="alignCenter">3/5</td>
-						<td class="alignCenter">1,25zł</td>
-						<td>
-							<a href="" class="action actionEdit"><span class="ico"></span></a>
-							<a href="" class="action actionDelete"><span class="ico"></span></a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<img src="http://src.sencha.io/jpg100/50/50/http://static.shoplo.com/4091/products/th1024/aaap/148-szczesliwe-krowy.jpg" /></td>
-						<td>Wycieraczka wejściowa "Szczęśliwe krowy"</td>
-						<td class="alignCenter">za 3 dni</td>
-						<td class="alignCenter">3/5</td>
-						<td class="alignCenter">3/5</td>
-						<td class="alignCenter">1,25zł</td>
-						<td>
-							<a href="" class="action actionEdit"><span class="ico"></span></a>
-							<a href="" class="action actionDelete"><span class="ico"></span></a>
-						</td>
-					</tr>
+					<h3>
+						Twoje aukcje
+						<span class="floatRight">
+							<select name="filter">
+								<option value="1">Trwające</option>
+								<option value="0">Zakończone</option>
+							</select>
+						</span>
+					</h3>
 
-					{#% endif %#}
-				</tbody>
-			</table>
+					<table class="table">
+						<thead>
+							<tr>
+								<th colspan="2">&nbsp;</th>
+								<th class="alignCenter medium">Koniec</th>
+								<th class="alignCenter medium">Sprzedanych</th>
+								{#<th class="alignCenter">Statystyki</th>#}
+								<th class="alignCenter medium">Koszt</th>
+								<th class="mini">&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for i in items %}
+							<tr>
+								<td>
+									<img src="http://src.sencha.io/jpg100/50/50/{{ i.getProduct(shoplo).thumbnail }}" /></td>
+								<td>{{ i.getVariant(shoplo).title }}</td>
+								<td class="alignCenter">{{ i.getEndAt()|nicedate }}</td>
+								<td class="alignCenter">{{ i.getQuantitySold() }}/{{ i.getQuantity() }}</td>
+								{#<td class="alignCenter">3/5</td>#}
+								<td class="alignCenter">{{ i.price|price_with_currency }}</td>
+								<td>
+									<a href="" class="action actionEdit"><span class="ico"></span></a>
+									<a href="" class="action actionDelete"><span class="ico"></span></a>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+
+				</div>
+
+				<div class="span2 sidebar">
+					<ul class="menu">
+						<li>
+							<a href="{{ path('shoplo_allegro_settings') }}">Ustawienia</a>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	{% else %}
 		<div class="page-header">

@@ -9,6 +9,13 @@ body {
     padding-top: 60px;
     position: relative;
 }
+a, a:focus, a:hover {
+    color: #31657F;
+}
+a:hover {
+    text-decoration: none;
+}
+
 /* Wrapper for page content to push down footer */
 #wrap {
     min-height: 100%;
@@ -61,7 +68,7 @@ body {
 }
 
 .alignCenter {
-    text-align: center;
+    text-align: center !important;
 }
 
 .alignRight {
@@ -158,6 +165,13 @@ a.actionDrag .ico { background-position: 0 -39px !important; }
     margin-left: 35px;
 }
 
+.table .medium {
+    width: 100px;
+}
+.table .mini {
+    width: 50px;
+}
+
 .icon-settings {
     width: 25px;
     height: 25px;
@@ -178,6 +192,19 @@ a.actionDrag .ico { background-position: 0 -39px !important; }
 }
 .icon-settings.shipping {
     background-position: 0 100px;
+}
+
+/* Sidebar menu */
+.sidebar ul.menu {
+    list-style: none;
+    margin-left: -20px;
+}
+.sidebar ul.menu li {
+    border-bottom: 1px dashed rgba(95, 138, 161, 0.15);
+}
+.sidebar ul.menu li a {
+    display: inline-block;
+    padding: 5px 17px;
 }
 
 /* Initial settings */
