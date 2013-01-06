@@ -334,7 +334,7 @@ class SettingsController extends Controller
                 $em->persist($profile);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+                return $this->redirect($this->generateUrl('shoplo_allegro_settings_mapping'));
             }
         }
 
