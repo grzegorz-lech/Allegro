@@ -58,6 +58,9 @@ class Wizard
             $variant['quantity'] = 100;
         }
 
+        // Cena
+        $variant['price'] = round($variant['price'] / 100, 2);
+
         // Zmienne
         $search      = array(
             '{product_name}',
@@ -80,7 +83,7 @@ class Wizard
         $fields[] = $this->createField(2, (int) $categoryId);
         $fields[] = $this->createField(4, $profile->getDuration());
         $fields[] = $this->createField(5, (int) $variant['quantity']);
-        $fields[] = $this->createField(8, round($variant['price'] / 100, 2));
+        $fields[] = $this->createField(8, $variant['price']);
         $fields[] = $this->createField(9, $profile->getCountry());
         $fields[] = $this->createField(10, $profile->getState());
         $fields[] = $this->createField(11, $profile->getCity());
@@ -90,7 +93,6 @@ class Wizard
         $fields[] = $this->createField(32, $profile->getZipcode());
         $fields[] = $this->createField(24, $description);
         $fields[] = $this->createField(29, 0);
-        $fields[] = $this->createField(44, 16.10); // TODO: Kurier
 
         // Zdjęcia
         $id     = 16;
@@ -104,6 +106,11 @@ class Wizard
             if (false !== $image = file_get_contents($prefix . $image['src'])) {
                 $fields[] = $this->createField($id++, $image, true);
             }
+        }
+
+        // Dodatkowe pola
+        foreach ($profile->getExtras() as $key => $value) {
+            $fields[] = $this->createField($key, (float) $value);
         }
 
         return $fields;

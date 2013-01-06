@@ -3,6 +3,7 @@
 namespace Shoplo\AllegroBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Shoplo\AllegroBundle\WebAPI\Shoplo;
 
 /**
  * Item
@@ -35,9 +36,9 @@ class Item
 	private $product_id;
 
 	/**
-	 * @var integer
+	 * @var float
 	 *
-	 * @ORM\Column(name="price", type="integer")
+	 * @ORM\Column(name="price", type="float")
 	 */
 	private $price;
 
@@ -230,10 +231,13 @@ class Item
 
 	/**
 	 * @param int $price
+     * @return Item
 	 */
 	public function setPrice($price)
 	{
 		$this->price = $price;
+
+        return $this;
 	}
 
 	/**
@@ -244,22 +248,24 @@ class Item
 		return $this->price;
 	}
 
-	/**
-	 * Get Product Variant
-	 *
-	 * @return Array
-	 */
-	public function getVariant(\Shoplo\AllegroBundle\WebAPI\Shoplo $shoplo)
+    /**
+     * Get Product Variant
+     *
+     * @param Shoplo $shoplo
+     * @return array
+     */
+	public function getVariant(Shoplo $shoplo)
 	{
 		return $shoplo->get('products/'.$this->product_id.'/variants/'.$this->variant_id);
 	}
 
-	/**
-	 * Get Product
-	 *
-	 * @return Array
-	 */
-	public function getProduct(\Shoplo\AllegroBundle\WebAPI\Shoplo $shoplo)
+    /**
+     * Get Product
+     *
+     * @param Shoplo $shoplo
+     * @return array
+     */
+	public function getProduct(Shoplo $shoplo)
 	{
 		return $shoplo->get('products/'.$this->product_id);
 	}

@@ -126,12 +126,15 @@ class WizardController extends Controller
                         $itemId = $this->createAuction($fields);
 
                         $item = new Item();
+                        $days = array(3, 5, 7, 10, 14, 30);
                         $item
                             ->setId($itemId)
                             ->setVariantId($variant['id'])
+                            ->setProductId($product['id'])
+                            ->setPrice($variant['price'])
                             ->setQuantity($variant['quantity'])
                             ->setStartAt(new \DateTime('now'))
-                            ->setEndAt(new \DateTime('+3 days'));
+                            ->setEndAt(new \DateTime('+' . $days[$profile->getDuration()] . ' days'));
 
                         $em->persist($item);
                     }

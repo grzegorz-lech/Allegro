@@ -1,5 +1,5 @@
 $(function () {
-    $('.ez-checkbox').click(function () {
+    $('.ez-checkbox:not(.ez-disabled)').click(function () {
         var id = $(this).find('input').attr('id');
 
         if (id == 'promotion') {
@@ -14,11 +14,5 @@ $(function () {
             $(this).attr('class', 'ez-checkbox ez-checked');
             $(this).find('input').attr('checked', 'checked');
         }
-    });
-
-    $('button[type=submit]').click(function () {
-        $(this).attr('disabled', true);
-
-        return true;
     });
 });

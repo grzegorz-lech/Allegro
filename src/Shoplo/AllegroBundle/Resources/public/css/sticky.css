@@ -165,6 +165,10 @@ a.actionDrag .ico { background-position: 0 -39px !important; }
     margin-left: 35px;
 }
 
+.ez-checkbox.ez-disabled, label.disabled {
+    opacity: 0.5;
+}
+
 .table .medium {
     width: 100px;
 }

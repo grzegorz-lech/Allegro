@@ -101,7 +101,7 @@
 									<span class="mask">
 										<img src="http://src.sencha.io/50/50/{{ variant.thumbnail }}" class="img-rounded" rel="popover"
 											 data-content="{% for category in variant.categories %}{{ category.getShoploName() }}{{ "<br>"|e }}{% endfor %}"
-											 data-original-title="{{ variant.product_name }}">
+											 data-original-title="{{ variant.title }}">
 									</span>
 
 									<p class="alignCenter">
@@ -424,7 +424,7 @@
 								<div class="control-group">
 									<label class="control-label span5">
 										<img src="http://src.sencha.io/30/30/{{ variant.thumbnail }}" class="img-rounded">
-										{{variant.product_name}}:&nbsp;&nbsp;
+										{{variant.title}}:&nbsp;&nbsp;
 									</label>
 									<div class="controls">
 										<select name="category[{{variant.id}}]" class="product-category" data-variant-id="{{variant.id}}">
@@ -476,7 +476,7 @@
 					{% for variant in variants %}
 					<li class="row offset1 variant" id="product{{variant.id}}" data-quantity="{% if variant.add_to_magazine%}{{variant.quantity}}{% else %}100{% endif %}">
 						<div class="span7 alignRight">
-							{{ variant.product_name }}
+							{{ variant.title }}
 						</div>
 						<div class="span5 alignRight">
 							<span class="quantity">1</span> x <span class="price">{{variant.auction_price}}</span>zł

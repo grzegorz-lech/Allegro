@@ -13,17 +13,27 @@
 {% form_theme form _self %}
 
 {% block form_row %}
-    {% for child in form.children %}
+    {% if form.children|length == 0 %}
         <div class="control-group">
-            {{ form_label(child, null, {'label_attr': {'class': 'control-label alignLeft'}}) }}
+            {{ form_label(form, null, {'label_attr': {'class': 'control-label alignLeft', 'style': 'width: 380px'}}) }}
 
             <div class="controls alignRight">
-                <div class="ez-checkbox">
-                    {{ form_widget(child, {'attr': {'class': 'ez-hide'}}) }}
-                </div>
+                {{ form_widget(form, {'attr': {'placeholder': 'Podaj kwotę lub pozostaw puste'}}) }}
             </div>
         </div>
-    {% endfor %}
+    {% else %}
+        {% for child in form.children %}
+            <div class="control-group">
+                {{ form_label(child, null, {'label_attr': {'class': 'control-label alignLeft'}}) }}
+
+                <div class="controls alignRight">
+                    <div class="ez-checkbox">
+                        {{ form_widget(child, {'attr': {'class': 'ez-hide'}}) }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
 
 {% block body %}
@@ -167,6 +177,27 @@
 				<div class="accordion-inner">
 					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings_payment') }}" method="post" {{ form_enctype(form) }}>
 
+                        <div class="control-group">
+                            <label class="control-label alignLeft disabled">PayU</label>
+
+                            <div class="controls alignRight">
+                                <div class="ez-checkbox ez-checked ez-disabled">
+                                    <input type="checkbox" class="ez-hide" id="payu" name="payu" value="1" checked="checked">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label alignLeft" for="pod">Płatność przy odbiorze</label>
+
+                            <div class="controls alignRight">
+                                <div class="ez-checkbox">
+                                    <input type="checkbox" class="ez-hide" id="pod" name="pod" value="1">
+                                </div>
+                            </div>
+                        </div>
+
+
                         {{ form_row(form.payments) }}
 
                         <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
@@ -191,9 +222,9 @@
 
                         {{ form_row(form.delivery) }}
 
-                        <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
-
                         {{ form_rest(form) }}
+
+                        <button type="submit" class="btn btn-primary">Dalej &rsaquo;</button>
 					</form>
 				</div>
 			</div>

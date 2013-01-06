@@ -93,6 +93,13 @@ class Profile
     private $delivery;
 
     /**
+     * @var array
+     *
+     * @ORM\Column(name="extras", type="json_array")
+     */
+    private $extras = array();
+
+    /**
      * @param  array                     $data
      * @throws \InvalidArgumentException
      * @return Profile
@@ -349,5 +356,28 @@ class Profile
     public function getDelivery()
     {
         return $this->delivery;
+    }
+
+    /**
+     * Set extras
+     *
+     * @param array $extras
+     * @return Profile
+     */
+    public function setExtras(array $extras)
+    {
+        $this->extras = $extras;
+
+        return $this;
+    }
+
+    /**
+     * Get extras
+     *
+     * @return array
+     */
+    public function getExtras()
+    {
+        return $this->extras;
     }
 }

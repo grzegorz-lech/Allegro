@@ -209,7 +209,7 @@ class SettingsController extends Controller
         $payments = array_filter(
             $payments,
             function ($payment) {
-                return $payment !== '-';
+                return !in_array($payment, array('-', 'Inne rodzaje płatności', 'Szczegoly w opisie'));
             }
         );
 
@@ -223,6 +223,7 @@ class SettingsController extends Controller
             if ($form->isValid()) {
                 $data             = $form->getData();
                 $data['payments'] = array_sum($data['payments']); // TODO: Symfony way
+                $data['pod']      = isset($_POST['pod']) && $_POST['pod'];
 
                 /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
                 $session = $this->get('session');
@@ -252,7 +253,9 @@ class SettingsController extends Controller
         $allegro->login($user);
         $fields = $allegro->getSellFormFields();
 
-        // Sposób płatności
+        $form = $this->createFormBuilder();
+
+        // Darmowa dostawa
         $delivery = array_combine(
             explode('|', $fields[35]->{'sell-form-opts-values'}),
             explode('|', $fields[35]->{'sell-form-desc'})
@@ -263,10 +266,31 @@ class SettingsController extends Controller
                 return $d !== '-';
             }
         );
+        $form->add('delivery', 'choice', array('choices' => $delivery, 'multiple' => true, 'expanded' => true));
 
-        $form = $this->createFormBuilder()
-            ->add('delivery', 'choice', array('choices' => $delivery, 'multiple' => true, 'expanded' => true))
-            ->getForm();
+        // Sposoby dostawy
+        $pod      = $this->get('session')->get('default_profile');
+        $delivery = array();
+
+        for ($i = 36; $i <= 52; $i++) {
+            $field = $fields[$i];
+            $label = $field->{'sell-form-title'};
+            $label = preg_replace('/\([a-z\s]+\)/i', '', $label);
+
+            if (!$pod && false !== stripos($label, 'pobraniowa')) {
+                continue;
+            }
+
+            $delivery[$i] = $label;
+        }
+
+        asort($delivery);
+
+        foreach ($delivery as $key => $value) {
+            $form->add('fid' . $key, 'text', array('label' => $value, 'required' => false));
+        }
+
+        $form = $form->getForm();
 
         if ($request->isMethod('POST')) {
             $form->bind($request);
@@ -275,15 +299,37 @@ class SettingsController extends Controller
                 $data             = $form->getData();
                 $data['delivery'] = array_sum($data['delivery']); // TODO: Symfony way
 
+                // Dodatki
+                $extras = array();
+                foreach ($data as $key => $value) {
+                    if (false === strpos($key, 'fid')) {
+                        continue;
+                    }
+
+                    unset($data[$key]);
+
+                    if (null === $value) {
+                        continue;
+                    }
+
+                    $key          = substr($key, 3);
+                    $value        = str_replace(',', '.', $value);
+                    $value        = round($value, 2);
+                    $extras[$key] = $value;
+                }
+
                 /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
                 $session = $this->get('session');
                 $data    = array_merge($session->get('default_profile'), $data);
+                unset($data['pod']);
+
                 $em      = $this->getDoctrine()->getManager();
                 $profile = new Profile($data);
 
                 $profile
                     ->setUserId($this->getUser()->getId())
-                    ->setName('Domyślny');
+                    ->setName('Domyślny')
+                    ->setExtras($extras);
 
                 $em->persist($profile);
                 $em->flush();
@@ -311,8 +357,8 @@ class SettingsController extends Controller
         $allegro->login($user);
 
         $shoplo            = $this->get('shoplo');
-		$count = $shoplo->get('categories/count');
-		$shoploCategories  = $shoplo->get('categories', null, array('limit'=>$count));
+        $count             = $shoplo->get('categories/count');
+        $shoploCategories  = $shoplo->get('categories', null, array('limit' => $count));
         $allegroCategories = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:CategoryAllegro')
             ->findBy(
