@@ -74,7 +74,7 @@ class Wizard
             $product['short_description'],
             $product['description'],
             $variant['sku'],
-            number_format($variant['price'] / 100, 2, ',', ''),
+            number_format($variant['price'], 2, ',', ''),
         );
         $title       = str_ireplace($search, $replace, $this->getTitle());
         $description = str_ireplace($search, $replace, $this->getDescription());
