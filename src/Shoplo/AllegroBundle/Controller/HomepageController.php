@@ -23,8 +23,8 @@ class HomepageController extends Controller
 
         $items = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:Item')
-            ->findAll(
-            array('shop_id' => $this->getUser()->getShopId()),
+            ->findBy(
+            array('user_id' => $this->getUser()->getId()),
             array('id' => 'DESC')
         );
 

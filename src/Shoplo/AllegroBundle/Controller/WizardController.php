@@ -129,6 +129,7 @@ class WizardController extends Controller
                         $days = array(3, 5, 7, 10, 14, 30);
                         $item
                             ->setId($itemId)
+                            ->setUser($this->getUser())
                             ->setVariantId($variant['id'])
                             ->setProductId($product['id'])
                             ->setPrice($variant['price'])

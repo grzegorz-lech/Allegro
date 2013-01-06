@@ -24,6 +24,13 @@ class Item
     /**
      * @var integer
      *
+     * @ORM\Column(name="user_id", type="integer")
+     */
+    private $user_id;
+
+    /**
+     * @var integer
+     *
      * @ORM\Column(name="variant_id", type="integer")
      */
     private $variant_id;
@@ -89,6 +96,19 @@ class Item
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set user
+     *
+     * @param  User $user
+     * @return Item
+     */
+    public function setUser(User $user)
+    {
+        $this->user_id = $user->getId();
+
+        return $this;
     }
 
     /**
