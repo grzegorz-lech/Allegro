@@ -59,4 +59,22 @@ class HomepageController extends Controller
 
         return $this->redirect($url);
     }
+
+    public function showAction($itemId)
+    {
+        switch ($this->getUser()->getCountry()) {
+            case 1:
+                $url = 'http://allegro.pl/show_item.php?item=%d';
+                break;
+
+            case 228:
+                $url = 'http://www.testwebapi.pl/show_item.php?item=%d';
+                break;
+
+            default:
+                throw $this->createNotFoundException();
+        }
+
+        return $this->redirect(sprintf($url, $itemId));
+    }
 }

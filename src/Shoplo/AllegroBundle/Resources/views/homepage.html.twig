@@ -8,12 +8,14 @@
 
 					<h3>
 						Twoje aukcje
+                        {#
 						<span class="floatRight">
 							<select name="filter">
 								<option value="1">Trwające</option>
 								<option value="0">Zakończone</option>
 							</select>
 						</span>
+						#}
 					</h3>
 
 					<table class="table">
@@ -24,23 +26,30 @@
 								<th class="alignCenter medium">Sprzedanych</th>
 								{#<th class="alignCenter">Statystyki</th>#}
 								<th class="alignCenter medium">Koszt</th>
-								<th class="mini">&nbsp;</th>
+								{#<th class="mini">&nbsp;</th>#}
 							</tr>
 						</thead>
 						<tbody>
 							{% for i in items %}
 							<tr>
 								<td>
-									<img src="http://src.sencha.io/jpg100/50/50/{{ i.getProduct(shoplo).thumbnail }}" /></td>
-								<td>{{ i.getVariant(shoplo).title }}</td>
+                                    <a href="{{ path('shoplo_allegro_show_item', {itemId: i.id}) }}" target="_blank">
+									    <img src="http://src.sencha.io/50/50/{{ i.getProduct(shoplo).thumbnail }}" />
+                                    </a>
+                                </td>
+								<td>
+                                    <a href="{{ path('shoplo_allegro_show_item', {itemId: i.id}) }}" target="_blank">
+                                        {{ i.getVariant(shoplo).title }}
+                                    </a>
+                                </td>
 								<td class="alignCenter">{{ i.getEndAt()|nicedate }}</td>
 								<td class="alignCenter">{{ i.getQuantitySold() }}/{{ i.getQuantity() }}</td>
 								{#<td class="alignCenter">3/5</td>#}
-								<td class="alignCenter">{{ i.price|price_with_currency }}</td>
-								<td>
-									<a href="" class="action actionEdit"><span class="ico"></span></a>
-									<a href="" class="action actionDelete"><span class="ico"></span></a>
-								</td>
+								<td class="alignCenter">{{ i.price }} zł</td>
+								{#<td>#}
+									{#<a href="" class="action actionEdit"><span class="ico"></span></a>#}
+									{#<a href="" class="action actionDelete"><span class="ico"></span></a>#}
+								{#</td>#}
 							</tr>
 							{% endfor %}
 						</tbody>

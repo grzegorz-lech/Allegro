@@ -2,6 +2,12 @@ shoplo_allegro_homepage:
     pattern:  /
     defaults: { _controller: ShoploAllegroBundle:Homepage:index }
 
+shoplo_allegro_show_item:
+    pattern:  /pokaz/{itemId}
+    defaults: { _controller: ShoploAllegroBundle:Homepage:show }
+    requirements:
+        itemId: \d+
+
 shoplo_allegro_login:
     pattern:  /zaloguj
     defaults: { _controller: ShoploAllegroBundle:Homepage:login }
