@@ -361,7 +361,7 @@ class Profile
     /**
      * Set extras
      *
-     * @param array $extras
+     * @param  array   $extras
      * @return Profile
      */
     public function setExtras(array $extras)

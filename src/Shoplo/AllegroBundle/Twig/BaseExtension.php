@@ -4,66 +4,56 @@ namespace Shoplo\AllegroBundle\Twig;
 
 class BaseExtension extends \Twig_Extension
 {
-	public function getFilters()
-	{
-		return array(
-			'price' => new \Twig_Filter_Method($this, 'priceFilter'),
-			'price_with_currency' => new \Twig_Filter_Method($this, 'priceWithCurrencyFilter'),
-			'nicedate' => new \Twig_Filter_Method($this, 'nicedateFilter'),
-		);
-	}
+    public function getFilters()
+    {
+        return array(
+            'price' => new \Twig_Filter_Method($this, 'priceFilter'),
+            'price_with_currency' => new \Twig_Filter_Method($this, 'priceWithCurrencyFilter'),
+            'nicedate' => new \Twig_Filter_Method($this, 'nicedateFilter'),
+        );
+    }
 
-	public function priceFilter($price)
-	{
-		$price = bcdiv($price, 100, 2);
+    public function priceFilter($price)
+    {
+        $price = bcdiv($price, 100, 2);
 
-		return $price;
-	}
+        return $price;
+    }
 
-	public function priceWithCurrencyFilter($price, $currency='zł')
-	{
-		$price = bcdiv($price, 100, 2);
-		$price = $price.$currency;
+    public function priceWithCurrencyFilter($price, $currency='zł')
+    {
+        $price = bcdiv($price, 100, 2);
+        $price = $price.$currency;
 
-		return $price;
-	}
+        return $price;
+    }
 
-	public function nicedateFilter($date)
-	{
-		$now = date_create('now');
-		$interval = $now->diff($date);
+    public function nicedateFilter($date)
+    {
+        $now = date_create('now');
+        $interval = $now->diff($date);
 
-		if ( $now == $date )
-		{
-			return 'dzisiaj';
-		}
-		elseif ( $now > $date )
-		{
-			if ( $interval->d == 1 )
-			{
-				return 'wczoraj';
-			}
-			elseif ( $interval->d < 7 )
-			{
-				return sprintf("%d dni temu", $interval->d);
-			}
-		}
-		else
-		{
-			if ( $interval->d == 1 )
-			{
-				return 'jutro';
-			}
-			elseif ( $interval->d < 7 )
-			{
-				return sprintf("za %d dni", $interval->d);
-			}
-		}
-		return $date->format('Y-m-d');
-	}
+        if ($now == $date) {
+            return 'dzisiaj';
+        } elseif ($now > $date) {
+            if ($interval->d == 1) {
+                return 'wczoraj';
+            } elseif ($interval->d < 7) {
+                return sprintf("%d dni temu", $interval->d);
+            }
+        } else {
+            if ($interval->d == 1) {
+                return 'jutro';
+            } elseif ($interval->d < 7) {
+                return sprintf("za %d dni", $interval->d);
+            }
+        }
 
-	public function getName()
-	{
-		return 'acme_extension';
-	}
+        return $date->format('Y-m-d');
+    }
+
+    public function getName()
+    {
+        return 'acme_extension';
+    }
 }

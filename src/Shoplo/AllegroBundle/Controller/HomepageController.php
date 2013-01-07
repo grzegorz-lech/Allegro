@@ -19,7 +19,7 @@ class HomepageController extends Controller
             return $this->redirect($this->generateUrl('shoplo_allegro_wizard', array('product' => $ids)));
         }
 
-		$shoplo  = $this->container->get('shoplo');
+        $shoplo  = $this->container->get('shoplo');
 
         $items = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:Item')

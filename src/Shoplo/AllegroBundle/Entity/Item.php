@@ -35,19 +35,19 @@ class Item
      */
     private $variant_id;
 
-	/**
-	 * @var integer
-	 *
-	 * @ORM\Column(name="product_id", type="integer")
-	 */
-	private $product_id;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="product_id", type="integer")
+     */
+    private $product_id;
 
-	/**
-	 * @var float
-	 *
-	 * @ORM\Column(name="price", type="float")
-	 */
-	private $price;
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="price", type="float")
+     */
+    private $price;
 
     /**
      * @var integer
@@ -134,28 +134,28 @@ class Item
         return $this->variant_id;
     }
 
-	/**
-	 * Set product_id
-	 *
-	 * @param  integer $productId
-	 * @return Item
-	 */
-	public function setProductId($productId)
-	{
-		$this->product_id = $productId;
+    /**
+     * Set product_id
+     *
+     * @param  integer $productId
+     * @return Item
+     */
+    public function setProductId($productId)
+    {
+        $this->product_id = $productId;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Get product_id
-	 *
-	 * @return integer
-	 */
-	public function getProductId()
-	{
-		return $this->product_id;
-	}
+    /**
+     * Get product_id
+     *
+     * @return integer
+     */
+    public function getProductId()
+    {
+        return $this->product_id;
+    }
 
     /**
      * Set quantity
@@ -249,44 +249,44 @@ class Item
         return $this->end_at;
     }
 
-	/**
-	 * @param int $price
+    /**
+     * @param  int  $price
      * @return Item
-	 */
-	public function setPrice($price)
-	{
-		$this->price = $price;
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
 
         return $this;
-	}
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getPrice()
-	{
-		return $this->price;
-	}
+    /**
+     * @return int
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
 
     /**
      * Get Product Variant
      *
-     * @param Shoplo $shoplo
+     * @param  Shoplo $shoplo
      * @return array
      */
-	public function getVariant(Shoplo $shoplo)
-	{
-		return $shoplo->get('products/'.$this->product_id.'/variants/'.$this->variant_id);
-	}
+    public function getVariant(Shoplo $shoplo)
+    {
+        return $shoplo->get('products/'.$this->product_id.'/variants/'.$this->variant_id);
+    }
 
     /**
      * Get Product
      *
-     * @param Shoplo $shoplo
+     * @param  Shoplo $shoplo
      * @return array
      */
-	public function getProduct(Shoplo $shoplo)
-	{
-		return $shoplo->get('products/'.$this->product_id);
-	}
+    public function getProduct(Shoplo $shoplo)
+    {
+        return $shoplo->get('products/'.$this->product_id);
+    }
 }

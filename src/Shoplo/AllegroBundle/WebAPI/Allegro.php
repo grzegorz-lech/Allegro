@@ -124,7 +124,7 @@ class Allegro extends \SoapClient
         $version = 0;
 
         foreach ($system as $status) {
-            $status = (array)$status;
+            $status = (array) $status;
             if ($this->getCountry() == $status['country-id']) {
                 $version = $status['ver-key'];
                 break;
@@ -268,11 +268,11 @@ class Allegro extends \SoapClient
     {
         try {
             // TODO: zapis danych sprzedazowych do bazy
-            $result = (array)$this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
+            $result = (array) $this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
         } catch (\SoapFault $sf) {
             if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
                 if ($this->doLogin()) {
-                    $result = (array)$this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
+                    $result = (array) $this->doGetPostBuyData($this->session['session-handle-part'], $auctionIds);
                 } else {
                     return false;
                 }
@@ -283,11 +283,11 @@ class Allegro extends \SoapClient
 
         $auctions = array();
         foreach ($result as $buyersInfo) {
-            $buyersInfo = (array)$buyersInfo;
+            $buyersInfo = (array) $buyersInfo;
             $buyers     = array();
             foreach ($buyersInfo['users-post-buy-data'] as $buyer) {
-                $buyer                                  = (array)$buyer;
-                $buyer['user-data']                     = (array)$buyer['user-data'];
+                $buyer                                  = (array) $buyer;
+                $buyer['user-data']                     = (array) $buyer['user-data'];
                 $buyers[$buyer['user-data']['user-id']] = $buyer;
             }
             $auctions[] = array(
@@ -419,8 +419,8 @@ class Allegro extends \SoapClient
     }
 
     /**
-     * @param int $categoryId
-     * @param bool $onlyRequired
+     * @param  int   $categoryId
+     * @param  bool  $onlyRequired
      * @return array
      */
     public function getCategoryFields($categoryId, $onlyRequired = true)
@@ -429,7 +429,7 @@ class Allegro extends \SoapClient
         $fields = $fields->{'sell-form-fields-list'};
         $fields = array_map(
             function ($field) {
-                return (array)$field;
+                return (array) $field;
             },
             $fields
         );
@@ -453,8 +453,8 @@ class Allegro extends \SoapClient
     }
 
     /**
-     * @param array $fields
-     * @param array $extraFields
+     * @param  array $fields
+     * @param  array $extraFields
      * @return array
      */
     public static function getMissingFields(array $fields, array $extraFields)
@@ -480,22 +480,22 @@ class Allegro extends \SoapClient
         return $missingFields;
     }
 
-	public function updateItemQuantity($itemId, $quantity)
-	{
-		try {
-			$item = $this->doChangeQuantityItem($this->session['session-handle-part'], $itemId, $quantity);
+    public function updateItemQuantity($itemId, $quantity)
+    {
+        try {
+            $item = $this->doChangeQuantityItem($this->session['session-handle-part'], $itemId, $quantity);
 
-			return true;
-		} catch (\SoapFault $sf) {
-			if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
-				if ($this->doLogin()) {
-					$item = $this->doChangeQuantityItem($this->session['session-handle-part'], $itemId, $quantity);
+            return true;
+        } catch (\SoapFault $sf) {
+            if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
+                if ($this->doLogin()) {
+                    $item = $this->doChangeQuantityItem($this->session['session-handle-part'], $itemId, $quantity);
 
-					return true;
-				}
-			}
+                    return true;
+                }
+            }
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 }

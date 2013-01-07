@@ -92,13 +92,13 @@ class WizardController extends Controller
 
                                 switch ($field['sell-form-res-type']) {
                                     case 1: // string
-                                        $fields[] = Wizard::createField($key, (string)$value);
+                                        $fields[] = Wizard::createField($key, (string) $value);
                                         break;
                                     case 2: // integer
-                                        $fields[] = Wizard::createField($key, (int)$value);
+                                        $fields[] = Wizard::createField($key, (int) $value);
                                         break;
                                     case 3: // float
-                                        $fields[] = Wizard::createField($key, (float)$value);
+                                        $fields[] = Wizard::createField($key, (float) $value);
                                         break;
                                     case 7: // image (base64Binary)
                                         $fields[] = Wizard::createField($key, $value, true);
