@@ -23,6 +23,10 @@ security:
             pattern:  ^/zaloguj$
             anonymous: true
 
+        hook:
+            pattern: ^/hookme$
+            anonymous: true
+
         shoplo:
             pattern:    ^/
             oauth:

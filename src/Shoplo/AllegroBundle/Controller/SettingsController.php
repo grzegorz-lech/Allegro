@@ -3,6 +3,7 @@
 namespace Shoplo\AllegroBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Shoplo\AllegroBundle\Entity\Profile;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
 use Shoplo\AllegroBundle\Entity\User;
@@ -469,9 +470,17 @@ class SettingsController extends Controller
         return $response;
     }
 
-	public function webhookAction()
-	{
-		$request = $this->get('request');
+    public function webhookAction(Request $request)
+    {
+        $whitelist = array(
+            $request->server->get('SERVER_ADDR'),
+            gethostbyname('shoplo.com'),
+        );
+
+        if (!in_array($request->getClientIp(), $whitelist)) {
+            throw new AccessDeniedException();
+        }
+
 		if ( $request->getMethod() == 'POST' )
 		{
 			$shoploSection 	= $request->headers->get('HTTP_SHOPLO_SECTION');
