@@ -27,10 +27,18 @@
 			</div>
 			{% for category in shoplo_categories %}
 			<div class="control-group clear">
+				{% if category.parent %}
+				<div class="input-prepend">
+					<span class="add-on"><i class="icon-chevron-right"></i></span>
+					<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
+				</div>
+				{% else %}
 				<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
+				{% endif %}
+
 				<input type="hidden" name="map[{{category.id}}]" value="0" class="map" />
 
-				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2">
+				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
 					<option value="0">Wybierz kategorię</option>
 					{% for category in allegro_categories %}
 					<option value="{{category.id}}">{{category.name}}</option>

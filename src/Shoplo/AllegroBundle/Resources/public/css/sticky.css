@@ -349,3 +349,6 @@ ul.inline li:hover a {
 .map-allegro select {
     margin-right: 5px;
 }
+.map-allegro .input-prepend input {
+    width: 130px;
+}
