@@ -479,4 +479,23 @@ class Allegro extends \SoapClient
 
         return $missingFields;
     }
+
+	public function updateItemQuantity($itemId, $quantity)
+	{
+		try {
+			$item = $this->doChangeQuantityItem($this->session['session-handle-part'], $itemId, $quantity);
+
+			return true;
+		} catch (\SoapFault $sf) {
+			if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
+				if ($this->doLogin()) {
+					$item = $this->doChangeQuantityItem($this->session['session-handle-part'], $itemId, $quantity);
+
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
 }

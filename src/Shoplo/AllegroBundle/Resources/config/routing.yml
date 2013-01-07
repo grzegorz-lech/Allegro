@@ -56,3 +56,7 @@ shoplo_allegro_get_category_path:
 shoplo_allegro_wizard:
     pattern:  /kreator
     defaults: { _controller: ShoploAllegroBundle:Wizard:index }
+
+shoplo_allegro_webhook:
+    pattern:  /hookme
+    defaults: { _controller: ShoploAllegroBundle:Settings:webhook }
