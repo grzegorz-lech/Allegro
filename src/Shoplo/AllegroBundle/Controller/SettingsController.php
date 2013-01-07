@@ -481,52 +481,48 @@ class SettingsController extends Controller
             throw new AccessDeniedException();
         }
 
-        if ( $request->getMethod() == 'POST' ) {
-            $shoploSection 	= $request->headers->get('HTTP_SHOPLO_SECTION');
-            $shoploShopId	= $request->headers->get('HTTP_SHOPLO_SHOP_ID');
-            $shoploHmacKey	= $request->headers->get('HTTP_SHOPLO_HMAC_SHA256');
+        $shoploSection 	= $request->headers->get('HTTP_SHOPLO_SECTION');
+        $shoploShopId	= $request->headers->get('HTTP_SHOPLO_SHOP_ID');
+        $shoploHmacKey	= $request->headers->get('HTTP_SHOPLO_HMAC_SHA256');
 
-            list($objectType, $action) = explode('/', $shoploSection, 2);
-            $shoploObjectId = $request->headers->get('HTTP_SHOPLO_'.strtoupper($objectType).'_ID');
+        list($objectType, $action) = explode('/', $shoploSection, 2);
+        $shoploObjectId = $request->headers->get('HTTP_SHOPLO_'.strtoupper($objectType).'_ID');
 
-            $user = $this->getDoctrine()
-                ->getRepository('ShoploAllegroBundle:User')
-                ->findOneByShopId($shoploShopId);
+        $user = $this->getDoctrine()
+            ->getRepository('ShoploAllegroBundle:User')
+            ->findOneByShopId($shoploShopId);
 
-            $data = $request->request->get($objectType);
+        $data = $request->request->get($objectType);
 
-            $calculatedHmacKey = base64_encode(hash_hmac('sha256', $_POST, $this->getContainer()->getParameter('oauth_consumer_secret'), true));
-            if ($calculatedHmacKey == $shoploHmacKey) {
-                $allegro = $this->get('allegro');
-                $allegro->login($this->getUser());
+        $calculatedHmacKey = base64_encode(hash_hmac('sha256', $_POST, $this->getContainer()->getParameter('oauth_consumer_secret'), true));
+        if ($calculatedHmacKey == $shoploHmacKey) {
+            $allegro = $this->get('allegro');
+            $allegro->login($this->getUser());
 
-                foreach ($data['order_items'] as $item) {
-                    // pobieramy aukcje, w których warianty zostaly sprzedane
-                    $repository = $this->getDoctrine()
-                        ->getRepository('ShoploAllegroBundle:Item');
-                    $query = $repository->createQueryBuilder('p')
-                        ->where('p.variant_id = :variant_id')
-                        ->andWhere('p.user_id > :user_id')
-                        ->andWhere('p.end_at > :end_at')
-                        ->setParameters(array(
-                            'variant_id' => $item['variant_id'],
-                            'user_id'	 => $user->getId(),
-                            'end_at'	 => new \DateTime()
-                        ))
-                        ->getQuery();
-                    $allegroItems = $query->getResult();
-                    foreach ($allegroItems as $allegroItem) {
-                        $quantitySold = $allegroItem->getQuantitySold()+$item['quantity'];
-                        $allegroItem->setQuantitySold($quantitySold);
-                        //$result = $allegro->updateItemQuantity($allegroItem, $allegroItem->getQuantity()-$quantitySold);
-                    }
+            foreach ($data['order_items'] as $item) {
+                // pobieramy aukcje, w których warianty zostaly sprzedane
+                $repository = $this->getDoctrine()
+                    ->getRepository('ShoploAllegroBundle:Item');
+                $query = $repository->createQueryBuilder('p')
+                    ->where('p.variant_id = :variant_id')
+                    ->andWhere('p.user_id > :user_id')
+                    ->andWhere('p.end_at > :end_at')
+                    ->setParameters(array(
+                        'variant_id' => $item['variant_id'],
+                        'user_id'	 => $user->getId(),
+                        'end_at'	 => new \DateTime()
+                    ))
+                    ->getQuery();
+                $allegroItems = $query->getResult();
+                foreach ($allegroItems as $allegroItem) {
+                    $quantitySold = $allegroItem->getQuantitySold()+$item['quantity'];
+                    $allegroItem->setQuantitySold($quantitySold);
+                    //$result = $allegro->updateItemQuantity($allegroItem, $allegroItem->getQuantity()-$quantitySold);
                 }
-
-                #TODO: dorobic obsluge webhook'a na product/update - update kolumny quantity
-                $this->getDoctrine()->getManager()->flush();
             }
 
-
+            #TODO: dorobic obsluge webhook'a na product/update - update kolumny quantity
+            $this->getDoctrine()->getManager()->flush();
         }
 
         $response = new Response();
