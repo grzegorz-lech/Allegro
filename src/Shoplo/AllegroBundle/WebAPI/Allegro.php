@@ -307,9 +307,10 @@ class Allegro extends \SoapClient
     public function getShippingMethods()
     {
         try {
-            $result   = $this->doGetShipmentData($this->country, $this->key);
+            $result   = (array) $this->doGetShipmentData($this->country, $this->key);
             $shipping = array();
             foreach ($result['shipment-data-list'] as $sl) {
+				$sl = (array) $sl;
                 $shipping[$sl['shipment-id']] = $sl;
             }
 
