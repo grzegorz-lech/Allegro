@@ -63,6 +63,13 @@ class Item
      */
     private $quantity_sold = 0;
 
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Column(name="quantity_sold", type="integer")
+	 */
+	private $quantity_all = 0;
+
     /**
      * @var \DateTime
      *
@@ -289,4 +296,36 @@ class Item
     {
         return $shoplo->get('products/'.$this->product_id);
     }
+
+	/**
+	 * @param int $quantity_all
+	 */
+	public function setQuantityAll($quantity_all)
+	{
+		$this->quantity_all = $quantity_all;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getQuantityAll()
+	{
+		return $this->quantity_all;
+	}
+
+	/**
+	 * @param int $user_id
+	 */
+	public function setUserId($user_id)
+	{
+		$this->user_id = $user_id;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getUserId()
+	{
+		return $this->user_id;
+	}
 }
