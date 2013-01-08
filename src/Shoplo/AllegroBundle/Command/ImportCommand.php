@@ -60,7 +60,7 @@ class ImportCommand extends Command
                 switch ($deal->getEventType()) {
                     case 1: # utworzenie aktu zakupowego (deala)
 						$output->writeln('<info>Utworzenie aktu zakupowego. ItemId: '.$deal->getItemId().'</info>');
-                        continue;
+                        break 3;
                     case 2: # utworzenie formularza pozakupowego (transakcji)
 						$output->writeln('<info>Utworzenie formularza pozakupowego. ItemId: '.$deal->getItemId().'</info>');
                         $newTransactionAuctionMap[$deal->getTransactionId()] = $deal->getItemId();
