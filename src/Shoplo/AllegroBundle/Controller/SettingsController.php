@@ -360,6 +360,37 @@ class SettingsController extends Controller
         $shoplo            = $this->get('shoplo');
         $count             = $shoplo->get('categories/count');
         $shoploCategories  = $shoplo->get('categories', null, array('limit' => $count));
+
+		$sorted = $matches = array();
+		foreach ( $shoploCategories as $sc )
+		{
+			if ( isset($sorted[$sc['parent']]) )
+			{
+				$sorted[$sc['parent']]['childs'][$sc['id']] = $sc;
+			}
+			else
+			{
+				$sorted[$sc['id']] = $sc;
+			}
+		}
+		foreach ( $sorted as $s )
+		{
+			$tmp = $s;
+			unset($tmp['childs']);
+			if ( $s['parent'] == 0 )
+			{
+				$matches[$tmp['id']] = $tmp;
+				$matches = $matches + $s['childs'];
+			}
+			else
+			{
+				$keys = array_keys($matches);
+				$pos = array_search($tmp['parent'], $keys);
+				$matches = array_slice($matches, 0, $pos+1, true) + array($tmp['id']=>$tmp) + (isset($s['childs']) ? $s['childs'] : array()) +  array_slice($matches, $pos, count($matches)-$pos, true);
+			}
+
+		}
+
         $allegroCategories = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:CategoryAllegro')
             ->findBy(
@@ -428,7 +459,7 @@ class SettingsController extends Controller
             'ShoploAllegroBundle::categories.html.twig',
             array(
                 'form'               => $form->createView(),
-                'shoplo_categories'  => $shoploCategories,
+                'shoplo_categories'  => $matches,
                 'allegro_categories' => $allegroCategories,
             )
         );
