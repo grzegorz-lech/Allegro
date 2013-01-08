@@ -508,51 +508,50 @@ class SettingsController extends Controller
             gethostbyname('shoplo.com'),
         );
 
-        if (!in_array($request->getClientIp(), $whitelist)) {
-            throw new AccessDeniedException();
-        }
+//        if (!in_array($request->getClientIp(), $whitelist)) {
+//            throw new AccessDeniedException();
+//        }
 
-        $shoploSection 	= $request->headers->get('HTTP_SHOPLO_SECTION');
-        $shoploShopId	= $request->headers->get('HTTP_SHOPLO_SHOP_ID');
-        $shoploHmacKey	= $request->headers->get('HTTP_SHOPLO_HMAC_SHA256');
+		$shoploSection 	= trim($request->headers->get('shoplo-section'));
+        $shoploShopId	= trim($request->headers->get('shoplo-shop-id'));
+        $shoploHmacKey	= trim($request->headers->get('shoplo-hmac-sha256'));
 
         list($objectType, $action) = explode('/', $shoploSection, 2);
-        $shoploObjectId = $request->headers->get('HTTP_SHOPLO_'.strtoupper($objectType).'_ID');
+        $shoploObjectId = trim($request->headers->get('shoplo-'.strtolower($objectType).'-id'));
 
         $user = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:User')
             ->findOneByShopId($shoploShopId);
 
-        $data = $request->request->get($objectType);
 
-        $calculatedHmacKey = base64_encode(hash_hmac('sha256', $_POST, $this->getContainer()->getParameter('oauth_consumer_secret'), true));
+        $calculatedHmacKey = base64_encode(hash_hmac('sha256', http_build_query($_POST), $this->container->getParameter('oauth_consumer_secret')));
         if ($calculatedHmacKey == $shoploHmacKey) {
             $allegro = $this->get('allegro');
-            $allegro->login($this->getUser());
+            $allegro->login($user);
 
+			$data = $request->request->get($objectType);
             foreach ($data['order_items'] as $item) {
                 // pobieramy aukcje, w których warianty zostaly sprzedane
                 $repository = $this->getDoctrine()
                     ->getRepository('ShoploAllegroBundle:Item');
                 $query = $repository->createQueryBuilder('p')
                     ->where('p.variant_id = :variant_id')
-                    ->andWhere('p.user_id > :user_id')
+                    ->andWhere('p.user_id = :user_id')
                     ->andWhere('p.end_at > :end_at')
                     ->setParameters(array(
                         'variant_id' => $item['variant_id'],
                         'user_id'	 => $user->getId(),
-                        'end_at'	 => new \DateTime()
+                        'end_at'	 => date('Y-m-d H:i:s')
                     ))
                     ->getQuery();
                 $allegroItems = $query->getResult();
                 foreach ($allegroItems as $allegroItem) {
                     $quantitySold = $allegroItem->getQuantitySold()+$item['quantity'];
                     $allegroItem->setQuantitySold($quantitySold);
-                    //$result = $allegro->updateItemQuantity($allegroItem, $allegroItem->getQuantity()-$quantitySold);
+                    $result = $allegro->updateItemQuantity($allegroItem->getId(), $allegroItem->getQuantity()-$quantitySold);
                 }
             }
 
-            #TODO: dorobic obsluge webhook'a na product/update - update kolumny quantity
             $this->getDoctrine()->getManager()->flush();
         }
 

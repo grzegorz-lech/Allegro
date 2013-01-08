@@ -18,7 +18,7 @@ class WizardController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $ids = $request->query->get('product', array());
+		$ids = $request->query->get('product', array());
         $ids = !is_array($ids) ? explode(',', $ids) : $ids;
         if (empty($ids)) {
             throw $this->createNotFoundException('Product IDs missing');
@@ -144,6 +144,10 @@ class WizardController extends Controller
                 $em->flush();
 
                 if (empty($extras)) {
+					$this->get('session')->setFlash(
+						"success",
+						"Gratulacje. Twoja Aukcja została utworzona:) Będzie ona widoczna w przeciągu kilku minut."
+					);
                     return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
                 }
             }

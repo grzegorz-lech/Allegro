@@ -36,6 +36,24 @@
 <div id="wrap">
 
 	<div class="container{% block container_class %}{% endblock %}">
+		{% block messages %}
+			{% for flashMessage in app.session.flashbag.get('success') %}
+			<div class="alert alert-success">
+				{{ flashMessage }}
+			</div>
+			{% endfor %}
+			{% for flashMessage in app.session.flashbag.get('error') %}
+			<div class="alert alert-error">
+				{{ flashMessage }}
+			</div>
+			{% endfor %}
+			{% for flashMessage in app.session.flashbag.get('info') %}
+			<div class="alert alert-info">
+				{{ flashMessage }}
+			</div>
+			{% endfor %}
+		{% endblock %}
+
         {% block body %}{% endblock %}
     </div>
 
