@@ -53,6 +53,8 @@ class ImportCommand extends Command
             foreach ($deals as $deal) {
                 $auctionsIds[] = $deal->getItemId();
 
+				print_r($deal);
+
                 /**
                  * Każde z typów zdarzeń (oprócz 1, dla którego ID transakcji nie jest jeszcze znane),
                  * generowane jest osobno dla każdego deala wchodzącego w skład transakcji.
