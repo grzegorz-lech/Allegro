@@ -66,7 +66,7 @@ class Item
 	/**
 	 * @var integer
 	 *
-	 * @ORM\Column(name="quantity_sold", type="integer")
+	 * @ORM\Column(name="quantity_all", type="integer")
 	 */
 	private $quantity_all = 0;
 
