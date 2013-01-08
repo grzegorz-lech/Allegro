@@ -75,21 +75,16 @@ class ImportCommand extends Command
 
             $postBuyData = $allegro->getPostBuyData(array_unique($auctionsIds));
 
-            if (!empty($newTransactionAuctionMap)) {
+            if (!empty($newTransactionAuctionMap))
+			{
                 $buyersFormsData = $allegro->getBuyersData(array_keys($newTransactionAuctionMap));
 
-                foreach ($buyersFormsData as $data) {
-                    // TODO: retrieve auctions to get variant_id by auction_id
-                    $auction = (object) array(
-                        'id'            => 1,
-                        'variant_id'    => 11,
-                        'quantity'      => 100,
-                        'quantity_sold' => 20,
-                        'start_at'      => '2012-12-22 20:23:43',
-                        'end_at'        => '2012-12-29 20:23:43',
-                    );
+                foreach ($buyersFormsData as $data)
+				{
+					$auctionId = $newTransactionAuctionMap[$data['post-buy-form-id']];
 
-                    $auctionId = $newTransactionAuctionMap[$data['post-buy-form-id']];
+                    $item = $doctrine->getRepository('ShoploAllegroBundle:Item')->findOneById($auctionId);
+
                     $buyerId   = $data['post-buy-form-buyer-id'];
                     $buyer     = array();
                     foreach ($postBuyData as $d) {
@@ -100,10 +95,10 @@ class ImportCommand extends Command
                     }
 
                     $shoplo = $this->getShop($user);
-                    $order  = $this->createShoploOrder($auction, $data, $user, $buyer, $allegro, $shoplo);
+                    $order  = $this->createShoploOrder($item, $data, $user, $buyer, $allegro, $shoplo);
                     // TODO: create order in DB
 
-                    // TODO: update in auction quantity_sold
+                    $item->setQuantitySold($item->getQuantitySold()+$data['post-buy-form-items']['post-buy-form-it-quantity']);
                 }
             }
 
@@ -145,7 +140,7 @@ class ImportCommand extends Command
      * @param  Shoplo  $shoplo
      * @return array
      */
-    public function createShoploOrder($auction, $auctionData, $user, $buyer, Allegro $allegro, Shoplo $shoplo)
+    public function createShoploOrder($item, $auctionData, $user, $buyer, Allegro $allegro, Shoplo $shoplo)
     {
         list($shippingFirstName, $shippingLastName) = explode(
             ' ',
@@ -187,12 +182,12 @@ class ImportCommand extends Command
             ),
             'order_items'      => array(
                 array(
-                    'variant_id' => $auction->variant_id,
+                    'variant_id' => $item->getVariantId(),
                     'quantity'   => $auctionData['post-buy-form-items']['post-buy-form-it-quantity'],
                     'price'      => $auctionData['post-buy-form-items']['post-buy-form-it-price'],
                 ),
             ),
-            'referring_site'   => 'http://allegro.pl/i' . $auction->id . '.html',
+            'referring_site'   => 'http://allegro.pl/i' . $item->getId() . '.html',
             'landing_site'     => '/',
             'notes'            => $auctionData['post-buy-form-msg-to-seller'],
         );
