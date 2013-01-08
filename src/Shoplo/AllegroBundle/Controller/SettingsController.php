@@ -380,7 +380,10 @@ class SettingsController extends Controller
 			if ( $s['parent'] == 0 )
 			{
 				$matches[$tmp['id']] = $tmp;
-				$matches = $matches + $s['childs'];
+				if ( isset($s['childs']) )
+				{
+					$matches = $matches + $s['childs'];
+				}
 			}
 			else
 			{
