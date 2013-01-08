@@ -47,7 +47,7 @@ class Shoplo extends \OAuth
 
     public function post($uri, $data = array())
     {
-        $url = sprintf('%s', self::GATEWAY, $uri);
+        $url = sprintf('%s/%s', self::GATEWAY, $uri);
 
         $this->fetch($url, $data, 'POST');
         $json = $this->getLastResponse();
