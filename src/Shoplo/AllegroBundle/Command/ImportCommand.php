@@ -84,6 +84,7 @@ class ImportCommand extends Command
 				$output->writeln('<comment>Buyers data: '.print_r($buyersFormsData, true).'</comment>');
                 foreach ($buyersFormsData as $data)
 				{
+					$data = (array) $data;
 					$auctionId = $newTransactionAuctionMap[$data['post-buy-form-id']];
 
                     $item = $doctrine->getRepository('ShoploAllegroBundle:Item')->findOneById($auctionId);
