@@ -148,15 +148,16 @@ class ImportCommand extends Command
      */
     public function createShoploOrder($item, $auctionData, $user, $buyer, Allegro $allegro, Shoplo $shoplo, OutputInterface $output)
     {
+		$shippingAddress = (array) $auctionData['post-buy-form-shipment-address'];
         list($shippingFirstName, $shippingLastName) = explode(
             ' ',
-            $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-full-name'],
+			$shippingAddress['post-buy-form-adr-full-name'],
             2
         );
         $paymentMethods  = Allegro::getPaymentMethods();
         $shippingMethods = $allegro->getShippingMethods();
 
-        $order = array(
+		$order = array(
             'shipping_details' => array(
                 'title' => isset($shippingMethods[$auctionData['post-buy-form-shipment-id']]) ? $shippingMethods[$auctionData['post-buy-form-shipment-id']] : 'Nie określony',
                 'price' => bcmul($auctionData['post-buy-form-postage-amount'], 100),
@@ -171,48 +172,60 @@ class ImportCommand extends Command
                 'phone'             => $buyer['user-data']['user-phone'],
                 'accept_newsletter' => '0',
                 'address'           => array(
-                    'street'       => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-street'],
-                    'city'         => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-city'],
-                    'zip_code'     => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-postcode'],
-                    'country_code' => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-country'],
+                    'street'       => $shippingAddress['post-buy-form-adr-street'],
+                    'city'         => $shippingAddress['post-buy-form-adr-city'],
+                    'zip_code'     => $shippingAddress['post-buy-form-adr-postcode'],
+                    'country_code' => $shippingAddress['post-buy-form-adr-country'],
                 ),
             ),
             'shipping_address' => array(
                 'first_name'   => $shippingFirstName,
                 'last_name'    => $shippingLastName,
-                'street'       => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-street'],
-                'phone'        => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-phone'],
-                'city'         => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-city'],
-                'zip_code'     => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-postcode'],
-                'country_code' => $auctionData['post-buy-form-shipment-address']['post-buy-form-adr-country'],
+                'street'       => $shippingAddress['post-buy-form-adr-street'],
+                'phone'        => $shippingAddress['post-buy-form-adr-phone'],
+                'city'         => $shippingAddress['post-buy-form-adr-city'],
+                'zip_code'     => $shippingAddress['post-buy-form-adr-postcode'],
+                'country_code' => $shippingAddress['post-buy-form-adr-country'],
             ),
-            'order_items'      => array(
+            /*'order_items'      => array(
                 array(
                     'variant_id' => $item->getVariantId(),
                     'quantity'   => $auctionData['post-buy-form-items']['post-buy-form-it-quantity'],
                     'price'      => $auctionData['post-buy-form-items']['post-buy-form-it-price'],
                 ),
-            ),
+            ),*/
             'referring_site'   => 'http://allegro.pl/i' . $item->getId() . '.html',
             'landing_site'     => '/',
             'notes'            => $auctionData['post-buy-form-msg-to-seller'],
         );
 
+		$items = (array) $auctionData['post-buy-form-items'];
+		foreach ( $items as $it )
+		{
+			$it = (array) $it;
+			$order['order_items'][] = array(
+				'variant_id' => $item->getVariantId(),
+				'quantity'   => $it['post-buy-form-it-quantity'],
+				'price'      => $it['post-buy-form-it-price'],
+			);
+		}
+
         if ($auctionData['post-buy-form-invoice-option']) {
+			$invoiceData = (array) $auctionData['post-buy-form-invoice-data'];
             list($firstName, $lastName) = explode(
                 ' ',
-                $auctionData['post-buy-form-invoice-data']['post-buy-form-adr-full-name'],
+				$invoiceData['post-buy-form-adr-full-name'],
                 2
             );
             $order['billing_address'] = array(
-                'company'      => $auctionData['post-buy-form-invoice-data']['post-buy-form-adr-company'],
+                'company'      => $invoiceData['post-buy-form-adr-company'],
                 'first_name'   => $firstName,
                 'last_name'    => $lastName,
-                'street'       => $auctionData['post-buy-form-invoice-data']['post-buy-form-adr-street'],
-                'city'         => $auctionData['post-buy-form-invoice-data']['post-buy-form-adr-city'],
-                'zip_code'     => $auctionData['post-buy-form-invoice-data']['post-buy-form-adr-postcode'],
-                'country_code' => $auctionData['post-buy-form-invoice-data']['post-buy-form-adr-country'],
-                'tax_id'       => $auctionData['post-buy-form-invoice-data']['post-buy-form-adr-nip'],
+                'street'       => $invoiceData['post-buy-form-adr-street'],
+                'city'         => $invoiceData['post-buy-form-adr-city'],
+                'zip_code'     => $invoiceData['post-buy-form-adr-postcode'],
+                'country_code' => $invoiceData['post-buy-form-adr-country'],
+                'tax_id'       => $invoiceData['post-buy-form-adr-nip'],
             );
         }
 
