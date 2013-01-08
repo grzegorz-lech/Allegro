@@ -549,9 +549,19 @@ class SettingsController extends Controller
                     ->getQuery();
                 $allegroItems = $query->getResult();
                 foreach ($allegroItems as $allegroItem) {
-                    $quantitySold = $allegroItem->getQuantitySold()+$item['quantity'];
-                    $allegroItem->setQuantitySold($quantitySold);
-                    $result = $allegro->updateItemQuantity($allegroItem->getId(), $allegroItem->getQuantity()-$quantitySold);
+					$quantityAll = $allegroItem->getQuantityAll();
+					$quantity 	 = $allegroItem->getQuantity();
+					if ( $quantityAll != -1 )
+					{
+						$quantityAll = $quantityAll - $item['quantity'];
+						$allegroItem->setQuantityAll($quantityAll);
+						if ( $quantityAll < $quantity )
+						{
+							$allegroItem->setQuantity($quantityAll);
+							$result = $allegro->updateItemQuantity($allegroItem->getId(), $allegroItem->getQuantity()-$allegroItem->getQuantitySold());
+
+						}
+					}
                 }
             }
 
