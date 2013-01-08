@@ -48,12 +48,10 @@ class ImportCommand extends Command
                 continue;
             }
 
-            $output->writeln('<info>Found ' . count($deals) . ' deals</info>');
+            $output->writeln('<info>Found ' . count($deals) . ' deals for user: ' . $user->getUsername() . '['.$user->getShopId().']</info>');
 
             foreach ($deals as $deal) {
                 $auctionsIds[] = $deal->getItemId();
-
-				print_r($deal);
 
                 /**
                  * Każde z typów zdarzeń (oprócz 1, dla którego ID transakcji nie jest jeszcze znane),
@@ -61,15 +59,18 @@ class ImportCommand extends Command
                  */
                 switch ($deal->getEventType()) {
                     case 1: # utworzenie aktu zakupowego (deala)
+						$output->writeln('<info>Utworzenie aktu zakupowego. ItemId: '.$deal->getItemId().'</info>');
                         continue;
                     case 2: # utworzenie formularza pozakupowego (transakcji)
-                        // TODO: create order in Shoplo
+						$output->writeln('<info>Utworzenie formularza pozakupowego. ItemId: '.$deal->getItemId().'</info>');
                         $newTransactionAuctionMap[$deal->getTransactionId()] = $deal->getItemId();
                         break;
                     case 3: # anulowanie formularza pozakupowego (transakcji)
+						$output->writeln('<info>Anulowanie formularza pozakupowego. ItemId: '.$deal->getItemId().'</info>');
                         // TODO: cancel order in Shoplo
                         break;
                     case 4: # zakończenie (opłacenie) transakcji przez PzA)
+						$output->writeln('<info>Zakonczenie (oplacenie) transakcji. ItemId: '.$deal->getItemId().'</info>');
                         // TODO: mark order as paid
                         break;
                 }
@@ -97,7 +98,9 @@ class ImportCommand extends Command
                     }
 
                     $shoplo = $this->getShop($user);
-                    $order  = $this->createShoploOrder($item, $data, $user, $buyer, $allegro, $shoplo);
+                    $order  = $this->createShoploOrder($item, $data, $user, $buyer, $allegro, $shoplo, $output);
+
+					$output->writeln('<info>Result: '.print_r($order, true).'</info>');
                     // TODO: create order in DB
 
                     $item->setQuantitySold($item->getQuantitySold()+$data['post-buy-form-items']['post-buy-form-it-quantity']);
@@ -142,7 +145,7 @@ class ImportCommand extends Command
      * @param  Shoplo  $shoplo
      * @return array
      */
-    public function createShoploOrder($item, $auctionData, $user, $buyer, Allegro $allegro, Shoplo $shoplo)
+    public function createShoploOrder($item, $auctionData, $user, $buyer, Allegro $allegro, Shoplo $shoplo, OutputInterface $output)
     {
         list($shippingFirstName, $shippingLastName) = explode(
             ' ',
@@ -211,6 +214,8 @@ class ImportCommand extends Command
                 'tax_id'       => $auctionData['post-buy-form-invoice-data']['post-buy-form-adr-nip'],
             );
         }
+
+		$output->writeln('<info>Order: '.print_r($order, true).'</info>');
 
         return $shoplo->post('orders', array('order' => $order));
     }
