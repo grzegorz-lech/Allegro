@@ -247,7 +247,7 @@ class Allegro extends \SoapClient
             // TODO: zapis danych sprzedazowych do bazy
             $result = $this->doGetPostBuyFormsDataForSellers($this->session['session-handle-part'], $transactionIds);
 
-            return $result['post-buy-form-data'];
+            return $result;
         } catch (\SoapFault $sf) {
             if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
                 if ($this->doLogin()) {
@@ -256,7 +256,7 @@ class Allegro extends \SoapClient
                         $transactionIds
                     );
 
-                    return $result['post-buy-form-data'];
+                    return $result;
                 }
             }
 
