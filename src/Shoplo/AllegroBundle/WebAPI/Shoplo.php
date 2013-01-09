@@ -55,7 +55,7 @@ class Shoplo extends \OAuth
         $data = json_decode($json, true);
 
         if (isset($data['status']) && $data['status'] == 'err') {
-            throw new \OAuthException($data['error_msg'], $data['error']);
+            throw new \OAuthException('Msg: '.$data['error_msg'], $data['error']);
         }
 
         $data = array_shift($data);
