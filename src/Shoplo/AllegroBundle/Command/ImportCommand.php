@@ -104,7 +104,8 @@ class ImportCommand extends Command
 					$output->writeln('<info>Result: '.print_r($order, true).'</info>');
                     // TODO: create order in DB
 
-                    $item->setQuantitySold($item->getQuantitySold()+$data['post-buy-form-items']['post-buy-form-it-quantity']);
+                    $arr = (array) $data['post-buy-form-items'];
+					$item->setQuantitySold($item->getQuantitySold()+$arr['post-buy-form-it-quantity']);
                 }
             }
 
@@ -159,7 +160,7 @@ class ImportCommand extends Command
 
 		$order = array(
             'shipping_details' => array(
-                'title' => isset($shippingMethods[$auctionData['post-buy-form-shipment-id']]) ? $shippingMethods[$auctionData['post-buy-form-shipment-id']] : 'Nie określony',
+                'title' => isset($shippingMethods[$auctionData['post-buy-form-shipment-id']]) ? $shippingMethods[$auctionData['post-buy-form-shipment-id']]['shipment-name'] : 'Nie określony',
                 'price' => bcmul($auctionData['post-buy-form-postage-amount'], 100),
             ),
             'payment_details'  => array(
