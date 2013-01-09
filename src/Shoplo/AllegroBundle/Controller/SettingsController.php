@@ -551,7 +551,7 @@ class SettingsController extends Controller
                 foreach ($allegroItems as $allegroItem) {
 					$quantityAll = $allegroItem->getQuantityAll();
 					$quantity 	 = $allegroItem->getQuantity();
-					if ( $quantityAll != -1 )
+					if ( $quantityAll != -1 && $quantity > $allegroItem->getQuantitySold() )
 					{
 						$quantityAll = $quantityAll - $item['quantity'];
 						$allegroItem->setQuantityAll($quantityAll);

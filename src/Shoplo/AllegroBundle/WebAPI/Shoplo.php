@@ -49,6 +49,7 @@ class Shoplo extends \OAuth
     {
         $url = sprintf('%s/%s', self::GATEWAY, $uri);
 
+		$this->setAuthType(OAUTH_AUTH_TYPE_FORM);
         $this->fetch($url, $data, 'POST');
         $json = $this->getLastResponse();
         $data = json_decode($json, true);
