@@ -8,6 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Shoplo\AllegroBundle\WebAPI\Shoplo;
 use HWI\Bundle\OAuthBundle\Security\Core\Authentication\Token\OAuthToken;
 use Shoplo\AllegroBundle\Entity\User;
+use Shoplo\AllegroBundle\Entity\Deal;
+use Shoplo\AllegroBundle\Entity\ShoploOrder;
 use Doctrine\ORM\EntityNotFoundException;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
 
@@ -28,6 +30,10 @@ class ImportCommand extends Command
         /** @var $repository \Shoplo\AllegroBundle\Entity\UserRepository */
         $repository = $doctrine->getRepository('ShoploAllegroBundle:User');
 
+		$dealRepository = $doctrine->getRepository('ShoploAllegroBundle:Deal');
+
+		$manager = $doctrine->getManager();
+
         /** @var $users User[] */
         $users = $repository->findAll();
 
@@ -41,7 +47,7 @@ class ImportCommand extends Command
             }
 
             $auctionsIds = $newTransactionAuctionMap = array();
-            $deals       = $allegro->getDeals(0);//$user->getLastEventId());
+            $deals       = $allegro->getDeals(0, $manager, $dealRepository);//$user->getLastEventId());
 
             if (empty($deals)) {
                 $output->writeln('<comment>No deals found</comment>');
@@ -51,7 +57,8 @@ class ImportCommand extends Command
             $output->writeln('<info>Found ' . count($deals) . ' deals for user: ' . $user->getUsername() . '['.$user->getShopId().']</info>');
 
             foreach ($deals as $deal) {
-                $auctionsIds[] = $deal->getItemId();
+
+				$auctionsIds[] = $deal->getItemId();
 
                 /**
                  * Każde z typów zdarzeń (oprócz 1, dla którego ID transakcji nie jest jeszcze znane),
@@ -81,8 +88,7 @@ class ImportCommand extends Command
             if (!empty($newTransactionAuctionMap))
 			{
                 $buyersFormsData = $allegro->getBuyersData(array_keys($newTransactionAuctionMap));
-				$output->writeln('<comment>Buyers data: '.print_r($buyersFormsData, true).'</comment>');
-                foreach ($buyersFormsData as $data)
+				foreach ($buyersFormsData as $data)
 				{
 					$data = (array) $data;
 					$auctionId = $newTransactionAuctionMap[$data['post-buy-form-id']];
@@ -101,17 +107,14 @@ class ImportCommand extends Command
                     $shoplo = $this->getShop($user);
                     $order  = $this->createShoploOrder($item, $data, $user, $buyer, $allegro, $shoplo, $output);
 
-					$output->writeln('<info>Result: '.print_r($order, true).'</info>');
-                    // TODO: create order in DB
-
-                    $arr = (array) $data['post-buy-form-items'];
+					$arr = (array) $data['post-buy-form-items'][0];
 					$item->setQuantitySold($item->getQuantitySold()+$arr['post-buy-form-it-quantity']);
                 }
             }
 
             // Zapamiętanie ostatniego zdarzenia
             $lastDeal = array_pop($deals);
-            $user->setLastEventId($lastDeal->getEventId());
+            $user->setLastEventId($lastDeal->getId());
             $doctrine->getManager()->flush();
         }
     }
@@ -150,13 +153,22 @@ class ImportCommand extends Command
     public function createShoploOrder($item, $auctionData, $user, $buyer, Allegro $allegro, Shoplo $shoplo, OutputInterface $output)
     {
 		$shippingAddress = (array) $auctionData['post-buy-form-shipment-address'];
-        list($shippingFirstName, $shippingLastName) = explode(
-            ' ',
-			$shippingAddress['post-buy-form-adr-full-name'],
-            2
-        );
+        list($shippingFirstName, $shippingLastName) = explode(' ', $shippingAddress['post-buy-form-adr-full-name'], 2);
+
         $paymentMethods  = Allegro::getPaymentMethods();
         $shippingMethods = $allegro->getShippingMethods();
+
+
+		$allegroCountriesKeys = array();
+		$allegroCountries = $allegro->doGetCountries($shippingAddress['post-buy-form-adr-country'], $allegro->getKey());
+		foreach ( $allegroCountries as $ac )
+		{
+			$ac = (array) $ac;
+			$allegroCountriesKeys[$ac['country-id']] = $ac['country-name'];
+		}
+		$allegroCountriesMap = $allegro->getCountryMap();
+		$allegroCountriesMap = array_flip($allegroCountriesMap);
+
 
 		$order = array(
             'shipping_details' => array(
@@ -176,7 +188,7 @@ class ImportCommand extends Command
                     'street'       => $shippingAddress['post-buy-form-adr-street'],
                     'city'         => $shippingAddress['post-buy-form-adr-city'],
                     'zip_code'     => $shippingAddress['post-buy-form-adr-postcode'],
-                    'country_code' => $shippingAddress['post-buy-form-adr-country'],
+                    'country_code' => $allegroCountriesMap[$allegroCountriesKeys[$shippingAddress['post-buy-form-adr-country']]],
                 ),
             ),
             'shipping_address' => array(
@@ -186,7 +198,7 @@ class ImportCommand extends Command
                 'phone'        => $shippingAddress['post-buy-form-adr-phone'],
                 'city'         => $shippingAddress['post-buy-form-adr-city'],
                 'zip_code'     => $shippingAddress['post-buy-form-adr-postcode'],
-                'country_code' => $shippingAddress['post-buy-form-adr-country'],
+                'country_code' => $allegroCountriesMap[$allegroCountriesKeys[$shippingAddress['post-buy-form-adr-country']]],
             ),
             /*'order_items'      => array(
                 array(
@@ -200,6 +212,7 @@ class ImportCommand extends Command
             'notes'            => $auctionData['post-buy-form-msg-to-seller'],
         );
 
+		$price = 0;
 		$items = (array) $auctionData['post-buy-form-items'];
 		foreach ( $items as $it )
 		{
@@ -207,8 +220,9 @@ class ImportCommand extends Command
 			$order['order_items'][] = array(
 				'variant_id' => $item->getVariantId(),
 				'quantity'   => $it['post-buy-form-it-quantity'],
-				'price'      => $it['post-buy-form-it-price'],
+				'price'      => bcmul($it['post-buy-form-it-price'], 100, 2),
 			);
+			$price += bcmul($it['post-buy-form-it-price'], 100, 2);
 		}
 
         if ($auctionData['post-buy-form-invoice-option']) {
@@ -225,13 +239,50 @@ class ImportCommand extends Command
                 'street'       => $invoiceData['post-buy-form-adr-street'],
                 'city'         => $invoiceData['post-buy-form-adr-city'],
                 'zip_code'     => $invoiceData['post-buy-form-adr-postcode'],
-                'country_code' => $invoiceData['post-buy-form-adr-country'],
+                'country_code' => $allegroCountriesMap[$allegroCountriesKeys[$invoiceData['post-buy-form-adr-country']]],
                 'tax_id'       => $invoiceData['post-buy-form-adr-nip'],
             );
         }
 
 		$output->writeln('<info>Order: '.print_r($order, true).'</info>');
 
-        return $shoplo->post('orders', array('order' => $order));
+        $result = $shoplo->post('orders', array('order' => $order));
+
+		if ( !empty($result) )
+		{
+			$orderObj = new ShoploOrder();
+			$orderObj->setOrderId($result['id']);
+			$orderObj->setUserId($user->getId());
+			$orderObj->setVariantId($item->getVariantId());
+			$orderObj->setProductId($item->getProductId());
+			$orderObj->setPrice((int) $price);
+			$orderObj->setShippingTitle($order['shipping_details']['title']);
+			$orderObj->setShippingPrice((int) $order['shipping_details']['price']);
+			$orderObj->setPaymentTitle($order['payment_details']['title']);
+			$orderObj->setReferringSite($order['referring_site']);
+			$orderObj->setLandingSite($order['landing_site']);
+			$orderObj->setNotes($order['notes']);
+			$orderObj->setCustomerEmail($buyer['user-data']['user-email']);
+			$orderObj->setCustomerPhone($buyer['user-data']['user-phone']);
+			$orderObj->setShippingName($shippingFirstName.' '.$shippingLastName);
+			$orderObj->setShippingAddress1($order['shipping_address']['street']);
+			$orderObj->setShippingCity($order['shipping_address']['city']);
+			$orderObj->setShippingZipCode($order['shipping_address']['zip_code']);
+			$orderObj->setShippingCountryCode($order['shipping_address']['country_code']);
+			$orderObj->setShippingPhone($order['shipping_address']['phone']);
+			$orderObj->setBillingName($order['billing_address']['company'] ? $order['billing_address']['company'] : $shippingFirstName.' '.$shippingLastName);
+			$orderObj->setBillingAddress1($order['billing_address']['street']);
+			$orderObj->setBillingCity($order['billing_address']['city']);
+			$orderObj->setBillingZipCode($order['billing_address']['zip_code']);
+			$orderObj->setBillingCountryCode($order['billing_address']['country_code']);
+			$orderObj->setBillingTaxId($order['billing_address']['tax_id']);
+			$orderObj->setCreatedAt(new \DateTime());
+
+			$em = $this->getContainer()->get('doctrine')->getManager();
+			$em->persist($orderObj);
+			$em->flush();
+		}
+
+		return $result;
     }
 }

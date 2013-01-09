@@ -49,13 +49,12 @@ class Shoplo extends \OAuth
     {
         $url = sprintf('%s/%s', self::GATEWAY, $uri);
 
-		$this->setAuthType(OAUTH_AUTH_TYPE_FORM);
-        $this->fetch($url, $data, 'POST');
+        $this->fetch($url, http_build_query($data), OAUTH_HTTP_METHOD_POST);//, array('Connection'=>'close'));
         $json = $this->getLastResponse();
         $data = json_decode($json, true);
 
         if (isset($data['status']) && $data['status'] == 'err') {
-            throw new \OAuthException('Msg: '.$data['error_msg'], $data['error']);
+			throw new \OAuthException('Msga: '.$data['error_msg'], $data['error']);
         }
 
         $data = array_shift($data);

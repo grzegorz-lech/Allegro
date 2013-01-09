@@ -170,6 +170,33 @@ class Allegro extends \SoapClient
         throw new \InvalidArgumentException();
     }
 
+	/**
+	 * @param  int $code
+	 * @return string
+	 * @throws \InvalidArgumentException
+	 */
+	public function getCountryKey($code)
+	{
+		$codes = array(
+			'pl' => 1, // Polska (allegro.pl)
+			'by' => 22, // Białoruś (allegro.by)
+			'bg' => 34, // Bułgaria (aukro.bg)
+			'cz' => 56, // Czechy (aukro.cz)
+			'kz' => 107, // Kazachstan (allegro.kz)
+			'ru' => 168, // Rosja (molotok.ru)
+			'sk' => 181, // Słowacja (aukro.sk)
+			'ua' => 209, // Ukraina (rosyjski) (aukro.ua)
+			'xx' => 228, // WebAPI (testwebapi.pl)
+			'ua' => 232, // Ukraina (ukraiński) (ua.aukro.ua) TODO: Język?
+		);
+		$codes = array_flip($codes);
+		if (isset($codes[$code])) {
+			return $codes[$code];
+		}
+
+		throw new \InvalidArgumentException();
+	}
+
     /**
      * @param array $session
      */
@@ -200,25 +227,33 @@ class Allegro extends \SoapClient
      * Metoda pobiera informacje z dziennika zdarzeń
      *
      * @param $lastEventId
+	 * @param $manager
      * @return Deal[]
      */
-    public function getDeals($lastEventId)
+    public function getDeals($lastEventId, $manager, $repository)
     {
         $deals = array();
 
-        foreach ($this->doGetSiteJournalDeals($this->session['session-handle-part'], $lastEventId) as $deal) {
-            $dealObject = new Deal();
-            $dealObject->setEventId($deal->{'deal-event-id'})
+		foreach ($this->doGetSiteJournalDeals($this->session['session-handle-part'], $lastEventId) as $deal) {
+			$dealObject = new Deal();
+            $dealObject->setDealId($deal->{'deal-id'})
                 ->setEventType($deal->{'deal-event-type'})
                 ->setEventTime(new \DateTime('@' . $deal->{'deal-event-time'}))
-                ->setId($deal->{'deal-id'})
+                ->setId($deal->{'deal-event-id'})
                 ->setTransactionId($deal->{'deal-transaction-id'})
                 ->setSellerId($deal->{'deal-seller-id'})
                 ->setItemId($deal->{'deal-item-id'})
                 ->setBuyerId($deal->{'deal-buyer-id'})
                 ->setQuantity($deal->{'deal-quantity'});
             $deals[] = $dealObject;
+
+			if ( $obj = $repository->findOneById($deal->{'deal-event-id'}) )
+			{
+				continue;
+			}
+			$manager->persist($dealObject);
         }
+		$manager->flush();
 
         return $deals;
     }
@@ -499,4 +534,229 @@ class Allegro extends \SoapClient
             return false;
         }
     }
+
+	public function getCountryMap()
+	{
+		return array(
+			"af" => "Afganistan",
+			"al" => "Albania",
+			"dz" => "Algeria",
+			"ad" => "Andora",
+			"ao" => "Angola",
+			"ai" => "Anguilla",
+			"ag" => "Antigua i Barbuda",
+			"ah" => "Antyle Holenderskie",
+			"sa" => "Arabia Saudyjska",
+			"ar" => "Argentyna",
+			"am" => "Armenia",
+			"aw" => "Aruba",
+			"au" => "Australia",
+			"at" => "Austria",
+			"bs" => "Bahamy",
+			"bh" => "Bahrajn",
+			"bd" => "Bangladesz",
+			"bb" => "Barbados",
+			"be" => "Belgia",
+			"bz" => "Belize",
+			"bj" => "Benin",
+			"bm" => "Bermuda",
+			"bt" => "Bhutan",
+			"by" => "Białoruś",
+			"bu" => "Birma",
+			"bo" => "Boliwia",
+			"ba" => "Bośnia i Hercegowina",
+			"bw" => "Botswana",
+			"br" => "Brazylia",
+			"bn" => "Brunei",
+			"io" => "Brytyjskie Wyspy Dziewicze",
+			"bg" => "Bułgaria",
+			"bf" => "Burkina Faso",
+			"bi" => "Burundi",
+			"cl" => "Chile",
+			"cn" => "Chiny",
+			"hr" => "Chorwacja",
+			"cy" => "Cypr",
+			"td" => "Czad",
+			"me" => "Czarnogóra",
+			"cz" => "Czechy",
+			"dk" => "Dania",
+			"dm" => "Dominika",
+			"do" => "Dominikana",
+			"dj" => "Dżibuti",
+			"eg" => "Egipt",
+			"ec" => "Ekwador",
+			"er" => "Erytrea",
+			"ee" => "Estonia",
+			"et" => "Etiopia",
+			"fk" => "Falklandy",
+			"fj" => "Fidżi",
+			"ph" => "Filipiny",
+			"fi" => "Finlandia",
+			"fr" => "Francja",
+			"gm" => "Gambia",
+			"gh" => "Ghana",
+			"gi" => "Gibraltar",
+			"gr" => "Grecja",
+			"gd" => "Grenada",
+			"gl" => "Grenlandia",
+			"ge" => "Gruzja",
+			"gu" => "Guam",
+			"gg" => "Guernsey",
+			"gy" => "Gujana",
+			"gf" => "Gujana Francuska",
+			"gp" => "Gwadelupa",
+			"gt" => "Gwatemala",
+			"gn" => "Gwinea",
+			"gw" => "Gwinea Bissau",
+			"gq" => "Gwinea Równikowa",
+			"ht" => "Haiti",
+			"es" => "Hiszpania",
+			"nl" => "Holandia",
+			"hn" => "Honduras",
+			"hk" => "Hong Kong",
+			"in" => "Indie",
+			"id" => "Indonezja",
+			"iq" => "Irak",
+			"ir" => "Iran",
+			"ie" => "Irlandia",
+			"is" => "Islandia",
+			"il" => "Izrael",
+			"jm" => "Jamajka",
+			"sj" => "Jan Mayen",
+			"jp" => "Japonia",
+			"yt" => "Jemen",
+			"je" => "Jersey",
+			"jo" => "Jordan",
+			"ky" => "Kajmany",
+			"kh" => "Kambodża",
+			"cm" => "Kamerun",
+			"ca" => "Kanada",
+			"qa" => "Katar",
+			"kz" => "Kazachstan",
+			"ke" => "Kenia",
+			"kg" => "Kirgistan",
+			"ki" => "Kiribati",
+			"co" => "Kolumbia",
+			"km" => "Komory",
+			"cg" => "Kongo, Demokratyczna Republika",
+			"cg" => "Kongo, Republika",
+			"kr" => "Korea Południowa",
+			"cr" => "Kostaryka",
+			"kw" => "Kuwejt",
+			"la" => "Laos",
+			"lb" => "Liban",
+			"li" => "Liechtenstein",
+			"lt" => "Litwa",
+			"lu" => "Luksemburg",
+			"lv" => "Łotwa",
+			"mk" => "Macedonia",
+			"mg" => "Madagaskar",
+			"yt" => "Majotta",
+			"mo" => "Makau",
+			"mw" => "Malawi",
+			"mv" => "Malediwy",
+			"my" => "Malezja",
+			"ml" => "Mali",
+			"mt" => "Malta",
+			"ma" => "Maroko",
+			"mq" => "Martynika",
+			"mr" => "Mauretania",
+			"mu" => "Mauritius",
+			"mx" => "Meksyk",
+			"fm" => "Mikronezja",
+			"md" => "Mołdawia",
+			"mc" => "Monako",
+			"mn" => "Mongolia",
+			"ms" => "Montserrat",
+			"mz" => "Mozambik",
+			"na" => "Namibia",
+			"nr" => "Nauru",
+			"np" => "Nepal",
+			"de" => "Niemcy",
+			"ne" => "Niger",
+			"ng" => "Nigeria",
+			"ni" => "Nikaragua",
+			"nu" => "Niue",
+			"no" => "Norwegia",
+			"nc" => "Nowa Kaledonia",
+			"nz" => "Nowa Zelandia",
+			"om" => "Oman",
+			"pk" => "Pakistan",
+			"pw" => "Palau",
+			"pa" => "Panama",
+			"pg" => "Papua-Nowa Gwinea",
+			"py" => "Paragwaj",
+			"pe" => "Peru",
+			"pf" => "Polinezja Francuska",
+			"pl" => "Polska",
+			"pr" => "Portoryko",
+			"pt" => "Portugalia",
+			"az" => "Republika Azerbejdżanu",
+			"ga" => "Republika Gabonu",
+			"za" => "Republika Południowej Afryki",
+			"cf" => "Republika Środkowoafrykańska",
+			"cv" => "Republika Zielonego Przylądka",
+			"ru" => "Rosja",
+			"ro" => "Rumunia",
+			"rw" => "Rwanda",
+			"eh" => "Sahara Zachodnia",
+			"kn" => "Saint Kitts i Nevis",
+			"lc" => "Saint Lucia",
+			"vc" => "Saint Vincent i Grenadyny",
+			"pm" => "Saint-Pierre i Miquelon",
+			"sv" => "Salwador",
+			"as" => "Samoa Amerykańska",
+			"ws" => "Samoa Zachodnie",
+			"sm" => "San Marino",
+			"sn" => "Senegal",
+			"rs" => "Serbia",
+			"sc" => "Seszele",
+			"sl" => "Sierra Leone",
+			"sg" => "Singapur",
+			"sk" => "Słowacja",
+			"si" => "Słowenia",
+			"so" => "Somalia",
+			"lk" => "Sri Lanka",
+			"us" => "Stany Zjednoczone",
+			"sz" => "Suazi",
+			"sr" => "Surinam",
+			"sj" => "Svalbard",
+			"sy" => "Syria",
+			"ch" => "Szwajcaria",
+			"se" => "Szwecja",
+			"tj" => "Tadżykistan",
+			"th" => "Tajlandia",
+			"tw" => "Tajwan",
+			"tz" => "Tanzania",
+			"tg" => "Togo",
+			"to" => "Tonga",
+			"tt" => "Trynidad i Tobago",
+			"tn" => "Tunezja",
+			"tr" => "Turcja",
+			"tm" => "Turkmenistan",
+			"tc" => "Turks i Caicos",
+			"tv" => "Tuvalu",
+			"ug" => "Uganda",
+			"ua" => "Ukraina",
+			"uy" => "Urugwaj",
+			"uz" => "Uzbekistan",
+			"vu" => "Vanuatu",
+			"wf" => "Wallis i Futuna",
+			"va" => "Watykan",
+			"ve" => "Wenezuela",
+			"hu" => "Węgry",
+			"gb" => "Wielka Brytania",
+			"vn" => "Wietnam",
+			"it" => "Włochy",
+			"ci" => "Wybrzeże Kości Słoniowej",
+			"sh" => "Wyspa Świętej Heleny",
+			"ck" => "Wyspy Cooka",
+			"vg" => "Wyspy Dziewicze (USA)",
+			"mh" => "Wyspy Marshalla",
+			"sb" => "Wyspy Salomona",
+			"zm" => "Zambia",
+			"zw" => "Zimbabwe",
+			"ae" => "Zjednoczone Emiraty Arabskie",
+		);
+	}
 }

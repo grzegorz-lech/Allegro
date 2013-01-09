@@ -15,7 +15,7 @@ class Deal
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      */
     private $id;
@@ -23,9 +23,9 @@ class Deal
     /**
      * @var integer
      *
-     * @ORM\Column(name="event_id", type="bigint")
+     * @ORM\Column(name="deal_id", type="bigint")
      */
-    private $event_id;
+    private $deal_id;
 
     /**
      * @var integer
@@ -100,12 +100,12 @@ class Deal
     /**
      * Identyfikator zdarzenia
      *
-     * @param  integer $eventId
+     * @param  integer $dealId
      * @return Deal
      */
-    public function setEventId($eventId)
+    public function setDealId($dealId)
     {
-        $this->event_id = $eventId;
+        $this->deal_id = $dealId;
 
         return $this;
     }
@@ -115,9 +115,9 @@ class Deal
      *
      * @return integer
      */
-    public function getEventId()
+    public function getDealId()
     {
-        return $this->event_id;
+        return $this->deal_id;
     }
 
     /**

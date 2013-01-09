@@ -12,6 +12,7 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Response;
 use Shoplo\AllegroBundle\Entity\CategoryAllegro;
 use Shoplo\AllegroBundle\Entity\Category;
+use Shoplo\AllegroBundle\Entity\ShoploOrder;
 
 class SettingsController extends Controller
 {
@@ -72,6 +73,9 @@ class SettingsController extends Controller
     {
         /** @var $allegro Allegro */
         $allegro = $this->get('allegro');
+		$a = $allegro->doGetCountries(1, $allegro->getKey());
+		print_r($a);
+		exit;
         $user    = $this->getUser();
         $allegro->login($user);
         $states = array();
@@ -533,39 +537,43 @@ class SettingsController extends Controller
             $allegro->login($user);
 
 			$data = $request->request->get($objectType);
-            foreach ($data['order_items'] as $item) {
-                // pobieramy aukcje, w których warianty zostaly sprzedane
-                $repository = $this->getDoctrine()
-                    ->getRepository('ShoploAllegroBundle:Item');
-                $query = $repository->createQueryBuilder('p')
-                    ->where('p.variant_id = :variant_id')
-                    ->andWhere('p.user_id = :user_id')
-                    ->andWhere('p.end_at > :end_at')
-                    ->setParameters(array(
-                        'variant_id' => $item['variant_id'],
-                        'user_id'	 => $user->getId(),
-                        'end_at'	 => date('Y-m-d H:i:s')
-                    ))
-                    ->getQuery();
-                $allegroItems = $query->getResult();
-                foreach ($allegroItems as $allegroItem) {
-					$quantityAll = $allegroItem->getQuantityAll();
-					$quantity 	 = $allegroItem->getQuantity();
-					if ( $quantityAll != -1 && $quantity > $allegroItem->getQuantitySold() )
-					{
-						$quantityAll = $quantityAll - $item['quantity'];
-						$allegroItem->setQuantityAll($quantityAll);
-						if ( $quantityAll < $quantity )
+			$order = $this->getDoctrine()->getRepository('ShoploAllegroBundle:ShoploOrder')->findOneBy(array('order_id'=>$data['id'], 'user_id'=>$user->getId()));
+			if ( !($order instanceof ShoploOrder) )
+			{
+				foreach ($data['order_items'] as $item) {
+					// pobieramy aukcje, w których warianty zostaly sprzedane
+					$repository = $this->getDoctrine()
+						->getRepository('ShoploAllegroBundle:Item');
+					$query = $repository->createQueryBuilder('p')
+						->where('p.variant_id = :variant_id')
+						->andWhere('p.user_id = :user_id')
+						->andWhere('p.end_at > :end_at')
+						->setParameters(array(
+						'variant_id' => $item['variant_id'],
+						'user_id'	 => $user->getId(),
+						'end_at'	 => date('Y-m-d H:i:s')
+					))
+						->getQuery();
+					$allegroItems = $query->getResult();
+					foreach ($allegroItems as $allegroItem) {
+						$quantityAll = $allegroItem->getQuantityAll();
+						$quantity 	 = $allegroItem->getQuantity();
+						if ( $quantityAll != -1 && $quantity > $allegroItem->getQuantitySold() )
 						{
-							$allegroItem->setQuantity($quantityAll);
-							$result = $allegro->updateItemQuantity($allegroItem->getId(), $allegroItem->getQuantity()-$allegroItem->getQuantitySold());
+							$quantityAll = $quantityAll - $item['quantity'];
+							$allegroItem->setQuantityAll($quantityAll);
+							if ( $quantityAll < $quantity )
+							{
+								$allegroItem->setQuantity($quantityAll);
+								$result = $allegro->updateItemQuantity($allegroItem->getId(), $allegroItem->getQuantity()-$allegroItem->getQuantitySold());
 
+							}
 						}
 					}
-                }
-            }
+				}
 
-            $this->getDoctrine()->getManager()->flush();
+				$this->getDoctrine()->getManager()->flush();
+			}
         }
 
         $response = new Response();
