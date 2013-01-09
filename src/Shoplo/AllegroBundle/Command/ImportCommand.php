@@ -231,6 +231,6 @@ class ImportCommand extends Command
 
 		$output->writeln('<info>Order: '.print_r($order, true).'</info>');
 
-        return $shoplo->post('orders', array('order' => http_build_query($order)));
+        return $shoplo->post('orders', array('order' => $order));
     }
 }
