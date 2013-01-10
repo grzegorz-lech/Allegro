@@ -20,6 +20,7 @@ class HomepageController extends Controller
         }
 
         $shoplo  = $this->container->get('shoplo');
+		$shop   = $shoplo->get('shop');
 
         $items = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:Item')
@@ -28,7 +29,7 @@ class HomepageController extends Controller
             array('id' => 'DESC')
         );
 
-        return $this->render('ShoploAllegroBundle::homepage.html.twig', array('items' => $items, 'shoplo' => $shoplo));
+        return $this->render('ShoploAllegroBundle::homepage.html.twig', array('items' => $items, 'shoplo' => $shoplo, 'shop'=>$shop));
     }
 
     /**

@@ -104,9 +104,9 @@
 											 data-original-title="{{ variant.title }}">
 									</span>
 
-									<p class="alignCenter">
+									{#<p class="alignCenter">
 										<a href="" class="hide action actionDelete"><span class="ico"></span></a>
-									</p>
+									</p>#}
 								</li>
 							{% endfor %}
 							</ul>
@@ -379,12 +379,21 @@
 						</div>
 					</div>
 
-                    {#
+
 					<div class="box">
 						<h3>Zdjęcia aukcji</h3>
 
 						<div class="row-fluid">
-							<ul class="inline medium">
+							<label class="radio">
+								<input type="radio" name="imagesOption" id="optionsRadios1" value="all" checked>
+								dodaj do aukcji wszystkie zdjęcia produktu
+							</label>
+							<label class="radio">
+								<input type="radio" name="imagesOption" id="optionsRadios2" value="one">
+								dodaj do aukcji tylko zdjęcie główne produktu
+							</label>
+
+							{#<ul class="inline medium">
 								<li>
 								<span class="mask alignCenter">
 									<a href="">
@@ -407,14 +416,14 @@
 										</li>
 									{% endfor %}
 								{% endfor %}
-							</ul>
+							</ul>#}
 						</div>
 
 						<br />
 
 						{{ form_rest(form) }}
 					</div>
-                    #}
+
 
 					<div class="box">
 						<h3 id="kategorie">Wystaw produkty w kategorii</h3>

@@ -54,8 +54,21 @@ class WizardController extends Controller
                 return $this->redirect($this->generateUrl('shoplo_allegro_settings_mapping'));
             }
 
+			$doubles = array();
+			foreach ( $categories as $k => $c )
+			{
+				if ( in_array($c->getAllegroId(), $doubles) )
+				{
+					unset($categories[$k]);
+				}
+				else
+				{
+					$doubles[$k] = $c->getAllegroId();
+				}
+			}
+
             foreach ($product['variants'] as $variant) {
-                $variant['categories']    = $categories;
+                $variant['categories']    = array_values($categories);
                 $variant['thumbnail']     = $product['thumbnail'];
                 $variants[$variant['id']] = $variant;
             }
@@ -77,7 +90,7 @@ class WizardController extends Controller
         $form   = $this->createFormBuilder($wizard)
             ->add('title', 'text') // TODO: Ustawienie maksymalnej długości LIMIT_ALLEGRO-MAX(nazwa_wariantu)
             ->add('description', 'textarea')
-            ->getForm();
+			->getForm();
 
         if ($request->isMethod('POST')) {
             $form->bind($request);
@@ -95,10 +108,10 @@ class WizardController extends Controller
                 $allegro = $this->get('allegro');
                 $allegro->login($this->getUser());
 
-                foreach ($products as $product) {
+				foreach ($products as $product) {
                     foreach ($product['variants'] as $variant) {
                         $categoryId = $_POST['category'][$variant['id']];
-                        $fields     = $wizard->export($profile, $product, $variant, $categoryId);
+                        $fields     = $wizard->export($profile, $product, $variant, $categoryId, $_POST['imagesOption']);
 
                         // Obsługa dodatkowych (wymaganych) pól Allegro
                         $extraFields = $allegro->getCategoryFields($categoryId);

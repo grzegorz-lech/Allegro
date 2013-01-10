@@ -49,7 +49,7 @@ class Wizard
         return $this->description;
     }
 
-    public function export(Profile $profile, array $product, array &$variant, $categoryId)
+    public function export(Profile $profile, array $product, array &$variant, $categoryId, $imagesOption)
     {
         $fields = array();
 
@@ -105,6 +105,9 @@ class Wizard
 
             if (false !== $image = file_get_contents($prefix . $image['src'])) {
                 $fields[] = $this->createField($id++, $image, true);
+				if ( $imagesOption == 'one' ) {
+					break;
+				}
             }
         }
 
