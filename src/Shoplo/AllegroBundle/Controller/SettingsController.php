@@ -562,11 +562,19 @@ class SettingsController extends Controller
 						{
 							$quantityAll = $quantityAll - $item['quantity'];
 							$allegroItem->setQuantityAll($quantityAll);
-							if ( $quantityAll < $quantity )
+							if ( $quantityAll <= $allegroItem->getQuantitySold() )
+							{
+								$result = $allegro->removeItem($allegroItem->getId());
+								if ( !$result )
+								{
+									#TODO: log this
+								}
+								$allegroItem->setQuantity($allegroItem->getQuantitySold());
+							}
+							elseif ( $quantityAll < $quantity )
 							{
 								$allegroItem->setQuantity($quantityAll);
 								$result = $allegro->updateItemQuantity($allegroItem->getId(), $allegroItem->getQuantity()-$allegroItem->getQuantitySold());
-
 							}
 						}
 					}

@@ -535,6 +535,32 @@ class Allegro extends \SoapClient
         }
     }
 
+	/**
+	 * Remove item from Allegro
+	 *
+	 * @param $itemId
+	 * @param int $finishCancelAllBids
+	 * @return bool
+	 */
+	public function removeItem($itemId, $finishCancelAllBids=1, $finishCancelReason='Przedmioty zostaly wykupione')
+	{
+		try {
+			$item = $this->doFinishItem($this->session['session-handle-part'], $itemId, $finishCancelAllBids, $finishCancelReason);
+
+			return $item ? true : false;
+		} catch (\SoapFault $sf) {
+			if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
+				if ($this->doLogin()) {
+					$item = $this->doFinishItem($this->session['session-handle-part'], $itemId, $finishCancelAllBids, $finishCancelReason);
+
+					return $item ? true : false;
+				}
+			}
+
+			return false;
+		}
+	}
+
 	public function getCountryMap()
 	{
 		return array(
