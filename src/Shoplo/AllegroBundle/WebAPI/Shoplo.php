@@ -8,6 +8,8 @@ class Shoplo extends \OAuth
 {
     const GATEWAY = 'http://api.shoplo.com/services';
 
+	protected $bucket = array();
+
     public function __construct($key, $secret, SecurityContext $security)
     {
         $token = $security->getToken();
@@ -32,15 +34,26 @@ class Shoplo extends \OAuth
             $url .= '/' . $id;
         }
 
+
+		if ( isset($this->bucket[$url]) )
+		{
+			return $this->bucket[$url];
+		}
+
+
         $this->fetch($url, $data);
         $json = $this->getLastResponse();
         $data = json_decode($json, true);
-
         if (isset($data['status']) && $data['status'] == 'err') {
             throw new \OAuthException($data['error_msg'], $data['error']);
         }
-
         $data = array_shift($data);
+
+
+		if ( !isset($this->bucket[$url]) )
+		{
+			$this->bucket[$url] = $data;
+		}
 
         return $data;
     }

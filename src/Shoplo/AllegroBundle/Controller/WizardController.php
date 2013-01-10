@@ -26,21 +26,29 @@ class WizardController extends Controller
 
         // Informacje o produktach
         $shoplo   = $this->get('shoplo');
-        $variants = $products = array();
+        $variants = $products = $productsWithNoCategories = array();
 
         foreach ($ids as $id) {
             $product = $shoplo->get('products', $id);
 
             // Kategorie
-            $categoryIDs = array();
+            $categoryIDs = $categories = array();
 
-            foreach ($product['categories'] as $category) {
-                $categoryIDs[] = $category['id'];
-            }
+			if ( isset($product['categories']) && !empty($product['categories']) )
+			{
+				foreach ($product['categories'] as $category) {
+					$categoryIDs[] = $category['id'];
+				}
 
-            $categories = $this->getDoctrine()
-                ->getRepository('ShoploAllegroBundle:Category')
-                ->findBy(array('shop_id' => $this->getUser()->getShopId(), 'shoplo_id' => $categoryIDs));
+				$categories = $this->getDoctrine()
+					->getRepository('ShoploAllegroBundle:Category')
+					->findBy(array('shop_id' => $this->getUser()->getShopId(), 'shoplo_id' => $categoryIDs));
+			}
+			else
+			{
+				$productsWithNoCategories[] = $product['title'];
+			}
+
 
             if (count($categoryIDs) !== count($categories)) {
                 return $this->redirect($this->generateUrl('shoplo_allegro_settings_mapping'));
@@ -54,6 +62,15 @@ class WizardController extends Controller
 
             $products[] = $product;
         }
+
+		if ( !empty($productsWithNoCategories) )
+		{
+			$this->get('session')->setFlash(
+				'info',
+				'Przypisz produkty "'.implode('", "', $productsWithNoCategories).'" do odpowiednich kategorii aby móc wystawić je na Allegro.'
+			);
+			return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+		}
 
         $wizard = new Wizard();
         $extras = array();
@@ -134,6 +151,7 @@ class WizardController extends Controller
                             ->setProductId($product['id'])
                             ->setPrice($variant['price'])
                             ->setQuantity($variant['quantity'])
+							->setQuantityAll($variant['add_to_magazine'] ? $variant['quantity'] : -1)
                             ->setStartAt(new \DateTime('now'))
                             ->setEndAt(new \DateTime('+' . $days[$profile->getDuration()] . ' days'));
 
