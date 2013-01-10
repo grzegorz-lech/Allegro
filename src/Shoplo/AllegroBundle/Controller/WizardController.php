@@ -46,7 +46,7 @@ class WizardController extends Controller
 			}
 			else
 			{
-				$productsWithNoCategories[] = $product['title'];
+				$productsWithNoCategories[] = $product['name'];
 			}
 
 
@@ -67,7 +67,7 @@ class WizardController extends Controller
 		{
 			$this->get('session')->setFlash(
 				'info',
-				'Przypisz produkty "'.implode('", "', $productsWithNoCategories).'" do odpowiednich kategorii aby móc wystawić je na Allegro.'
+				'Produkty "'.implode('", "', $productsWithNoCategories).'" nie mają przypisanych kategorii w Twoim sklepie.'
 			);
 			return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
 		}
