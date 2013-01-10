@@ -575,9 +575,8 @@ class SettingsController extends Controller
 							elseif ( $quantityAll < $quantity )
 							{
 								$allegroItem->setQuantity($quantityAll);
-								$newQuantity = $allegroItem->getQuantity()-$allegroItem->getQuantitySold();
-								$msg .= "Set {$newQuantity} for item: " . $allegroItem->getId() . "|  <br />";
-								$result = $allegro->updateItemQuantity($allegroItem->getId(), $newQuantity);
+								$msg .= "Set {$allegroItem->getQuantity()} for item: " . $allegroItem->getId() . "|  <br />";
+								$result = $allegro->updateItemQuantity($allegroItem->getId(), $allegroItem->getQuantity());
 							}
 						}
 					}
