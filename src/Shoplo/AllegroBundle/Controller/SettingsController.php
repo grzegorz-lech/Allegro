@@ -73,10 +73,7 @@ class SettingsController extends Controller
     {
         /** @var $allegro Allegro */
         $allegro = $this->get('allegro');
-		$a = $allegro->doGetCountries(1, $allegro->getKey());
-		print_r($a);
-		exit;
-        $user    = $this->getUser();
+		$user    = $this->getUser();
         $allegro->login($user);
         $states = array();
         foreach ($allegro->doGetStatesInfo($allegro->getCountry(), $allegro->getKey()) as $state) {
