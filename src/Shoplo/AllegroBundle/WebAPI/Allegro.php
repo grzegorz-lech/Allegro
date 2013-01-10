@@ -519,17 +519,22 @@ class Allegro extends \SoapClient
     public function updateItemQuantity($itemId, $quantity)
     {
         try {
+			$itemId = (float) $itemId;
             $item = $this->doChangeQuantityItem($this->session['session-handle-part'], $itemId, $quantity);
 
             return true;
         } catch (\SoapFault $sf) {
-            if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
+			if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
                 if ($this->doLogin()) {
                     $item = $this->doChangeQuantityItem($this->session['session-handle-part'], $itemId, $quantity);
 
                     return true;
                 }
             }
+			else
+			{
+				# TODO: log this error: $sf->faultcode/$itemId
+			}
 
             return false;
         }
@@ -545,6 +550,7 @@ class Allegro extends \SoapClient
 	public function removeItem($itemId, $finishCancelAllBids=1, $finishCancelReason='Przedmioty zostaly wykupione')
 	{
 		try {
+			$itemId = (float) $itemId;
 			$item = $this->doFinishItem($this->session['session-handle-part'], $itemId, $finishCancelAllBids, $finishCancelReason);
 
 			return $item ? true : false;
@@ -555,6 +561,10 @@ class Allegro extends \SoapClient
 
 					return $item ? true : false;
 				}
+			}
+			else
+			{
+				# TODO: log this error: $sf->faultcode/$itemId
 			}
 
 			return false;

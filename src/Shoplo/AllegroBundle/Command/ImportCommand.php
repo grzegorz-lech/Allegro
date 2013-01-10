@@ -47,7 +47,7 @@ class ImportCommand extends Command
             }
 
             $auctionsIds = $newTransactionAuctionMap = array();
-            $deals       = $allegro->getDeals(0, $manager, $dealRepository);//$user->getLastEventId());
+            $deals       = $allegro->getDeals($user->getLastEventId(), $manager, $dealRepository);
 
             if (empty($deals)) {
                 $output->writeln('<comment>No deals found</comment>');
@@ -85,7 +85,7 @@ class ImportCommand extends Command
 
             $postBuyData = $allegro->getPostBuyData(array_unique($auctionsIds));
 
-            if (!empty($newTransactionAuctionMap))
+            if ( !empty($newTransactionAuctionMap) )
 			{
                 $buyersFormsData = $allegro->getBuyersData(array_keys($newTransactionAuctionMap));
 				foreach ($buyersFormsData as $data)
