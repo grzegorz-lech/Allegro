@@ -530,6 +530,7 @@ class SettingsController extends Controller
             ->getRepository('ShoploAllegroBundle:User')
             ->findOneByShopId($shoploShopId);
 
+		$msg = '';
 
         $calculatedHmacKey = base64_encode(hash_hmac('sha256', http_build_query($_POST), $this->container->getParameter('oauth_consumer_secret')));
         if ($calculatedHmacKey == $shoploHmacKey) {
@@ -574,7 +575,9 @@ class SettingsController extends Controller
 							elseif ( $quantityAll < $quantity )
 							{
 								$allegroItem->setQuantity($quantityAll);
-								$result = $allegro->updateItemQuantity($allegroItem->getId(), $allegroItem->getQuantity()-$allegroItem->getQuantitySold());
+								$newQuantity = $allegroItem->getQuantity()-$allegroItem->getQuantitySold();
+								$msg .= "Set {$newQuantity} for item: " . $allegroItem->getId() . "|  <br />";
+								$result = $allegro->updateItemQuantity($allegroItem->getId(), $newQuantity);
 							}
 						}
 					}
@@ -585,7 +588,7 @@ class SettingsController extends Controller
         }
 
         $response = new Response();
-        $response->setContent('<html><body><h1>OK!</h1></body></html>');
+        $response->setContent('<html><body><h1>OK!<br />'.$msg.'</h1></body></html>');
         $response->setStatusCode(200);
         $response->headers->set('Content-Type', 'text/html');
 
