@@ -48,18 +48,14 @@ class HomepageController extends Controller
 		$allegro->login($this->getUser());
 		#TODO: odpytywac sie nie czesciej niz co 5min, uzyc cache'a
 		$ids = array_keys($activeItems);
-		foreach ( $ids as $k => $i )
-		{
-			$ids[$k] = (float) $i;
-		}
-		$result = $allegro->doGetItemsInfo($allegro->getSession(), $ids, 1);
-		if ( !empty($result['array-item-list-info']) )
+		$result = $allegro->getItemsInfo($ids);
+		if ( is_array($result) && !empty($result['array-item-list-info']) )
 		{
 			foreach ( $result['array-item-list-info'] as $itemInfo )
 			{
-				if ( isset($activeItems[$itemInfo['it-id']]) && $itemInfo['it-hit-count'] != $activeItems[$itemInfo['it-id']]->getViewsCount() )
+				if ( isset($activeItems[$itemInfo->{'it-id'}]) && $itemInfo->{'it-hit-count'} != $activeItems[$itemInfo->{'it-id'}]->getViewsCount() )
 				{
-					$activeItems[$itemInfo['it-id']]->setViewsCount($itemInfo['it-hit-count']);
+					$activeItems[$itemInfo->{'it-id'}]->setViewsCount($itemInfo->{'it-hit-count'});
 				}
 			}
 			$this->getDoctrine()->getManager()->flush();

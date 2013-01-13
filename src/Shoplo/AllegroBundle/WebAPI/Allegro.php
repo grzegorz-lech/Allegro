@@ -795,4 +795,30 @@ class Allegro extends \SoapClient
 			"ae" => "Zjednoczone Emiraty Arabskie",
 		);
 	}
+
+	public function getItemsInfo($ids)
+	{
+		foreach ( $ids as $k => $i )
+		{
+			$ids[$k] = (float) $i;
+		}
+
+		try {
+			$result = $this->doGetItemsInfo($this->getSession(), $ids, 1);
+
+			return $result;
+		} catch (\SoapFault $sf) {
+			if ($sf->faultcode == 'ERR_NO_SESSION' || $sf->faultcode == 'ERR_SESSION_EXPIRED') {
+				if ($this->doLogin()) {
+					return $this->doGetItemsInfo($this->getSession(), $ids, 1);
+				}
+			}
+			else
+			{
+				# TODO: log this error: $sf->faultcode/$itemId
+			}
+
+			return false;
+		}
+	}
 }
