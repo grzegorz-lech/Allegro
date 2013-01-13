@@ -10,6 +10,7 @@ class BaseExtension extends \Twig_Extension
             'price' => new \Twig_Filter_Method($this, 'priceFilter'),
             'price_with_currency' => new \Twig_Filter_Method($this, 'priceWithCurrencyFilter'),
             'nicedate' => new \Twig_Filter_Method($this, 'nicedateFilter'),
+			'count' => new \Twig_Filter_Method($this, 'countFilter'),
         );
     }
 
@@ -27,6 +28,11 @@ class BaseExtension extends \Twig_Extension
 
         return $price;
     }
+
+	public function countFilter($array)
+	{
+		return count($array);
+	}
 
     public function nicedateFilter($date)
     {
