@@ -70,6 +70,20 @@ class Item
 	 */
 	private $quantity_all = 0;
 
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Column(name="views_count", type="integer")
+	 */
+	private $views_count = 0;
+
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Column(name="watch_count", type="integer")
+	 */
+	private $watch_count = 0;
+
     /**
      * @var \DateTime
      *
@@ -256,6 +270,17 @@ class Item
         return $this->end_at;
     }
 
+	/**
+	 * Check if Item has finished
+	 *
+	 * @return bool
+	 */
+	public function isFinish()
+	{
+		$now = new \DateTime();
+		return $this->end_at < $now;
+	}
+
     /**
      * @param  int  $price
      * @return Item
@@ -327,5 +352,37 @@ class Item
 	public function getUserId()
 	{
 		return $this->user_id;
+	}
+
+	/**
+	 * @param int $views_count
+	 */
+	public function setViewsCount($views_count)
+	{
+		$this->views_count = $views_count;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getViewsCount()
+	{
+		return $this->views_count;
+	}
+
+	/**
+	 * @param int $watch_count
+	 */
+	public function setWatchCount($watch_count)
+	{
+		$this->watch_count = $watch_count;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getWatchCount()
+	{
+		return $this->watch_count;
 	}
 }

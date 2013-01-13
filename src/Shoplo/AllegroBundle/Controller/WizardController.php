@@ -79,7 +79,7 @@ class WizardController extends Controller
 		if ( !empty($productsWithNoCategories) )
 		{
 			$this->get('session')->setFlash(
-				'info',
+				'error',
 				'Produkty "'.implode('", "', $productsWithNoCategories).'" nie mają przypisanych kategorii w Twoim sklepie.'
 			);
 			return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));

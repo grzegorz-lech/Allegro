@@ -1,21 +1,27 @@
 {% extends "::base.html.twig" %}
 
+{% block javascripts %}
+	{{ parent() }}
+{% javascripts '@ShoploAllegroBundle/Resources/public/js/home.js' %}
+		<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock %}
+
 {% block body %}
-	{% if items %}
+	{% if active_items or finish_items %}
 		<div class="container-fluid">
 			<div class="row-fluid content">
 				<div class="span10 box">
 
 					<h3>
 						Twoje aukcje
-                        {#
+
 						<span class="floatRight">
-							<select name="filter">
-								<option value="1">Trwające</option>
-								<option value="0">Zakończone</option>
+							<select name="filter" class="span12">
+								<option value="1"{% if active_items|count > 0 %} selected="selected"{% endif %}{% if active_items|count == 0 %} disabled="disabled"{% endif %}>Trwające</option>
+								<option value="0"{% if active_items|count == 0 and finish_items|count > 0 %} selected="selected"{% endif %}{% if finish_items|count == 0 %} disabled="disabled"{% endif %}>Zakończone</option>
 							</select>
 						</span>
-						#}
 					</h3>
 
 					<table class="table">
@@ -24,14 +30,14 @@
 								<th colspan="2">&nbsp;</th>
 								<th class="alignCenter medium">Koniec</th>
 								<th class="alignCenter medium">Sprzedanych</th>
-								{#<th class="alignCenter">Statystyki</th>#}
-								<th class="alignCenter medium">Koszt</th>
-								{#<th class="mini">&nbsp;</th>#}
+								<th class="alignCenter">Statystyki</th>
+								{#<th class="alignCenter medium">Koszt</th>#}
+								<th class="mini">&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
-							{% for i in items %}
-							<tr>
+							{% for i in active_items %}
+							<tr class="active">
 								<td>
                                     <a href="{{ path('shoplo_allegro_show_item', {itemId: i.id}) }}" target="_blank">
 									    <img src="http://src.sencha.io/50/50/{{ i.getProduct(shoplo).thumbnail }}" />
@@ -44,12 +50,35 @@
                                 </td>
 								<td class="alignCenter">{{ i.getEndAt()|nicedate }}</td>
 								<td class="alignCenter">{{ i.getQuantitySold() }}/{{ i.getQuantity() }}</td>
-								{#<td class="alignCenter">3/5</td>#}
-								<td class="alignCenter">{{ i.price }} zł</td>
-								{#<td>#}
-									{#<a href="" class="action actionEdit"><span class="ico"></span></a>#}
-									{#<a href="" class="action actionDelete"><span class="ico"></span></a>#}
-								{#</td>#}
+								<td class="alignCenter">{{ i.getViewsCount() }}</td>
+								{#<td class="alignCenter">{{ i.price }} zł</td>#}
+								<td>
+									<a href="" class="action actionEdit"><span class="icon-edit"></span></a>
+									<a href="{{ path('shoplo_allegro_delete_item', {itemId: i.id}) }}" class="action actionDelete"><span class="icon-remove"></span></a>
+								</td>
+							</tr>
+							{% endfor %}
+
+							{% for i in finish_items %}
+							<tr class="finish{% if active_items|count > 0 %} hide{% endif %}">
+								<td>
+									<a href="{{ path('shoplo_allegro_show_item', {itemId: i.id}) }}" target="_blank">
+										<img src="http://src.sencha.io/50/50/{{ i.getProduct(shoplo).thumbnail }}" />
+									</a>
+								</td>
+								<td>
+									<a href="{{ path('shoplo_allegro_show_item', {itemId: i.id}) }}" target="_blank">
+										{{ i.getVariant(shoplo).title }}
+									</a>
+								</td>
+								<td class="alignCenter">{{ i.getEndAt()|nicedate }}</td>
+								<td class="alignCenter">{{ i.getQuantitySold() }}/{{ i.getQuantity() }}</td>
+								<td class="alignCenter">{{ i.getViewsCount() }}</td>
+								{#<td class="alignCenter">{{ i.price }} zł</td>#}
+								<td>
+									{#<a href="" class="actionEdit"><i class="icon-edit"></i></a>#}
+									<a href="" class="actionDelete"><i class="icon-remove"></i></a>
+								</td>
 							</tr>
 							{% endfor %}
 						</tbody>

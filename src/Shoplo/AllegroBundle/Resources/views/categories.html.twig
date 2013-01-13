@@ -14,19 +14,54 @@
 	<div class="box">
 		<h2>Zmapuj kategorie z Allegro</h2>
 
-		<div class="space"></div>
+		<br />
 
 		<div class="alert alert-error hide">
 			Każda kategoria z Shoplo musi być przypisana do kategorii z Allegro.
 		</div>
 
 		<form action="{{ path('shoplo_allegro_settings_mapping') }}" class="form-inline map-allegro" method="post" {{ form_enctype(form) }}>
-			<div class="control-group clear">
-				<label class="span2">Kategorie Shoplo</label>
+			<table class="table">
+				<thead>
+					<th class="span2">Kategorie Shoplo</th>
+					<th>Kategorie Allegro</th>
+				</thead>
+				<tbody>
+					{% for category in shoplo_categories %}
+					<tr class="control-group clear{% if category.parent == 0 %} parent{% endif %}{% if loop.first%} first{% endif %}">
+						<td>
+							{% if category.parent %}
+							<div class="input-prepend">
+								<span class="add-on"><i class="icon-chevron-right"></i></span>
+								<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
+							</div>
+							{% else %}
+							<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
+							{% endif %}
+
+							<input type="hidden" name="map[{{category.id}}]" value="0" class="map" />
+						</td>
+
+						<td>
+							<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
+								<option value="0">Wybierz kategorię</option>
+								{% for category in allegro_categories %}
+								<option value="{{category.id}}">{{category.name}}</option>
+								{% endfor %}
+							</select>
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+
+			{#<div class="control-group clear">
+				<label>Kategorie Shoplo</label>
 				<label>Kategorie Allegro</label>
-			</div>
+			</div>#}
+
 			{% for category in shoplo_categories %}
-			<div class="control-group clear">
+			<div class="control-group clear{% if category.parent == 0 %} parent{% endif %}{% if loop.first%} first{% endif %}">
 				{% if category.parent %}
 				<div class="input-prepend">
 					<span class="add-on"><i class="icon-chevron-right"></i></span>
@@ -44,8 +79,46 @@
 					<option value="{{category.id}}">{{category.name}}</option>
 					{% endfor %}
 				</select>
+
+				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
+					<option value="0">Wybierz kategorię</option>
+					{% for category in allegro_categories %}
+					<option value="{{category.id}}">{{category.name}}</option>
+					{% endfor %}
+				</select>
+				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
+					<option value="0">Wybierz kategorię</option>
+					{% for category in allegro_categories %}
+					<option value="{{category.id}}">{{category.name}}</option>
+					{% endfor %}
+				</select>
+				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
+					<option value="0">Wybierz kategorię</option>
+					{% for category in allegro_categories %}
+					<option value="{{category.id}}">{{category.name}}</option>
+					{% endfor %}
+				</select>
+				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
+					<option value="0">Wybierz kategorię</option>
+					{% for category in allegro_categories %}
+					<option value="{{category.id}}">{{category.name}}</option>
+					{% endfor %}
+				</select>
+				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
+					<option value="0">Wybierz kategorię</option>
+					{% for category in allegro_categories %}
+					<option value="{{category.id}}">{{category.name}}</option>
+					{% endfor %}
+				</select>
+				<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
+					<option value="0">Wybierz kategorię</option>
+					{% for category in allegro_categories %}
+					<option value="{{category.id}}">{{category.name}}</option>
+					{% endfor %}
+				</select>
 			</div>
 			{% endfor %}
+
             {% do form.categories.setRendered %}
 
 			<p>

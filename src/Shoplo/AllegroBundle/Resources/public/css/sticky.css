@@ -348,7 +348,21 @@ ul.inline li:hover a {
 /* Category mapping */
 .map-allegro select {
     margin-right: 5px;
+    margin-bottom: 2px;
 }
 .map-allegro .input-prepend input {
     width: 130px;
+}
+.map-allegro input {
+    margin-bottom: 2px;
+}
+
+.map-allegro .parent {
+    margin-bottom: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+.map-allegro .parent.first {
+    padding-top: 0;
+    border-top: none;
 }

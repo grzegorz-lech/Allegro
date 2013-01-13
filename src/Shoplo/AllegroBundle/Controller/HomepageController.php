@@ -5,6 +5,7 @@ namespace Shoplo\AllegroBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Request;
+use Shoplo\AllegroBundle\Entity\Item;
 
 class HomepageController extends Controller
 {
@@ -22,6 +23,7 @@ class HomepageController extends Controller
         $shoplo  = $this->container->get('shoplo');
 		$shop   = $shoplo->get('shop');
 
+		# TODO: stronicowanie
         $items = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:Item')
             ->findBy(
@@ -29,7 +31,38 @@ class HomepageController extends Controller
             array('id' => 'DESC')
         );
 
-        return $this->render('ShoploAllegroBundle::homepage.html.twig', array('items' => $items, 'shoplo' => $shoplo, 'shop'=>$shop));
+		$finishItems = $activeItems = array();
+		foreach ( $items as $item )
+		{
+			if ( $item->isFinish() )
+			{
+				$finishItems[$item->getId()] = $item;
+			}
+			else
+			{
+				$activeItems[$item->getId()] = $item;
+			}
+		}
+
+		$allegro = $this->get('allegro');
+		$allegro->login($this->getUser());
+		#TODO: odpytywac sie nie czesciej niz co 5min, uzyc cache'a
+		$result = $allegro->doGetItemsInfo($allegro->getSession(), array_keys($activeItems), 1);
+		if ( !empty($result['array-item-list-info']) )
+		{
+			foreach ( $result['array-item-list-info'] as $itemInfo )
+			{
+				if ( isset($activeItems[$itemInfo['it-id']]) && $itemInfo['it-hit-count'] != $activeItems[$itemInfo['it-id']]->getViewsCount() )
+				{
+					$activeItems[$itemInfo['it-id']]->setViewsCount($itemInfo['it-hit-count']);
+				}
+			}
+			$this->getDoctrine()->getManager()->flush();
+
+		}
+
+
+        return $this->render('ShoploAllegroBundle::homepage.html.twig', array('active_items' => $activeItems, 'finish_items' => $finishItems, 'shoplo' => $shoplo, 'shop'=>$shop));
     }
 
     /**
@@ -78,4 +111,38 @@ class HomepageController extends Controller
 
         return $this->redirect(sprintf($url, $itemId));
     }
+
+	public function deleteAction($itemId)
+	{
+		$item = $this->getDoctrine()->getRepository('ShoploAllegroBundle:Item')->findOneById($itemId);
+		if ( !($item instanceof Item) )
+		{
+			throw $this->createNotFoundException('Resource not found');
+		}
+
+		$allegro = $this->get('allegro');
+		$allegro->login($this->getUser());
+
+		$result = $allegro->removeItem($itemId);
+		if ( $result )
+		{
+			$em = $this->getDoctrine()->getManager();
+			$em->remove($item);
+			$em->flush();
+
+			$this->get('session')->setFlash(
+				"success",
+				"Aukcja została usunięta."
+			);
+		}
+		else
+		{
+			$this->get('session')->setFlash(
+				"error",
+				"Wystąpił problem. Prosimy spróbować później."
+			);
+		}
+
+		return $this->redirect( $this->generateUrl('shoplo_allegro_homepage') );
+	}
 }
