@@ -54,7 +54,7 @@ class HomepageController extends Controller
 			foreach ( $result['array-item-list-info'] as $itemInfo )
 			{
 				$itemInfo = (array) $itemInfo->{'item-info'};
-				if ( isset($activeItems[(string)$itemInfo->{'it-id'}]) && $itemInfo->{'it-hit-count'} != $activeItems[(string)$itemInfo->{'it-id'}]->getViewsCount() )
+				if ( isset($activeItems[(string)$itemInfo['it-id']]) && $itemInfo['it-hit-count'] != $activeItems[(string)$itemInfo['it-id']]->getViewsCount() )
 				{
 					$activeItems[(string)$itemInfo['it-id']]->setViewsCount($itemInfo['it-hit-count']);
 				}
