@@ -53,9 +53,10 @@ class HomepageController extends Controller
 		{
 			foreach ( $result['array-item-list-info'] as $itemInfo )
 			{
-				if ( isset($activeItems[$itemInfo->{'item-info'}->{'it-id'}]) && $itemInfo->{'item-info'}->{'it-hit-count'} != $activeItems[$itemInfo->{'item-info'}->{'it-id'}]->getViewsCount() )
+				$itemInfo = (array) $itemInfo;
+				if ( isset($activeItems[$itemInfo->{'it-id'}]) && $itemInfo->{'it-hit-count'} != $activeItems[$itemInfo->{'it-id'}]->getViewsCount() )
 				{
-					$activeItems[$itemInfo->{'item-info'}->{'it-id'}]->setViewsCount($itemInfo->{'item-info'}->{'it-hit-count'});
+					$activeItems[$itemInfo->{'it-id'}]->setViewsCount($itemInfo->{'it-hit-count'});
 				}
 			}
 			$this->getDoctrine()->getManager()->flush();
