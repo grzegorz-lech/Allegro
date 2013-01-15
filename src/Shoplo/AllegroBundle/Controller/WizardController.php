@@ -156,7 +156,7 @@ class WizardController extends Controller
                             continue;
                         }
 
-                        $itemId = (float) 2950783592;//$this->createAuction($fields);
+                        $itemId = $this->createAuction($fields);
 						if ( $itemId == 0 )
 						{
 							$this->get('session')->setFlash(
