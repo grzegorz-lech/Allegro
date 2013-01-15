@@ -278,7 +278,7 @@ class Item
 	public function isFinish()
 	{
 		$now = new \DateTime();
-		return $this->end_at < $now;
+		return $this->end_at < $now || $this->quantity == $this->quantity_sold;
 	}
 
     /**
