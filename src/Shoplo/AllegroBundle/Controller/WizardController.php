@@ -156,7 +156,7 @@ class WizardController extends Controller
                             continue;
                         }
 
-                        $itemId = $this->createAuction($fields);
+                        $itemId = (float) 2950783592;//$this->createAuction($fields);
 						if ( $itemId == 0 )
 						{
 							$this->get('session')->setFlash(
@@ -164,6 +164,13 @@ class WizardController extends Controller
 								"Wystąpił problem. Prosimy spróbować później."
 							);
 							return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+						}
+
+						if (!$variant['add_to_magazine']) {
+							$quantity = $wizard->getAllStock() ? 100 : $wizard->getQuantity();
+						}
+						else {
+							$quantity = $wizard->getAllStock() ? $variant['quantity'] : $wizard->getQuantity();
 						}
 
                         $item = new Item();
@@ -174,8 +181,11 @@ class WizardController extends Controller
                             ->setVariantId($variant['id'])
                             ->setProductId($product['id'])
                             ->setPrice($variant['price'])
-                            ->setQuantity($variant['quantity'])
+                            ->setQuantity($quantity)
 							->setQuantityAll($variant['add_to_magazine'] ? $variant['quantity'] : -1)
+							->setQuantitySold(0)
+							->setViewsCount(0)
+							->setWatchCount(0)
                             ->setStartAt(new \DateTime('now'))
                             ->setEndAt(new \DateTime('+' . $days[$profile->getDuration()] . ' days'));
 
