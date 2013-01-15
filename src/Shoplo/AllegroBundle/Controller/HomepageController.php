@@ -100,7 +100,7 @@ class HomepageController extends Controller
     {
         switch ($this->getUser()->getCountry()) {
             case 1:
-                $url = 'http://allegro.pl/show_item.php?item=%d';
+                $url = 'http://allegro.pl/i%d.html';
                 break;
 
             case 228:
