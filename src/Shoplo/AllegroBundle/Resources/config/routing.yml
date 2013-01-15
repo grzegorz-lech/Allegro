@@ -21,6 +21,22 @@ shoplo_allegro_delete_item:
     requirements:
         itemId: \d+
 
+shoplo_allegro_profiles:
+    pattern: /profile
+    defaults: { _controller: ShoploAllegroBundle:Profile:index }
+
+shoplo_allegro_edit_profile:
+    pattern:  /profil/{profileId}/edytuj
+    defaults: { _controller: ShoploAllegroBundle:Settings:auction }
+    requirements:
+        itemId: \d+
+
+shoplo_allegro_delete_profile:
+    pattern:  /profil/{profileId}/usun
+    defaults: { _controller: ShoploAllegroBundle:Profile:delete }
+    requirements:
+        itemId: \d+
+
 shoplo_allegro_settings:
     pattern: /ustawienia
     defaults:

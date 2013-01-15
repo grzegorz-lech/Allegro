@@ -39,7 +39,7 @@ class BaseExtension extends \Twig_Extension
         $now = date_create('now');
         $interval = $now->diff($date);
 
-        if ($now == $date) {
+        if ($now == $date || $interval->d == 0) {
             return 'dzisiaj';
         } elseif ($now > $date) {
             if ($interval->d == 1) {

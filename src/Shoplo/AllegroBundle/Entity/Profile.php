@@ -71,6 +71,13 @@ class Profile
      */
     private $duration;
 
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Column(name="all_stock", type="integer")
+	 */
+	private $all_stock;
+
     /**
      * @var integer
      *
@@ -99,17 +106,32 @@ class Profile
      */
     private $extras = array();
 
+	/**
+	 * @var \DateTime
+	 *
+	 * @ORM\Column(name="created_at", type="datetimetz")
+	 */
+	private $created_at;
+
+
     /**
-     * @param  array                     $data
+     * @param  array $data
      * @throws \InvalidArgumentException
      * @return Profile
      */
     public function __construct(array $data = array())
     {
         foreach ($data as $key => $value) {
-            $method = 'set' . ucfirst(strtolower($key));
+			$key = explode('_', $key);
+			$key = array_map(
+				function ($value) {
+					return ucfirst(strtolower($value));
+				},
+				$key
+			);
+            $method = 'set' . implode('', $key);
             if (!method_exists($this, $method)) {
-                throw new InvalidArgumentException;
+                throw new InvalidArgumentException($method);
             }
 
             $this->{$method}($value);
@@ -380,4 +402,36 @@ class Profile
     {
         return $this->extras;
     }
+
+	/**
+	 * @param int $all_stock
+	 */
+	public function setAllStock($all_stock)
+	{
+		$this->all_stock = $all_stock;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getAllStock()
+	{
+		return $this->all_stock;
+	}
+
+	/**
+	 * @param \DateTime $created_at
+	 */
+	public function setCreatedAt($created_at)
+	{
+		$this->created_at = $created_at;
+	}
+
+	/**
+	 * @return \DateTime
+	 */
+	public function getCreatedAt()
+	{
+		return $this->created_at;
+	}
 }

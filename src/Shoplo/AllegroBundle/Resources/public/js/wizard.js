@@ -17,7 +17,8 @@ $(function(){
     });
 
     /* AUCTION PROFILE */
-    $('#profile').change( changeProfile );
+    changeProfile();
+    $('#form_profiles').change( changeProfile );
 
     /* FLOATING SIDEBAR */
     if ($('.sidebar').length) {
@@ -97,7 +98,7 @@ function calculatePrice()
 
 function changeProfile()
 {
-    if ( $('select[name=profile] option:selected').val() <= 0 ) {
+    if ( $('select#form_profiles option:selected').val() <= 0 ) {
         $('.profile').show();
     }
     else {

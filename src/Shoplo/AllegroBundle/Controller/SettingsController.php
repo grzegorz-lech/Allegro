@@ -62,6 +62,7 @@ class SettingsController extends Controller
             array(
                 'form' => $form->createView(),
                 'step' => 1,
+				'stage'=> 'init',
             )
         );
     }
@@ -126,6 +127,7 @@ class SettingsController extends Controller
             array(
                 'form' => $form->createView(),
                 'step' => 2,
+				'stage'=> 'init',
             )
         );
     }
@@ -133,9 +135,9 @@ class SettingsController extends Controller
     /**
      * @Secure(roles="ROLE_ADMIN")
      */
-    public function auctionAction(Request $request)
+    public function auctionAction(Request $request, $profileId=null)
     {
-        /** @var $allegro Allegro */
+		/** @var $allegro Allegro */
         $allegro = $this->get('allegro');
         $user    = $this->getUser();
         $allegro->login($user);
@@ -163,17 +165,55 @@ class SettingsController extends Controller
             explode('|', $fields[15]->{'sell-form-desc'})
         );
 
-        $form = $this->createFormBuilder()
+		$defaults = array();
+		$stage = 'init';
+		if ( !is_null($profileId) )
+		{
+			$profile = $this->getDoctrine()
+				->getRepository('ShoploAllegroBundle:Profile')
+				->findOneById($profileId);
+			if ( !($profile instanceof Profile) )
+			{
+				throw $this->createNotFoundException('Profile not found');
+			}
+			$stage = 'edit';
+			$defaults['profile_name'] = $profile->getName();
+		}
+		else
+		{
+			$count = $this->getDoctrine()
+				->getManager()
+				->createQuery('SELECT COUNT(p) FROM ShoploAllegroBundle:Profile p WHERE p.user_id=:user_id')
+				->setParameter('user_id', $this->getUser()->getId())
+				->getSingleScalarResult();
+			if ( $count > 0 )
+			{
+				$stage = 'new';
+			}
+		}
+
+
+
+		$form = $this->createFormBuilder($defaults)
             ->add('duration', 'choice', array('choices' => $durations, 'preferred_choices' => $preferredDurations))
-            ->add('promotions', 'choice', array('choices' => $promotions, 'multiple' => true, 'expanded' => true))
-            ->getForm();
+			->add('all_stock', 'checkbox', array('required' => false, 'attr'=> array('class' => 'ez-hide')))
+            ->add('promotions', 'choice', array('choices' => $promotions, 'multiple' => true, 'expanded' => true));
+
+		if ( $stage != 'init' )
+		{
+			$form->add('profile_name', 'text');
+		}
+
+		$form = $form->getForm();
 
         if ($request->isMethod('POST')) {
             $form->bind($request);
 
             if ($form->isValid()) {
-                $data               = $form->getData();
-                $data['promotions'] = array_sum($data['promotions']); // TODO: Symfony way
+
+				$data               = $form->getData();
+
+				$data['promotions'] = array_sum($data['promotions']); // TODO: Symfony way
 
                 /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
                 $session = $this->get('session');
@@ -187,8 +227,9 @@ class SettingsController extends Controller
             'ShoploAllegroBundle::settings.html.twig',
             array(
                 'form' => $form->createView(),
-                'step' => 3,
-            )
+				'step' => 3,
+				'stage'=> $stage,
+			)
         );
     }
 
@@ -215,6 +256,13 @@ class SettingsController extends Controller
             }
         );
 
+		$count = $this->getDoctrine()
+			->getManager()
+			->createQuery('SELECT COUNT(p) FROM ShoploAllegroBundle:Profile p WHERE p.user_id=:user_id')
+			->setParameter('user_id', $this->getUser()->getId())
+			->getSingleScalarResult();
+
+
         $form = $this->createFormBuilder()
             ->add('payments', 'choice', array('choices' => $payments, 'multiple' => true, 'expanded' => true))
             ->getForm();
@@ -224,6 +272,7 @@ class SettingsController extends Controller
 
             if ($form->isValid()) {
                 $data             = $form->getData();
+
                 $data['payments'] = array_sum($data['payments']); // TODO: Symfony way
                 $data['pod']      = isset($_POST['pod']) && $_POST['pod'];
 
@@ -238,6 +287,7 @@ class SettingsController extends Controller
         return $this->render(
             'ShoploAllegroBundle::settings.html.twig',
             array(
+				'stage' => $count == 0 ? 'init' : 'new',
                 'form' => $form->createView(),
                 'step' => 4,
             )
@@ -268,6 +318,13 @@ class SettingsController extends Controller
                 return $d !== '-';
             }
         );
+
+		$count = $this->getDoctrine()
+			->getManager()
+			->createQuery('SELECT COUNT(p) FROM ShoploAllegroBundle:Profile p WHERE p.user_id=:user_id')
+			->setParameter('user_id', $this->getUser()->getId())
+			->getSingleScalarResult();
+
         $form->add('delivery', 'choice', array('choices' => $delivery, 'multiple' => true, 'expanded' => true));
 
         // Sposoby dostawy
@@ -323,26 +380,38 @@ class SettingsController extends Controller
                 /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
                 $session = $this->get('session');
                 $data    = array_merge($session->get('default_profile'), $data);
-                unset($data['pod']);
+				$profileName = isset($data['profile_name']) ? $data['profile_name'] : 'Domyślny';
+				unset($data['pod'], $data['profile_name']);
 
                 $em      = $this->getDoctrine()->getManager();
                 $profile = new Profile($data);
 
                 $profile
                     ->setUserId($this->getUser()->getId())
-                    ->setName('Domyślny')
-                    ->setExtras($extras);
+                    ->setName( $profileName )
+                    ->setExtras($extras)
+					->setCreatedAt( new \DateTime() );
 
                 $em->persist($profile);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('shoplo_allegro_settings_mapping'));
+				$redirect = $count == 0 ? 'shoplo_allegro_settings_mapping' : 'shoplo_allegro_profiles';
+				if ( $count > 0 )
+				{
+					$this->get('session')->setFlash(
+						"success",
+						"Twój profil aukcji został utworzony."
+					);
+				}
+
+                return $this->redirect($this->generateUrl($redirect));
             }
         }
 
         return $this->render(
             'ShoploAllegroBundle::settings.html.twig',
             array(
+				'stage' => $count == 0 ? 'init' : 'new',
                 'form' => $form->createView(),
                 'step' => 5,
             )

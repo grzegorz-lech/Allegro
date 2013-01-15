@@ -17,7 +17,21 @@ class Wizard
      */
     protected $description;
 
-    /**
+	protected $profiles;
+
+	protected $duration;
+
+	protected $promotions;
+
+	protected $payments;
+
+	protected $delivery;
+
+	protected $quantity;
+
+	protected $all_stock;
+
+	/**
      * @param string $title
      */
     public function setTitle($title)
@@ -55,8 +69,11 @@ class Wizard
 
         // Nieskończony magazyn
         if (!$variant['add_to_magazine']) {
-            $variant['quantity'] = 100;
+            $variant['quantity'] = $this->getAllStock() ? 100 : $this->getQuantity();
         }
+		else {
+			$variant['quantity'] = $this->getAllStock() ? $variant['quantity'] : $this->getQuantity();
+		}
 
         // Cena
         $variant['price'] = round($variant['price'] / 100, 2);
@@ -161,4 +178,74 @@ class Wizard
 
         return $field;
     }
+
+	public function setDuration($duration)
+	{
+		$this->duration = $duration;
+	}
+
+	public function getDuration()
+	{
+		return $this->duration;
+	}
+
+	public function setPromotions($promotions)
+	{
+		$this->promotions = $promotions;
+	}
+
+	public function getPromotions()
+	{
+		return $this->promotions;
+	}
+
+	public function setPayments($payments)
+	{
+		$this->payments = $payments;
+	}
+
+	public function getPayments()
+	{
+		return $this->payments;
+	}
+
+	public function setDelivery($delivery)
+	{
+		$this->delivery = $delivery;
+	}
+
+	public function getDelivery()
+	{
+		return $this->delivery;
+	}
+
+	public function setAllStock($all_stock)
+	{
+		$this->all_stock = $all_stock;
+	}
+
+	public function getAllStock()
+	{
+		return $this->all_stock;
+	}
+
+	public function setQuantity($quantity)
+	{
+		$this->quantity = $quantity;
+	}
+
+	public function getQuantity()
+	{
+		return $this->quantity;
+	}
+
+	public function setProfiles($profiles)
+	{
+		$this->profiles = $profiles;
+	}
+
+	public function getProfiles()
+	{
+		return $this->profiles;
+	}
 }

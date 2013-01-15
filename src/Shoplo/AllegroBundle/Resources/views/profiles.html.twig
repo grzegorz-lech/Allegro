@@ -1,0 +1,66 @@
+{% extends "::base.html.twig" %}
+
+{% block javascripts %}
+	{{ parent() }}
+{% javascripts '@ShoploAllegroBundle/Resources/public/js/profiles.js' %}
+		<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="row-fluid content">
+			<div class="span10 box">
+
+				<h3>
+					Profile aukcji
+				</h3>
+
+				<table class="table">
+					<thead>
+						<tr>
+							<th colspan="2">&nbsp;</th>
+							<th class="alignCenter medium">Czas trwania</th>
+							<th class="alignCenter">Utworzony</th>
+							<th class="mini">&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for p in profiles %}
+						<tr class="active">
+							<td colspan="2">
+								<img src="{{ asset('img/profile.png') }}" alt="1" width="36" height="36" class="img-circle">
+
+								{% image '@ShoploAllegroBundle/Resources/public/img/profile.png' %}
+									<img src="{{ asset_url }}" />
+								{% endimage %}
+
+								{{ p.name }}
+							</td>
+							<td class="alignCenter">{{ p.duration }} dni</td>
+							<td class="alignCenter">{{ p.getCreatedAt()|nicedate }}</td>
+							<td>
+								{#<a href="{{ path('shoplo_allegro_edit_profile', {profileId: p.id}) }}" class="action actionEdit"><span class="icon-edit"></span></a>#}
+								<a href="{{ path('shoplo_allegro_delete_profile', {profileId: p.id}) }}" class="action actionDelete"><span class="icon-remove"></span></a>
+							</td>
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+
+			</div>
+
+			<div class="span2 sidebar">
+				<ul class="menu">
+					<li>
+						<a href="{{ path('shoplo_allegro_homepage')}}">Twoje aukcje</a>
+					</li>
+					<li>
+						<a href="{{ path('shoplo_allegro_settings_auction') }}">Dodaj nowy profil</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock %}

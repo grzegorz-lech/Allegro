@@ -37,6 +37,8 @@
 {% endblock %}
 
 {% block body %}
+	{% if stage == 'init' %}
+
     <h2 class="alignCenter">Witaj w aplikacji Integracja z Allegro</h2>
 
     <h4 class="alignCenter">Uzupełnij ustawienia aplikacji i zacznij wystawiać przedmioty</h4>
@@ -125,6 +127,14 @@
             {% endif %}
         </div>
 
+	{% else %}
+
+	<h2 class="alignCenter">{% if stage == 'new' %}Utwórz nowy profil aukcji{% else %}Edytuj profil aukcji{% endif %}</h2>
+
+	<div class="accordion init-settings">
+
+	{% endif %}
+
 		<div class="accordion-group{% if step != 3 %}{% if step > 3 %} done{% else %} disabled{% endif %}{% endif %}">
 			<div class="accordion-heading">
 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#collapseThree">
@@ -135,11 +145,32 @@
 			<div id="collapseThree" class="accordion-body collapse in">
 				<div class="accordion-inner">
 					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings_auction') }}" method="post" {{ form_enctype(form) }}>
+						{% if form.profile_name %}
+						<div class="control-group">
+							{{ form_label(form.profile_name, 'Nazwa profilu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
+
+							<div class="controls alignRight">
+								{{ form_widget(form.profile_name) }}
+							</div>
+						</div>
+						{% endif %}
+
 						<div class="control-group">
 							{{ form_label(form.duration, 'Czas trwania aukcji', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 
 							<div class="controls alignRight">
 								{{ form_widget(form.duration) }}
+							</div>
+						</div>
+
+						<div class="control-group">
+							{{ form_label(form.all_stock, 'Liczba sztuk (wszystkie z magazynu)', {'label_attr': {'class': 'control-label alignLeft', 'style': 'width: 380px'}}) }}
+
+							<div class="controls alignRight">
+								<div class="ez-checkbox">
+									{#<input type="checkbox" id="all_stock" class="ez-hide" />#}
+									{{ form_widget(form.all_stock) }}
+								</div>
 							</div>
 						</div>
 

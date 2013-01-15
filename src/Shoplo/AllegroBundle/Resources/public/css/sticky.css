@@ -287,7 +287,13 @@ a.actionDrag .ico { background-position: 0 -39px !important; }
 .init-settings .icon-settings {
     float: right;
 }
-
+.init-settings .quantity .ez-checkbox {
+    float: right;
+}
+.init-settings .quantity .cont {
+    float: right;
+    margin-right: 10px;
+}
 /* Wizard */
 .summaryBox.sidebar {
     width: 212px;
@@ -365,4 +371,24 @@ ul.inline li:hover a {
 .map-allegro .parent.first {
     padding-top: 0;
     border-top: none;
+}
+
+#form_payments input, #form_delivery input {
+    float: left;
+    margin-right: 10px !important;
+}
+#form_payments label, #form_delivery label {
+    margin-bottom: 15px;
+}
+#form_extra_delivery input {
+    margin-right: 10px !important;
+}
+#form_promotions input {
+    float: left;
+    margin-right: 10px !important;
+}
+#form_promotions label {
+    float: left;
+    margin-right: 20px;
+    width: 255px;
 }

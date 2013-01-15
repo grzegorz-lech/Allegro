@@ -53,7 +53,7 @@
 								<td class="alignCenter">{{ i.getViewsCount() }}</td>
 								{#<td class="alignCenter">{{ i.price }} zł</td>#}
 								<td>
-									<a href="" class="action actionEdit"><span class="icon-edit"></span></a>
+									{#<a href="" class="action actionEdit"><span class="icon-edit"></span></a>#}
 									<a href="{{ path('shoplo_allegro_delete_item', {itemId: i.id}) }}" class="action actionDelete"><span class="icon-remove"></span></a>
 								</td>
 							</tr>
@@ -93,6 +93,9 @@
 						</li>
 						<li>
 							<a href="http://{{ shop.domain }}/panel/product/list">Wystaw aukcję</a>
+						</li>
+						<li>
+							<a href="{{ path('shoplo_allegro_profiles') }}">Profile aukcji</a>
 						</li>
 					</ul>
 				</div>
