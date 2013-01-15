@@ -2,6 +2,7 @@
 
 namespace Shoplo\AllegroBundle\Form;
 
+use Symfony\Component\Form\Exception\InvalidPropertyException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Shoplo\AllegroBundle\Entity\Profile;
 
@@ -30,6 +31,11 @@ class Wizard
 	protected $quantity;
 
 	protected $all_stock;
+
+	protected $images = 'all';
+
+	protected $extra_delivery;
+
 
 	/**
      * @param string $title
@@ -122,7 +128,7 @@ class Wizard
 
             if (false !== $image = file_get_contents($prefix . $image['src'])) {
                 $fields[] = $this->createField($id++, $image, true);
-				if ( $imagesOption == 'one' ) {
+				if ( $this->images != 'all' ) {
 					break;
 				}
             }
@@ -247,5 +253,25 @@ class Wizard
 	public function getProfiles()
 	{
 		return $this->profiles;
+	}
+
+	public function setImages($images)
+	{
+		$this->images = $images;
+	}
+
+	public function getImages()
+	{
+		return $this->images;
+	}
+
+	public function setExtraDelivery($extra_delivery)
+	{
+		$this->extra_delivery = $extra_delivery;
+	}
+
+	public function getExtraDelivery()
+	{
+		return $this->extra_delivery;
 	}
 }

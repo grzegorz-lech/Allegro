@@ -86,7 +86,31 @@
     </script>
 {% endblock %}
 
+
+{% form_theme form _self %}
+
+{% block _form_extra_delivery_widget %}
+{% spaceless %}
+<div {{ block('widget_container_attributes') }}>
+	{% for child in form %}
+		<div class="form-inline" id="form_extra_delivery">
+			<div class="control-group">
+				<div class="controls">
+					{{ form_widget(child) }}
+					{{ form_label(child) }}
+
+					<input type="text" name="form[extra_delivery_price][{{ child.vars.value }}]" value="{{ attribute(extra_delivery_price, child.vars.value) }}" class="span2" placeholder="Koszt dostawy" />
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+{% endspaceless %}
+{% endblock %}
+
+
 {% block body %}
+
 	<div class="container-fluid">
 		<div class="row-fluid content">
 			<div class="span12">
@@ -202,6 +226,9 @@
 
 							{{ form_widget(form.delivery) }}
 
+							{{ form_widget(form.extra_delivery, {'extra_delivery_price': extra_delivery_price}) }}
+
+							{#
 							{% for k,v in extra_delivery %}
 							<div class="form-inline" id="form_extra_delivery">
 								<div class="control-group">
@@ -215,7 +242,7 @@
 								</div>
 							</div>
 							{% endfor %}
-
+							#}
 
 							<br />
 
@@ -313,14 +340,15 @@
 						<h3>Zdjęcia aukcji</h3>
 
 						<div class="row-fluid">
-							<label class="radio">
+							{{ form_widget(form.images) }}
+							{#<label class="radio">
 								<input type="radio" name="imagesOption" id="optionsRadios1" value="all" checked>
 								dodaj do aukcji wszystkie zdjęcia produktu
 							</label>
 							<label class="radio">
 								<input type="radio" name="imagesOption" id="optionsRadios2" value="one">
 								dodaj do aukcji tylko zdjęcie główne produktu
-							</label>
+							</label>#}
 
 							{#<ul class="inline medium">
 								<li>

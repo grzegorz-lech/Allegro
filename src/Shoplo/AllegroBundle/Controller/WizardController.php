@@ -240,6 +240,7 @@ class WizardController extends Controller
                 'products' => $products,
 				'profiles' => $profiles,
 				'extra_delivery' => $extrDelivery,
+				'extra_delivery_price' => isset($_POST['form']['extra_delivery_price']) ? $_POST['form']['extra_delivery_price'] : array()
             )
         );
     }
@@ -353,6 +354,21 @@ class WizardController extends Controller
 		}
 		$profileOptions += array(-1 => 'Bez profilu, ustawię ręcznie');
 
+		$imageOptions = array(
+			'all'	=>	'dodaj do aukcji wszystkie zdjęcia produktu',
+			'one'	=>	'dodaj do aukcji tylko zdjęcie główne produktu',
+		);
+
+		// Sposoby dostawy
+		$extrDelivery = $extras = array();
+		for ($i = 36; $i <= 52; $i++) {
+			$field = $fields[$i];
+			$label = $field->{'sell-form-title'};
+			$label = preg_replace('/\([a-z\s]+\)/i', '', $label);
+			$extrDelivery[$i] = $label;
+		}
+		asort($extrDelivery);
+
 		$wizard = new Wizard();
 		$form   = $this->createFormBuilder($wizard)
 			->add('title', 'text') // TODO: Ustawienie maksymalnej długości LIMIT_ALLEGRO-MAX(nazwa_wariantu)
@@ -363,7 +379,10 @@ class WizardController extends Controller
 			->add('duration', 'choice', array('choices' => $durations, 'preferred_choices' => $preferredDurations))
 			->add('promotions', 'choice', array('choices' => $promotions, 'multiple' => true, 'expanded' => true))
 			->add('payments', 'choice', array('choices' => $payments, 'multiple' => true, 'expanded' => true))
-			->add('delivery', 'choice', array('choices' => $delivery, 'multiple' => true, 'expanded' => true));
+			->add('delivery', 'choice', array('choices' => $delivery, 'multiple' => true, 'expanded' => true))
+			->add('extra_delivery', 'choice', array('choices' => $extrDelivery, 'multiple' => true, 'expanded' => true))
+			->add('images', 'choice', array('choices' => $imageOptions, 'expanded' => true));
+
 		return $form;
 	}
 

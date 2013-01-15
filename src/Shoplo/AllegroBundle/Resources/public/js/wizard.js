@@ -6,12 +6,14 @@ $(function(){
     $('#stock-quantity').keyup(calculatePrice);
     $('input.promotion').click(calculatePrice);
     $('select.product-category').change(calculatePrice);
-    $('#all-stock').click(function(){
+    $('#form_all_stock').click(function(){
         if ( $(this).is(':checked') ) {
-            $('#stock-quantity').attr('disabled', true);
+            $('#form_quantity').attr('disabled', true);
+            $('#form_quantity').val(0);
         }
         else {
-            $('#stock-quantity').attr('disabled', false);
+            $('#form_quantity').attr('disabled', false);
+            $('#form_quantity').focus();
         }
         calculatePrice();
     });
@@ -51,6 +53,22 @@ $(function(){
             }
         });
     }
+
+    /*** Extra delivery ***/
+    $('#form_extra_delivery input[type=text]').focus(function(){
+        $(this).parents('.controls').find('input[type=checkbox]').attr('checked', true);
+    });
+    $('#form_extra_delivery input[type=text]').blur(function(){
+        if ( $(this).val() != '' )
+        {
+            $(this).parents('.controls').find('input[type=checkbox]').attr('checked', true);
+        }
+        else
+        {
+            $(this).parents('.controls').find('input[type=checkbox]').attr('checked', false);
+        }
+
+    });
 });
 
 function calculatePrice()

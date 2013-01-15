@@ -373,11 +373,11 @@ ul.inline li:hover a {
     border-top: none;
 }
 
-#form_payments input, #form_delivery input {
+#form_payments input, #form_delivery input, #form_images input {
     float: left;
     margin-right: 10px !important;
 }
-#form_payments label, #form_delivery label {
+#form_payments label, #form_delivery label, #form_images label {
     margin-bottom: 15px;
 }
 #form_extra_delivery input {
@@ -391,4 +391,7 @@ ul.inline li:hover a {
     float: left;
     margin-right: 20px;
     width: 255px;
+}
+#form_extra_delivery label {
+    margin-right: 10px;
 }
