@@ -248,10 +248,10 @@ class ImportCommand extends Command
 
         $result = $shoplo->post('orders', array('order' => $order));
 
-		if ( !empty($result) )
+		if ( !empty($result) && isset($result['order']) )
 		{
 			$orderObj = new ShoploOrder();
-			$orderObj->setOrderId($result['id']);
+			$orderObj->setOrderId($result['order']['id']);
 			$orderObj->setUserId($user->getId());
 			$orderObj->setVariantId($item->getVariantId());
 			$orderObj->setProductId($item->getProductId());
