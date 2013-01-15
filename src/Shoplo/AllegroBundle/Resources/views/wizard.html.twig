@@ -99,7 +99,7 @@
 					{{ form_widget(child) }}
 					{{ form_label(child) }}
 
-					<input type="text" name="form[extra_delivery_price][{{ child.vars.value }}]" value="{{ attribute(extra_delivery_price, child.vars.value) }}" class="span2" placeholder="Koszt dostawy" />
+					<input type="text" name="extra_delivery_price[{{ child.vars.value }}]" value="{% if extra_delivery_price %}{{ attribute(extra_delivery_price, child.vars.value) }}{% endif %}" class="span2" placeholder="Koszt dostawy" />
 				</div>
 			</div>
 		</div>

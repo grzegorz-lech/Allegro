@@ -76,7 +76,8 @@ class WizardController extends Controller
             $form->bind($request);
 
             if ($form->isValid()) {
-                $wizard = $form->getData();
+
+				$wizard = $form->getData();
 				$em     = $this->get('doctrine')->getManager();
 
                 if ( $wizard->getProfiles() > 0 )
@@ -98,23 +99,25 @@ class WizardController extends Controller
 					$profile->setDelivery( $wizard->getDelivery() );
 					$profile->setPayments( $wizard->getPayments() );
 
+
+					$extraDelivery = $wizard->getExtraDelivery();
 					$optDeliveries = array();
-					foreach ( $_POST['delivery'] as $k => $v )
+					foreach ( $extraDelivery as $k )
 					{
-						if ( $v )
+						if ( isset($_POST['extra_delivery_price'][$k]) )
 						{
-							$v = str_replace(',', '.', $v);
+							$v = str_replace(',', '.', $_POST['extra_delivery_price'][$k]);
 							$v = round($v, 2);
 							$optDeliveries[$k] = $v;
 						}
 					}
-					$profile->setExtras($optDeliveries);
+					$profile->setExtras( $optDeliveries );
 				}
 
                 foreach ($products as $product) {
                     foreach ($product['variants'] as $variant) {
                         $categoryId = $_POST['category'][$variant['id']];
-                        $fields     = $wizard->export($profile, $product, $variant, $categoryId, $_POST['imagesOption']);
+                        $fields     = $wizard->export($profile, $product, $variant, $categoryId);
 
                         // Obsługa dodatkowych (wymaganych) pól Allegro
                         $extraFields = $allegro->getCategoryFields($categoryId);
@@ -240,7 +243,7 @@ class WizardController extends Controller
                 'products' => $products,
 				'profiles' => $profiles,
 				'extra_delivery' => $extrDelivery,
-				'extra_delivery_price' => isset($_POST['form']['extra_delivery_price']) ? $_POST['form']['extra_delivery_price'] : array()
+				'extra_delivery_price' => isset($_POST['extra_delivery_price']) ? $_POST['extra_delivery_price'] : array()
             )
         );
     }
@@ -373,14 +376,14 @@ class WizardController extends Controller
 		$form   = $this->createFormBuilder($wizard)
 			->add('title', 'text') // TODO: Ustawienie maksymalnej długości LIMIT_ALLEGRO-MAX(nazwa_wariantu)
 			->add('description', 'textarea')
-			->add('quantity', 'text')
+			->add('quantity', 'text', array('required' => false))
 			->add('all_stock', 'checkbox', array('required' => false))
 			->add('profiles', 'choice', array('choices' => $profileOptions))
 			->add('duration', 'choice', array('choices' => $durations, 'preferred_choices' => $preferredDurations))
 			->add('promotions', 'choice', array('choices' => $promotions, 'multiple' => true, 'expanded' => true))
 			->add('payments', 'choice', array('choices' => $payments, 'multiple' => true, 'expanded' => true))
 			->add('delivery', 'choice', array('choices' => $delivery, 'multiple' => true, 'expanded' => true))
-			->add('extra_delivery', 'choice', array('choices' => $extrDelivery, 'multiple' => true, 'expanded' => true))
+			->add('extra_delivery', 'choice', array('choices' => $extrDelivery, 'multiple' => true, 'expanded' => true, 'required' => false))
 			->add('images', 'choice', array('choices' => $imageOptions, 'expanded' => true));
 
 		return $form;

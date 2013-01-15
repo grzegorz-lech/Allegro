@@ -69,7 +69,7 @@ class Wizard
         return $this->description;
     }
 
-    public function export(Profile $profile, array $product, array &$variant, $categoryId, $imagesOption)
+    public function export(Profile $profile, array $product, array &$variant, $categoryId)
     {
         $fields = array();
 
