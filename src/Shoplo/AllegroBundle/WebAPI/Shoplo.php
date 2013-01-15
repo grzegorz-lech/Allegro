@@ -70,8 +70,6 @@ class Shoplo extends \OAuth
 			throw new \OAuthException('Msga: '.$data['error_msg'], $data['error']);
         }
 
-        $data = array_shift($data);
-
         return $data;
     }
 }
