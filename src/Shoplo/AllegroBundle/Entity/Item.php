@@ -328,6 +328,8 @@ class Item
 	public function setQuantityAll($quantity_all)
 	{
 		$this->quantity_all = $quantity_all;
+
+		return $this;
 	}
 
 	/**
@@ -344,6 +346,8 @@ class Item
 	public function setUserId($user_id)
 	{
 		$this->user_id = $user_id;
+
+		return $this;
 	}
 
 	/**
@@ -360,6 +364,8 @@ class Item
 	public function setViewsCount($views_count)
 	{
 		$this->views_count = $views_count;
+
+		return $this;
 	}
 
 	/**
@@ -376,6 +382,8 @@ class Item
 	public function setWatchCount($watch_count)
 	{
 		$this->watch_count = $watch_count;
+
+		return $this;
 	}
 
 	/**

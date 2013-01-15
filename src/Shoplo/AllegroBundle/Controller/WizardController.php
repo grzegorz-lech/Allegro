@@ -79,11 +79,11 @@ class WizardController extends Controller
                 $wizard = $form->getData();
 				$em     = $this->get('doctrine')->getManager();
 
-                if ( $_POST['profile'] > 0 )
+                if ( $wizard->getProfiles() > 0 )
 				{
 					$profile = $this->getDoctrine()
 						->getRepository('ShoploAllegroBundle:Profile')
-						->findOneBy(array('user_id' => (int)$_POST['profile'] ));
+						->findOneBy(array('id' => $wizard->getProfiles() ));
 				}
 				else
 				{
