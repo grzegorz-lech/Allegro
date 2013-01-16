@@ -1,6 +1,6 @@
 set     :application,           "Allegro"
 set     :user,                  "www-data"
-set     :deploy_to,             "/var/www/allegro.nexis.pl"
+set     :deploy_to,             "/var/www/allegro.shoploapp.com"
 set     :app_path,              "app"
 set     :repository,            "git@github.com:sgrodzicki/Allegro.git"
 set     :scm,                   :git
@@ -10,9 +10,10 @@ set     :use_sudo,              false
 set     :keep_releases,         3
 set     :use_composer,          true
 set     :update_vendors,        true
+set     :copy_vendors,          true
 set     :update_assets_version, true
 set     :dump_assetic_assets,   true
-set     :shared_children,       [app_path + "/logs", "vendor"]
+set     :shared_children,       [app_path + "/logs"]
 set     :shared_files,          ["app/config/parameters.yml"]
 set     :deploy_via,            :remote_cache
 set     :writable_dirs,         ["app/cache", "app/logs"]
@@ -31,16 +32,8 @@ task :upload_parameters do
     top.upload(origin_file, destination_file)
 end
 
-# Copy vendors from previous release
-before 'symfony:composer:update', 'composer:copy_vendors'
-namespace :composer do
-    task :copy_vendors, :except => { :no_release => true } do
-        capifony_pretty_print "--> Copy vendor file from previous release"
-
-        run "vendorDir=#{current_path}/vendor; if [ -d $vendorDir ] || [ -h $vendorDir ]; then cp -a $vendorDir #{latest_release}/vendor; fi;"
-        capifony_puts_ok
-    end
-end
+# Clean releases
+after "deploy", "deploy:cleanup"
 
 # Verbosity of messages
 logger.level = Logger::IMPORTANT # MAX_LEVEL
