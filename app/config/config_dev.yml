@@ -4,6 +4,27 @@ imports:
 framework:
     router:   { resource: "%kernel.root_dir%/config/routing_dev.yml" }
     profiler: { only_exceptions: false }
+    session:
+            handler_id: session.handler.pdo
+
+parameters:
+    pdo.db_options:
+        db_table:    "Session"
+        db_id_col:   "session_id"
+        db_data_col: "session_value"
+        db_time_col: "session_time"
+
+services:
+    pdo:
+        class: PDO
+        arguments:
+            - "mysql:dbname=%database_name%;host=%database_host%"
+            - %database_user%
+            - %database_password%
+
+    session.handler.pdo:
+        class:     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+        arguments: [@pdo, %pdo.db_options%]
 
 web_profiler:
     toolbar: false

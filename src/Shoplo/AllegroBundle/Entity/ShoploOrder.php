@@ -95,7 +95,7 @@ class ShoploOrder
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="notes", type="text")
+	 * @ORM\Column(name="notes", type="text", nullable=true)
 	 */
 	private $notes;
 
@@ -151,49 +151,49 @@ class ShoploOrder
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="shipping_phone", type="string", length=24)
+	 * @ORM\Column(name="shipping_phone", type="string", length=24, nullable=true)
 	 */
 	private $shipping_phone;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="billing_name", type="string", length=255)
+	 * @ORM\Column(name="billing_name", type="string", length=255, nullable=true)
 	 */
 	private $billing_name;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="billing_address_1", type="string", length=255)
+	 * @ORM\Column(name="billing_address_1", type="string", length=255, nullable=true)
 	 */
 	private $billing_address_1;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="billing_city", type="string", length=255)
+	 * @ORM\Column(name="billing_city", type="string", length=255, nullable=true)
 	 */
 	private $billing_city;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="billing_zip_code", type="string", length=8)
+	 * @ORM\Column(name="billing_zip_code", type="string", length=8, nullable=true)
 	 */
 	private $billing_zip_code;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="billing_country_code", type="string", length=2)
+	 * @ORM\Column(name="billing_country_code", type="string", length=2, nullable=true)
 	 */
 	private $billing_country_code;
 
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="billing_tax_id", type="string", length=16)
+	 * @ORM\Column(name="billing_tax_id", type="string", length=16, nullable=true)
 	 */
 	private $billing_tax_id;
 

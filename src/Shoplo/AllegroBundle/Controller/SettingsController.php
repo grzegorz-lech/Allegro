@@ -222,9 +222,8 @@ class SettingsController extends Controller
 
                 /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
                 $session = $this->get('session');
-                $session->set('default_profile', array_merge($session->get('default_profile'), $data));
-
-                return $this->redirect($this->generateUrl('shoplo_allegro_settings_payment'));
+				$session->set('default_profile', array_merge($session->get('default_profile', array()), $data));
+				return $this->redirect($this->generateUrl('shoplo_allegro_settings_payment'));
             }
         }
 
