@@ -69,6 +69,7 @@ class CategoryCommand extends Command
 		$treeWithLeafs = array();
 		foreach ( $tree as $child => $parent )
 		{
+			$output->writeln('<info>Process category id: '.$child.'</info>');
 			if ( $parent == 0 )
 			{
 				$treeWithLeafs[$child] = $child.'-'.$parent;
@@ -80,6 +81,8 @@ class CategoryCommand extends Command
 			$tmp = explode('-', $treeWithLeafs[$child]);
 			$tmp = array_reverse($tmp);
 			$treeWithLeafs[$child] = implode('-', $tmp);
+
+			$output->writeln('<info>Tree form category id: '.$child.' | tree: '.$treeWithLeafs[$child].'</info>');
 
 			$category = $this->getContainer()->getDoctrine()->getRepository('ShoploAllegroBundle:CategoryAllegro')->findById($child);
 			$category->setTree($treeWithLeafs[$child]);
