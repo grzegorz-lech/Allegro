@@ -98,6 +98,7 @@ class SettingsController extends Controller
             }
         }
 
+
         $form = $this->createFormBuilder()
             ->add('state', 'choice', array('choices' => $states, 'preferred_choices' => $preferredStates))
             ->add('city', 'text', array('data' => $shop['city']))
@@ -105,8 +106,8 @@ class SettingsController extends Controller
             'zipcode',
             'text',
             array('data' => $shop['zip_code'], 'attr' => array('pattern' => '[0-9]{2}-[0-9]{3}'))
-        )
-            ->getForm();
+        )->getForm();
+
 
         if ($request->isMethod('POST')) {
             $form->bind($request);
@@ -122,12 +123,18 @@ class SettingsController extends Controller
             }
         }
 
+		$count = $this->getDoctrine()
+			->getManager()
+			->createQuery('SELECT COUNT(p) FROM ShoploAllegroBundle:Profile p WHERE p.user_id=:user_id')
+			->setParameter('user_id', $this->getUser()->getId())
+			->getSingleScalarResult();
+
         return $this->render(
             'ShoploAllegroBundle::settings.html.twig',
             array(
                 'form' => $form->createView(),
                 'step' => 2,
-				'stage'=> 'init',
+				'stage'=> $count == 0 ? 'init' : 'new',
             )
         );
     }
@@ -135,7 +142,7 @@ class SettingsController extends Controller
     /**
      * @Secure(roles="ROLE_ADMIN")
      */
-    public function auctionAction(Request $request, $profileId=null)
+    public function auctionAction(Request $request)
     {
 		/** @var $allegro Allegro */
         $allegro = $this->get('allegro');
@@ -171,59 +178,20 @@ class SettingsController extends Controller
 			}
 		);
 
-		$defaults = array();
-		$stage = 'init';
-		if ( !is_null($profileId) )
-		{
-			$profile = $this->getDoctrine()
-				->getRepository('ShoploAllegroBundle:Profile')
-				->findOneById($profileId);
-			if ( !($profile instanceof Profile) )
-			{
-				throw $this->createNotFoundException('Profile not found');
-			}
-			$stage = 'edit';
-			$defaults['profile_name'] = $profile->getName();
-		}
-		else
-		{
-			$profiles = $this->getDoctrine()
-				->getRepository('ShoploAllegroBundle:Profile')
-				->findBy(
-					array('user_id' => $this->getUser()->getId()),
-					array('id' => 'ASC')
-				);
-			if ( !empty($profiles) )
-			{
-				$defaultProfile = array_shift($profiles);
-			}
-			if ( $defaultProfile instanceof Profile )
-			{
-				$stage = 'new';
 
-				$data = array(
-					'state'	=> $defaultProfile->getState(),
-					'city'	=> $defaultProfile->getCity(),
-					'zipcode'=> $defaultProfile->getZipcode(),
-					'country'=> $defaultProfile->getCountry()
-				);
-				$session = $this->get('session');
-				$session->set('default_profile', $data);
+		$count = $this->getDoctrine()
+			->getManager()
+			->createQuery('SELECT COUNT(p) FROM ShoploAllegroBundle:Profile p WHERE p.user_id=:user_id')
+			->setParameter('user_id', $this->getUser()->getId())
+			->getSingleScalarResult();
 
-			}
-		}
-
-
-
-		$form = $this->createFormBuilder($defaults)
+		$form = $this->createFormBuilder()
             ->add('duration', 'choice', array('choices' => $durations, 'preferred_choices' => $preferredDurations))
 			->add('promotions', 'choice', array('choices' => $promotions, 'multiple' => true, 'expanded' => true));
-
-		if ( $stage != 'init' )
+		if ( $count > 0 )
 		{
 			$form->add('profile_name', 'text');
 		}
-
 		$form = $form->getForm();
 
         if ($request->isMethod('POST')) {
@@ -242,12 +210,12 @@ class SettingsController extends Controller
             }
         }
 
-        return $this->render(
+		return $this->render(
             'ShoploAllegroBundle::settings.html.twig',
             array(
                 'form' => $form->createView(),
 				'step' => 3,
-				'stage'=> $stage,
+				'stage'=> $count == 0 ? 'init' : 'new',
 			)
         );
     }

@@ -84,6 +84,15 @@
             </div>
             {% endif %}
         </div>
+
+	{% else %}
+
+	<h2 class="alignCenter">{% if stage == 'new' %}Utwórz nowy profil aukcji{% else %}Edytuj profil aukcji{% endif %}</h2>
+
+	<div class="accordion init-settings">
+
+	{% endif %}
+
         <div class="accordion-group{% if step != 2 %}{% if step > 2 %} done{% else %} disabled{% endif %}{% endif %}">
             <div class="accordion-heading">
                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
@@ -126,14 +135,6 @@
             </div>
             {% endif %}
         </div>
-
-	{% else %}
-
-	<h2 class="alignCenter">{% if stage == 'new' %}Utwórz nowy profil aukcji{% else %}Edytuj profil aukcji{% endif %}</h2>
-
-	<div class="accordion init-settings">
-
-	{% endif %}
 
 		<div class="accordion-group{% if step != 3 %}{% if step > 3 %} done{% else %} disabled{% endif %}{% endif %}">
 			<div class="accordion-heading">
