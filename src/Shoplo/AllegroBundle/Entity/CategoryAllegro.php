@@ -53,6 +53,13 @@ class CategoryAllegro
      */
     private $country_id;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="tree", type="string", length=255)
+	 */
+	private $tree;
+
     /**
      * @return CategoryAllegro
      */
@@ -175,4 +182,20 @@ class CategoryAllegro
     {
         return $this->country_id;
     }
+
+	/**
+	 * @param string $tree
+	 */
+	public function setTree($tree)
+	{
+		$this->tree = $tree;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTree()
+	{
+		return $this->tree;
+	}
 }
