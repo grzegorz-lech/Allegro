@@ -145,7 +145,7 @@
 			<div id="collapseThree" class="accordion-body collapse in">
 				<div class="accordion-inner">
 					<form class="form-horizontal" action="{{ path('shoplo_allegro_settings_auction') }}" method="post" {{ form_enctype(form) }}>
-						{% if form.profile_name %}
+						{% if stage != 'init' and form.profile_name %}
 						<div class="control-group">
 							{{ form_label(form.profile_name, 'Nazwa profilu', {'label_attr': {'class': 'control-label alignLeft'}}) }}
 

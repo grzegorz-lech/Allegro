@@ -164,6 +164,12 @@ class SettingsController extends Controller
             explode('|', $fields[15]->{'sell-form-opts-values'}),
             explode('|', $fields[15]->{'sell-form-desc'})
         );
+		$promotions = array_filter(
+			$promotions,
+			function ($promotion) {
+				return !in_array($promotion, array('-'));
+			}
+		);
 
 		$defaults = array();
 		$stage = 'init';
