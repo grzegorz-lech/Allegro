@@ -8,6 +8,10 @@ body {
     background: url(../img/bg.png) center top #C0DEED;
     padding-top: 60px;
     position: relative;
+    color: #333333;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 15px;
+    line-height: 30px;
 }
 a, a:focus, a:hover {
     color: #31657F;
@@ -15,6 +19,12 @@ a, a:focus, a:hover {
 a:hover {
     text-decoration: none;
 }
+
+label, input, button, select, textarea {
+    text-shadow: 0 1px 0 #FFFFFF;
+    color: #444444;
+}
+
 
 /* Wrapper for page content to push down footer */
 #wrap {
@@ -50,6 +60,10 @@ a:hover {
     }
 }
 
+[class^="icon-"]:before, [class*=" icon-"]:before {
+    font-size: 20px;
+}
+
 /* Custom page CSS
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
@@ -67,6 +81,9 @@ a:hover {
     width: 680px;
 }
 
+.container h2 {
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.4)
+}
 .alignCenter {
     text-align: center !important;
 }
@@ -218,20 +235,21 @@ a.actionDrag .ico { background-position: 0 -39px !important; }
 .init-settings .accordion-heading {
     color: #fff;
     text-shadow: 0 -1px 0 #eee inset;
-    border-color: #f28c1d;
+    border: 1px solid #F56A00;
     background: #f28c1d;
-    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f28c1d), to(#f36c03));
-    background: -moz-linear-gradient(#f28c1d, #f36c03);
-    background: linear-gradient(#f28c1d, #f36c03);
-    -pie-background: linear-gradient(#f28c1d, #f36c03);
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#F48B1C), to(#F56B01));
+    background: -moz-linear-gradient(#F48B1C, #F56B01);
+    background: linear-gradient(#F48B1C, #F56B01);
+    -pie-background: linear-gradient(#F48B1C, #F56B01);
     border-radius: 5px 5px 0 0;
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) inset;
 }
 .init-settings .disabled .accordion-heading {
     color: #606060;
     text-shadow: 0 -1px 0 #666 inset;
-    border-color: #7a7a7a;
+    border-color: #B3B3B3;
     background: #cecece;
     background: -webkit-gradient(linear, 0 0, 0 bottom, from(#cecece), to(#8f8f8f));
     background: -moz-linear-gradient(#cecece, #8f8f8f);
@@ -255,9 +273,12 @@ a.actionDrag .ico { background-position: 0 -39px !important; }
 .init-settings .accordion-heading a {
     color: #fff;
     cursor: default;
+    font-weight: bold;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 .init-settings .disabled .accordion-heading a {
     color: #606060;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 .init-settings .done .accordion-heading a {
     color: #b3c498;
