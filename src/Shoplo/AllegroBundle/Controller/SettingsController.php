@@ -187,14 +187,29 @@ class SettingsController extends Controller
 		}
 		else
 		{
-			$count = $this->getDoctrine()
-				->getManager()
-				->createQuery('SELECT COUNT(p) FROM ShoploAllegroBundle:Profile p WHERE p.user_id=:user_id')
-				->setParameter('user_id', $this->getUser()->getId())
-				->getSingleScalarResult();
-			if ( $count > 0 )
+			$profiles = $this->getDoctrine()
+				->getRepository('ShoploAllegroBundle:Profile')
+				->findBy(
+					array('user_id' => $this->getUser()->getId()),
+					array('id' => 'ASC')
+				);
+			if ( !empty($profiles) )
+			{
+				$defaultProfile = array_shift($profiles);
+			}
+			if ( $defaultProfile instanceof Profile )
 			{
 				$stage = 'new';
+
+				$data = array(
+					'state'	=> $defaultProfile->getState(),
+					'city'	=> $defaultProfile->getCity(),
+					'zipcode'=> $defaultProfile->getZipcode(),
+					'country'=> $defaultProfile->getCountry()
+				);
+				$session = $this->get('session');
+				$session->set('default_profile', $data);
+
 			}
 		}
 
@@ -282,6 +297,7 @@ class SettingsController extends Controller
 
                 /** @var $session \Symfony\Component\HttpFoundation\Session\Session */
                 $session = $this->get('session');
+
                 $session->set('default_profile', array_merge($session->get('default_profile'), $data));
 
                 return $this->redirect($this->generateUrl('shoplo_allegro_settings_delivery'));
