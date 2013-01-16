@@ -202,8 +202,7 @@ class SettingsController extends Controller
 
 		$form = $this->createFormBuilder($defaults)
             ->add('duration', 'choice', array('choices' => $durations, 'preferred_choices' => $preferredDurations))
-			->add('all_stock', 'checkbox', array('required' => false, 'attr'=> array('class' => 'ez-hide')))
-            ->add('promotions', 'choice', array('choices' => $promotions, 'multiple' => true, 'expanded' => true));
+			->add('promotions', 'choice', array('choices' => $promotions, 'multiple' => true, 'expanded' => true));
 
 		if ( $stage != 'init' )
 		{

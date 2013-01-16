@@ -16,6 +16,7 @@ framework:
     default_locale:  "%locale%"
     trust_proxy_headers: true
     session:         ~
+    trusted_proxies: ~
 
 # Twig Configuration
 twig:

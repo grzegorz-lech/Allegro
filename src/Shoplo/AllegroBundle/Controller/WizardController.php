@@ -117,6 +117,7 @@ class WizardController extends Controller
                 foreach ($products as $product) {
                     foreach ($product['variants'] as $variant) {
                         $categoryId = $_POST['category'][$variant['id']];
+
                         $fields     = $wizard->export($profile, $product, $variant, $categoryId);
 
                         // Obsługa dodatkowych (wymaganych) pól Allegro
@@ -169,14 +170,7 @@ class WizardController extends Controller
 							return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
 						}
 
-						if (!$variant['add_to_magazine']) {
-							$quantity = $wizard->getAllStock() ? 100 : $wizard->getQuantity();
-						}
-						else {
-							$quantity = $wizard->getAllStock() ? $variant['quantity'] : $wizard->getQuantity();
-						}
-
-                        $item = new Item();
+						$item = new Item();
                         $days = array(3, 5, 7, 10, 14, 30);
                         $item
                             ->setId($itemId)
@@ -184,8 +178,8 @@ class WizardController extends Controller
                             ->setVariantId($variant['id'])
                             ->setProductId($product['id'])
                             ->setPrice($variant['price'])
-                            ->setQuantity($quantity)
-							->setQuantityAll($variant['add_to_magazine'] ? $variant['quantity'] : -1)
+                            ->setQuantity($variant['quantity'])
+							->setQuantityAll($variant['add_to_magazine'] ? $variant['quantity_all'] : -1)
 							->setQuantitySold(0)
 							->setViewsCount(0)
 							->setWatchCount(0)
@@ -362,6 +356,7 @@ class WizardController extends Controller
 			'one'	=>	'dodaj do aukcji tylko zdjęcie główne produktu',
 		);
 
+
 		// Sposoby dostawy
 		$extrDelivery = $extras = array();
 		for ($i = 36; $i <= 52; $i++) {
@@ -376,7 +371,7 @@ class WizardController extends Controller
 		$form   = $this->createFormBuilder($wizard)
 			->add('title', 'text') // TODO: Ustawienie maksymalnej długości LIMIT_ALLEGRO-MAX(nazwa_wariantu)
 			->add('description', 'textarea')
-			->add('quantity', 'text', array('required' => false))
+			->add('quantity', 'text')
 			->add('all_stock', 'checkbox', array('required' => false))
 			->add('profiles', 'choice', array('choices' => $profileOptions))
 			->add('duration', 'choice', array('choices' => $durations, 'preferred_choices' => $preferredDurations))
@@ -384,7 +379,9 @@ class WizardController extends Controller
 			->add('payments', 'choice', array('choices' => $payments, 'multiple' => true, 'expanded' => true))
 			->add('delivery', 'choice', array('choices' => $delivery, 'multiple' => true, 'expanded' => true))
 			->add('extra_delivery', 'choice', array('choices' => $extrDelivery, 'multiple' => true, 'expanded' => true, 'required' => false))
-			->add('images', 'choice', array('choices' => $imageOptions, 'expanded' => true));
+			->add('images', 'choice', array('choices' => $imageOptions, 'expanded' => true))
+			->add('price', 'choice', array('choices' => $wizard->getPriceOptions()))
+			->add('extra_price', 'text', array('required' => false));
 
 		return $form;
 	}

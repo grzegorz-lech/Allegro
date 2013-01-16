@@ -13,6 +13,7 @@ $(function(){
         }
         else {
             $('#form_quantity').attr('disabled', false);
+            $('#form_quantity').val('');
             $('#form_quantity').focus();
         }
         calculatePrice();
@@ -67,7 +68,19 @@ $(function(){
         {
             $(this).parents('.controls').find('input[type=checkbox]').attr('checked', false);
         }
+    });
 
+    /*** New price ***/
+    $('#form_price').change(function(){
+        if ( $('#form_price option:selected').val() > 0 )
+        {
+            $('#form_extra_price').show();
+            $('#form_extra_price').focus();
+        }
+        else
+        {
+            $('#form_extra_price').hide();
+        }
     });
 });
 

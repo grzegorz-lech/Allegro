@@ -72,13 +72,6 @@ class Profile
     private $duration;
 
 	/**
-	 * @var integer
-	 *
-	 * @ORM\Column(name="all_stock", type="integer")
-	 */
-	private $all_stock;
-
-    /**
      * @var integer
      *
      * @ORM\Column(name="promotions", type="integer")
@@ -402,22 +395,6 @@ class Profile
     {
         return $this->extras;
     }
-
-	/**
-	 * @param int $all_stock
-	 */
-	public function setAllStock($all_stock)
-	{
-		$this->all_stock = $all_stock;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getAllStock()
-	{
-		return $this->all_stock;
-	}
 
 	/**
 	 * @param \DateTime $created_at

@@ -8,6 +8,10 @@ use Shoplo\AllegroBundle\Entity\Profile;
 
 class Wizard
 {
+	const PRICE_THE_SAME = 0;
+	const PRICE_BIGGER_THEN = 1;
+	const PRICE_SMALLER_THEN = 2;
+
     /**
      * @Assert\NotBlank()
      */
@@ -36,6 +40,9 @@ class Wizard
 
 	protected $extra_delivery;
 
+	protected $price = self::PRICE_THE_SAME;
+
+	protected $extra_price;
 
 	/**
      * @param string $title
@@ -73,6 +80,7 @@ class Wizard
     {
         $fields = array();
 
+		$variant['quantity_all'] = $variant['quantity'];
         // Nieskończony magazyn
         if (!$variant['add_to_magazine']) {
             $variant['quantity'] = $this->getAllStock() ? 100 : $this->getQuantity();
@@ -81,8 +89,25 @@ class Wizard
 			$variant['quantity'] = $this->getAllStock() ? $variant['quantity'] : $this->getQuantity();
 		}
 
+		$price = round($variant['price'] / 100, 2);
+		switch ( $this->price )
+		{
+			case self::PRICE_THE_SAME:
+				break;
+			case self::PRICE_BIGGER_THEN:
+				$price += (float) str_replace(',', '.', $this->extra_price);
+				break;
+			case self::PRICE_SMALLER_THEN:
+				$price -= (float) str_replace(',', '.', $this->extra_price);
+				if ( $price < 1 )
+				{
+					$price = 1.00;
+				}
+				break;
+		}
+
         // Cena
-        $variant['price'] = round($variant['price'] / 100, 2);
+        $variant['price'] = $price;
 
         // Zmienne
         $search      = array(
@@ -273,5 +298,34 @@ class Wizard
 	public function getExtraDelivery()
 	{
 		return $this->extra_delivery;
+	}
+
+	public function setPrice($price)
+	{
+		$this->price = $price;
+	}
+
+	public function getPrice()
+	{
+		return $this->price;
+	}
+
+	public function getPriceOptions()
+	{
+		return array(
+			self::PRICE_THE_SAME		=>	'Taka jak w sklepie',
+			self::PRICE_BIGGER_THEN		=>	'Powiększona o',
+			self::PRICE_SMALLER_THEN	=>	'Pomniejszona o',
+		);
+	}
+
+	public function setExtraPrice($extra_price)
+	{
+		$this->extra_price = $extra_price;
+	}
+
+	public function getExtraPrice()
+	{
+		return $this->extra_price;
 	}
 }
