@@ -10,7 +10,7 @@ use Sensio\Bundle\GeneratorBundle\Command\Helper\DialogHelper;
 use Doctrine\ORM\EntityManager;
 use Shoplo\AllegroBundle\Entity\CategoryAllegro;
 
-class CategoryCommand extends Command
+class CategoryTreeCommand extends Command
 {
     protected $countries = array(
         1   => 'Polska',
@@ -84,8 +84,15 @@ class CategoryCommand extends Command
 
 			$output->writeln('<info>Tree form category id: '.$child.' | tree: '.$treeWithLeafs[$child].'</info>');
 
-			$category = $this->getContainer()->getDoctrine()->getRepository('ShoploAllegroBundle:CategoryAllegro')->findById($child);
-			$category->setTree($treeWithLeafs[$child]);
+			$category = $this->getContainer()->get('doctrine')->getRepository('ShoploAllegroBundle:CategoryAllegro')->findOneById($child);
+			if ( $category instanceof CategoryAllegro )
+			{
+				$category->setTree($treeWithLeafs[$child]);
+			}
+			else
+			{
+				$output->writeln('<info>Category: '.$child.' not found</info>');
+			}
 		}
 		$em->flush();
     }
