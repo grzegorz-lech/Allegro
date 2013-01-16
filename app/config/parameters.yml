@@ -16,5 +16,6 @@ parameters:
     locale:                 pl
     secret:                 ThisTokenIsNotSoSecretChangeIt
 
+
     oauth_consumer_key:     WdAqtlmEf7sjaHziSOTnpqsFwUulRqtD
     oauth_consumer_secret:  K78U6toMZcyuuqY7oHVtD1a3xfeK1xzR
