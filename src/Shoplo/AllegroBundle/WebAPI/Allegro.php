@@ -167,7 +167,8 @@ class Allegro extends \SoapClient
             return $codes[$code];
         }
 
-        throw new \InvalidArgumentException();
+		return $codes['pl'];
+        //throw new \InvalidArgumentException();
     }
 
 	/**
