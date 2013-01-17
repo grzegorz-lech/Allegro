@@ -88,13 +88,13 @@ class CategoryTreeCommand extends Command
 			if ( $category instanceof CategoryAllegro )
 			{
 				$category->setTree($treeWithLeafs[$child]);
+				$em->flush();
 			}
 			else
 			{
 				$output->writeln('<info>Category: '.$child.' not found</info>');
 			}
 		}
-		$em->flush();
     }
 
 	protected function completeTree($parent, $tree)

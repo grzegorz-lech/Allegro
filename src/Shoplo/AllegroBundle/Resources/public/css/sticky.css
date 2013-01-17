@@ -326,6 +326,9 @@ a.actionDrag .ico { background-position: 0 -39px !important; }
     position: fixed;
     top: 10px;
 }
+.summaryBox #auctionPrice li {
+    margin-left: 0;
+}
 ul.inline {
     list-style: none;
     margin-left: 0;
@@ -411,7 +414,7 @@ ul.inline li:hover a {
 #form_promotions label {
     float: left;
     margin-right: 20px;
-    width: 255px;
+    width: 175px;
 }
 #form_extra_delivery label {
     margin-right: 10px;

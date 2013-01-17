@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use InvalidArgumentException;
 use Shoplo\AllegroBundle\Entity\Item;
 use Shoplo\AllegroBundle\Entity\Profile;
+use Shoplo\AllegroBundle\Entity\CategoryAllegro;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Request;
@@ -160,6 +161,28 @@ class WizardController extends Controller
                             continue;
                         }
 
+						// $wizard->getAuctionPrice()
+						//$allegro->doCheckNewAuctionExt( $allegro->getSession(), $fields )
+						$auctionPrice = $this->calculateAuction($fields);
+						if ( $auctionPrice != $wizard->getAuctionPrice() )
+						{
+							$message = \Swift_Message::newInstance()
+								->setSubject('Auction Price Differ')
+								->setFrom('allegro@shoploapp.com')
+								->setTo('lech.grzegorz@gmail.com')
+								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}");
+							$this->get('mailer')->send($message);
+						}
+						else
+						{
+							$message = \Swift_Message::newInstance()
+								->setSubject('Auction Price OK:)')
+								->setFrom('allegro@shoploapp.com')
+								->setTo('lech.grzegorz@gmail.com')
+								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}");
+							$this->get('mailer')->send($message);
+						}
+
                         $itemId = $this->createAuction($fields);
 						if ( $itemId == 0 )
 						{
@@ -278,17 +301,24 @@ class WizardController extends Controller
 				if ( in_array($c->getAllegroId(), $doubles) )
 				{
 					unset($categories[$k]);
+					continue;
 				}
 				else
 				{
 					$doubles[$k] = $c->getAllegroId();
 				}
+
+				$categoryAllegro = $this->getDoctrine()->getRepository('ShoploAllegroBundle:CategoryAllegro')->findOneById($c->getAllegroId());
+				$categories[$k]->tree = ($categoryAllegro instanceof CategoryAllegro) ? $categoryAllegro->getTree() : '';
 			}
 
 			foreach ($product['variants'] as $variant) {
 				$variant['categories']    = array_values($categories);
 				$variant['thumbnail']     = $product['thumbnail'];
+				$variant['default_category'] = $variant['categories'][0];
+				$variant['image_count']	  = count($product['images']);
 				$variants[$variant['id']] = $variant;
+
 			}
 
 			$products[] = $product;
@@ -381,9 +411,29 @@ class WizardController extends Controller
 			->add('extra_delivery', 'choice', array('choices' => $extrDelivery, 'multiple' => true, 'expanded' => true, 'required' => false))
 			->add('images', 'choice', array('choices' => $imageOptions, 'expanded' => true))
 			->add('price', 'choice', array('choices' => $wizard->getPriceOptions()))
-			->add('extra_price', 'text', array('required' => false));
+			->add('extra_price', 'text', array('required' => false))
+			->add('auction_price', 'hidden', array('required' => false));
 
 		return $form;
+	}
+
+	private function calculateAuction(array $fields)
+	{
+		/** @var $allegro Allegro */
+		$allegro = $this->get('allegro');
+		if (!$allegro->login($this->getUser())) {
+			throw new AccessDeniedException();
+		}
+
+		try {
+			$item = $allegro->doCheckNewAuctionExt($allegro->getSession(), $fields);
+		} catch (\SoapFault $sf) {
+			print_r($sf->getCode());
+			print_r($sf->getMessage());
+			exit;
+			return 0;
+		}
+		return $item['item-price'];
 	}
 
 	private function createAuction(array $fields)

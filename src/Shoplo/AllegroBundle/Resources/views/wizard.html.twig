@@ -113,7 +113,7 @@
 
 	<div class="container-fluid">
 		<div class="row-fluid content">
-			<div class="span12">
+			<div class="span9">
 				<form action="{{ path('shoplo_allegro_wizard', {product: ids}) }}#kategorie" method="post" {{ form_enctype(form) }}>
 					<div class="box">
 						<h3>Wystaw produkty na Allegro</h3>
@@ -312,9 +312,9 @@
 									{{ form_widget(form.price) }}
 
 									{% if form.extra_price.vars.value %}
-										{{ form_widget(form.extra_price, { 'attr': {'class': 'span1', 'placeholder': '0.00'} }) }}
+										{{ form_widget(form.extra_price, { 'attr': {'class': 'span2', 'placeholder': '0.00'} }) }}
 									{% else %}
-										{{ form_widget(form.extra_price, { 'attr': {'class': 'span1 hide', 'placeholder': '0.00'} }) }}
+										{{ form_widget(form.extra_price, { 'attr': {'class': 'span2 hide', 'placeholder': '0.00'} }) }}
 									{% endif %}
 									<input type="text" name="provision" class="span1 hide" />
 								</div>
@@ -390,7 +390,7 @@
 									<div class="controls">
 										<select name="category[{{variant.id}}]" class="product-category" data-variant-id="{{variant.id}}">
 											{% for category in variant.categories %}
-											<option value="{{category.getAllegroId()}}" {% if app.request.get('category') and attribute(app.request.get('category'), variant.id) == category.getAllegroId() %} selected="selected"{% endif %}>
+											<option value="{{category.getAllegroId()}}" {% if app.request.get('category') and attribute(app.request.get('category'), variant.id) == category.getAllegroId() %} selected="selected"{% endif %} data-tree="{{ category.tree }}">
                                                 {{ category.getAllegroName() }}
                                             </option>
 											{% endfor %}
@@ -426,45 +426,47 @@
 						lub <a href="{{ path('shoplo_allegro_homepage')}}">anuluj</a>
 					</p>
 
+					{{ form_widget(form.auction_price) }}
+
                     {{ form_rest(form) }}
 
 				</form>
 			</div>
-            {#
+
 			<div class="span3 box orange summaryBox sidebar">
 				<h4>Koszt wystawienia</h4>
 
-				<ul class="unstyled" data-quantity="{{ variants|length }}">
+				<ul id="auctionPrice" class="unstyled" data-quantity="{{ variants|length }}">
 					{% for variant in variants %}
-					<li class="row offset1 variant" id="product{{variant.id}}" data-quantity="{% if variant.add_to_magazine%}{{variant.quantity}}{% else %}100{% endif %}">
-						<div class="span7 alignRight">
-							{{ variant.title }}
-						</div>
-						<div class="span5 alignRight">
-							<span class="quantity">1</span> x <span class="price">{{variant.auction_price}}</span>zł
-						</div>
-					</li>
+						<li class="row offset1 variant" id="product{{variant.id}}" data-price="{{ variant.price }}" data-price-orig="{{ variant.price }}" data-quantity="1" data-quantity-orig="{{ variant.quantity }}" data-in-stock="{{ variant.add_to_magazine }}" data-category-tree="{{ variant.default_category.tree }}" data-image-count="{{ variant.image_count }}" data-extra-image-price="0">
+							<div class="span8 alignRight">
+								{{ variant.title }}
+							</div>
+							<div class="span4 alignRight">
+								<span class="provision">0</span> zł
+							</div>
+						</li>
 					{% endfor %}
-					<li class="row offset1" id="promotion1">
-						<div class="span7 alignRight">
-							Pogrubienie
+
+					<li class="row offset1 promotion template hide">
+						<div class="span8 alignRight title">
 						</div>
-						<div class="span5 alignRight">
-							<span class="quantity">25</span> x <span class="price">0,3</span>zł
+						<div class="span4 alignRight">
+							<span class="provision"></span> zł
 						</div>
 					</li>
 				</ul>
 
 				<div class="summary row offset1">
-					<div class="span7 alignRight">
+					<div class="span8 alignRight">
 						Razem
 					</div>
-					<div class="span5 alignRight">
-						<span class="price-all">{{ total_price|number_format(2, '.', ',') }}</span> zł
+					<div class="span4 alignRight">
+						<span class="price-all">0.00</span> zł
 					</div>
 				</div>
 			</div>
-            #}
+
 		</div>
 	</div>
 {% endblock %}

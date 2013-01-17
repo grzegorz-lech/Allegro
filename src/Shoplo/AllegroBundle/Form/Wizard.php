@@ -32,17 +32,19 @@ class Wizard
 
 	protected $delivery;
 
-	protected $quantity;
+	protected $quantity = 1;
 
 	protected $all_stock;
 
-	protected $images = 'all';
+	protected $images = 'one';
 
 	protected $extra_delivery;
 
 	protected $price = self::PRICE_THE_SAME;
 
 	protected $extra_price;
+
+	protected $auction_price;
 
 	/**
      * @param string $title
@@ -327,5 +329,15 @@ class Wizard
 	public function getExtraPrice()
 	{
 		return $this->extra_price;
+	}
+
+	public function setAuctionPrice($auction_price)
+	{
+		$this->auction_price = $auction_price;
+	}
+
+	public function getAuctionPrice()
+	{
+		return $this->auction_price;
 	}
 }

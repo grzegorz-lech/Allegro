@@ -84,6 +84,13 @@ class Item
 	 */
 	private $watch_count = 0;
 
+	/**
+	 * @var float
+	 *
+	 * @ORM\Column(name="auction_price", type="float")
+	 */
+	private $auction_price;
+
     /**
      * @var \DateTime
      *
@@ -392,5 +399,21 @@ class Item
 	public function getWatchCount()
 	{
 		return $this->watch_count;
+	}
+
+	/**
+	 * @param float $auction_price
+	 */
+	public function setAuctionPrice($auction_price)
+	{
+		$this->auction_price = $auction_price;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getAuctionPrice()
+	{
+		return $this->auction_price;
 	}
 }
