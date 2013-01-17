@@ -183,6 +183,12 @@ class WizardController extends Controller
 							$this->get('mailer')->send($message);
 						}
 
+						if ( $this->getUser()->getShopId() == 98 )
+						{
+							var_dump($auctionPrice, $wizard->getAuctionPrice());
+							exit;
+						}
+
                         $itemId = $this->createAuction($fields);
 						if ( $itemId == 0 )
 						{
