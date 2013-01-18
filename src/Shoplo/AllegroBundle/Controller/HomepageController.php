@@ -114,9 +114,13 @@ class HomepageController extends Controller
         return $this->redirect(sprintf($url, $itemId));
     }
 
-	public function deleteAction($itemId)
+	public function deleteAction($itemId, $action)
 	{
-		$item = $this->getDoctrine()->getRepository('ShoploAllegroBundle:Item')->findOneById($itemId);
+		$item = $this->getDoctrine()
+			->getRepository('ShoploAllegroBundle:Item')
+			->findOneBy(
+			array('id' => $itemId, 'user_id' => $this->getUser()->getId())
+		);
 		if ( !($item instanceof Item) )
 		{
 			throw $this->createNotFoundException('Resource not found');
@@ -126,7 +130,7 @@ class HomepageController extends Controller
 		$allegro->login($this->getUser());
 
 		$result = $allegro->removeItem($itemId);
-		if ( $result === true )
+		if ( $result === true || $action == 'force' )
 		{
 			$em = $this->getDoctrine()->getManager();
 			$em->remove($item);
@@ -139,9 +143,13 @@ class HomepageController extends Controller
 		}
 		else
 		{
+			$link = $this->generateUrl('shoplo_allegro_delete_item', array('action'=>'force'));
 			$this->get('session')->setFlash(
 				"error",
-				$result
+				"Komunikat od Allegro\n".
+					$result."\n".
+					"<a href='{$link}'>Usuń aukcję z Shoplo</a>"
+
 			);
 		}
 
