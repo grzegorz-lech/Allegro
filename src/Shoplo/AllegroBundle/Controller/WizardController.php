@@ -162,7 +162,7 @@ class WizardController extends Controller
                         }
 
 						$auctionPrice = $this->calculateAuction($fields);
-						$auctionPrice = substr(str_replace(',', '.', $auctionPrice), 0, -3);
+						$auctionPrice = trim(substr(str_replace(',', '.', $auctionPrice), 0, -3));
 						/*if ( $auctionPrice != $wizard->getAuctionPrice() )
 						{
 							$message = \Swift_Message::newInstance()
@@ -182,13 +182,7 @@ class WizardController extends Controller
 							$this->get('mailer')->send($message);
 						}*/
 
-						if ( $this->getUser()->getShopId() == 98 )
-						{
-							var_dump($auctionPrice, $wizard->getAuctionPrice());
-							exit;
-						}
-
-                        $itemId = $this->createAuction($fields);
+						$itemId = $this->createAuction($fields);
 						if ( $itemId == 0 )
 						{
 							$this->get('session')->setFlash(
