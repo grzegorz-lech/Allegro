@@ -428,9 +428,8 @@ class WizardController extends Controller
 		try {
 			$item = $allegro->doCheckNewAuctionExt($allegro->getSession(), $fields);
 		} catch (\SoapFault $sf) {
-			print_r($sf->getCode());
-			print_r($sf->getMessage());
-			exit;
+			$this->_logger->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+
 			return 0;
 		}
 		return $item['item-price'];

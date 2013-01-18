@@ -4,6 +4,7 @@ namespace Shoplo\AllegroBundle\WebAPI;
 
 use Shoplo\AllegroBundle\Entity\User;
 use Shoplo\AllegroBundle\Entity\Deal;
+use Symfony\Component\DependencyInjection\Container;
 
 class Allegro extends \SoapClient
 {
@@ -34,11 +35,14 @@ class Allegro extends \SoapClient
      */
     private $country;
 
-    public function __construct($key)
+	private $_logger;
+
+    public function __construct($key, $logger)
     {
         parent::__construct('https://webapi.allegro.pl/uploader.php?wsdl');
 
         $this->key = $key;
+		$this->_logger = $logger;
     }
 
     /**
@@ -71,6 +75,8 @@ class Allegro extends \SoapClient
                 $this->getVersion()
             );
         } catch (\SoapFault $sf) {
+			$this->_logger->err('Method: doLogin | Username: '.$this->username.' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+
             return false;
         }
 
@@ -298,6 +304,8 @@ class Allegro extends \SoapClient
                 }
             }
 
+			$this->_logger->err('Method: getBuyers | Username: '.$this->username.' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+
             return false;
         }
     }
@@ -314,9 +322,11 @@ class Allegro extends \SoapClient
                 } else {
                     return false;
                 }
-            } else {
-                return false;
             }
+
+			$this->_logger->err('Method: doGetPostBuyData | Username: '.$this->username.' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+
+			return false;
         }
 
         $auctions = array();
@@ -354,6 +364,8 @@ class Allegro extends \SoapClient
 
             return $shipping;
         } catch (\SoapFault $sf) {
+			$this->_logger->err('Method: doGetShipmentData | Username: '.$this->username.' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+
             return array();
         }
     }
@@ -534,10 +546,8 @@ class Allegro extends \SoapClient
                     return true;
                 }
             }
-			else
-			{
-				# TODO: log this error: $sf->faultcode/$itemId
-			}
+
+			$this->_logger->err('Method: doChangeQuantityItem | Username: '.$this->username.' | ItemId: '.$itemId.' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 
             return false;
         }
@@ -565,12 +575,10 @@ class Allegro extends \SoapClient
 					return $item ? true : false;
 				}
 			}
-			else
-			{
-				# TODO: log this error: $sf->faultcode/$itemId
-			}
 
-			return false;
+			$this->_logger->err('Method: doFInishItem | Username: '.$this->username.' | ItemId: '.$itemId.' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+
+			return $sf->getMessage();
 		}
 	}
 
@@ -816,10 +824,8 @@ class Allegro extends \SoapClient
 					return $this->doGetItemsInfo($this->getSession(), $ids, 1);
 				}
 			}
-			else
-			{
-				# TODO: log this error: $sf->faultcode/$itemId
-			}
+
+			$this->_logger->err('Method: doGetItemsInfo | ids: '.print_r($ids, true).' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 
 			return false;
 		}

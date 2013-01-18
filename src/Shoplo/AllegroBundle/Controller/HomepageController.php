@@ -126,7 +126,7 @@ class HomepageController extends Controller
 		$allegro->login($this->getUser());
 
 		$result = $allegro->removeItem($itemId);
-		if ( $result )
+		if ( $result === true )
 		{
 			$em = $this->getDoctrine()->getManager();
 			$em->remove($item);
@@ -141,7 +141,7 @@ class HomepageController extends Controller
 		{
 			$this->get('session')->setFlash(
 				"error",
-				"Wystąpił problem. Prosimy spróbować później."
+				$result
 			);
 		}
 

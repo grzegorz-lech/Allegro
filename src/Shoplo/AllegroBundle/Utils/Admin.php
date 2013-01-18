@@ -2,8 +2,6 @@
 
 namespace Shoplo\AllegroBundle\Utils;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 class Admin
 {
 	private $mailer;

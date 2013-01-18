@@ -9,7 +9,7 @@ parameters:
 services:
     allegro:
         class: %shoplo_allegro.webapi.class%
-        arguments: [%allegro.key%]
+        arguments: [%allegro.key%,@logger]
     shoplo:
         class: %shoplo.webapi.class%
         arguments: [%shoplo.key%, %shoplo.secret%, @security.context]
