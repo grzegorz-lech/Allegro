@@ -162,6 +162,7 @@ class WizardController extends Controller
                         }
 
 						$auctionPrice = $this->calculateAuction($fields);
+						$auctionPrice = substr(str_replace(',', '.', $auctionPrice), 0, -3);
 						/*if ( $auctionPrice != $wizard->getAuctionPrice() )
 						{
 							$message = \Swift_Message::newInstance()
