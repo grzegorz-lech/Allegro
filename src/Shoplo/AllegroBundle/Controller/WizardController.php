@@ -161,10 +161,8 @@ class WizardController extends Controller
                             continue;
                         }
 
-						// $wizard->getAuctionPrice()
-						//$allegro->doCheckNewAuctionExt( $allegro->getSession(), $fields )
 						$auctionPrice = $this->calculateAuction($fields);
-						if ( $auctionPrice != $wizard->getAuctionPrice() )
+						/*if ( $auctionPrice != $wizard->getAuctionPrice() )
 						{
 							$message = \Swift_Message::newInstance()
 								->setSubject('Auction Price Differ')
@@ -181,7 +179,7 @@ class WizardController extends Controller
 								->setTo('lech.grzegorz@gmail.com')
 								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}");
 							$this->get('mailer')->send($message);
-						}
+						}*/
 
 						if ( $this->getUser()->getShopId() == 98 )
 						{
@@ -212,6 +210,7 @@ class WizardController extends Controller
 							->setQuantitySold(0)
 							->setViewsCount(0)
 							->setWatchCount(0)
+							->setAuctionPrice($auctionPrice)
                             ->setStartAt(new \DateTime('now'))
                             ->setEndAt(new \DateTime('+' . $days[$profile->getDuration()] . ' days'));
 

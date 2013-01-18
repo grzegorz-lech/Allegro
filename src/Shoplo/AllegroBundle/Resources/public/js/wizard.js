@@ -259,7 +259,9 @@ function Wizard()
         var option = $('#form_images input[type=radio]:checked').val();
 
         $('#auctionPrice li:not(.template)').each(function(){
-            var extraImagePrice = option == 'one' ? 0 : parseInt($(this).data('image-count'))*$this._image_price;
+            var imageCount = parseInt($(this).data('image-count')) - 1;
+            imageCount = imageCount >= 0 ? imageCount : 0;
+            var extraImagePrice = option == 'one' ? 0 : imageCount*$this._image_price;
             $(this).attr('data-extra-image-price', extraImagePrice.toFixed(2) );
         });
 

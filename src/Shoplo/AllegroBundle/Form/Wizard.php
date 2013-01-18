@@ -129,6 +129,8 @@ class Wizard
         $title       = str_ireplace($search, $replace, $this->getTitle());
         $description = str_ireplace($search, $replace, $this->getDescription());
 
+		$title = str_replace(array('"'), array(), $title);
+
         $fields[] = $this->createField(1, $title);
         $fields[] = $this->createField(2, (int) $categoryId);
         $fields[] = $this->createField(4, $profile->getDuration());

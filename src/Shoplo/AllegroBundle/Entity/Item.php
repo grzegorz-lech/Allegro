@@ -407,6 +407,8 @@ class Item
 	public function setAuctionPrice($auction_price)
 	{
 		$this->auction_price = $auction_price;
+
+		return $this;
 	}
 
 	/**
