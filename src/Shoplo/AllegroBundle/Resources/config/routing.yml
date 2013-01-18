@@ -16,7 +16,7 @@ shoplo_allegro_show_item:
         itemId: \d+
 
 shoplo_allegro_delete_item:
-    pattern:  /usun/{itemId}/{action}
+    pattern:  /usun/{itemId}
     defaults: { _controller: ShoploAllegroBundle:Homepage:delete }
     requirements:
         itemId: \d+

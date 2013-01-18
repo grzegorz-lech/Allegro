@@ -192,7 +192,7 @@ class WizardController extends Controller
 
 
 						$item = new Item();
-                        $days = array(3, 5, 7, 10, 14, 30);
+                        $days = array(3, 5, 7, 10, 14);
                         $item
                             ->setId($itemId)
                             ->setUser($this->getUser())

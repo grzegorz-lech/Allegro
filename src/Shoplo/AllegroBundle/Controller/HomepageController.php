@@ -143,7 +143,7 @@ class HomepageController extends Controller
 		}
 		else
 		{
-			$link = $this->generateUrl('shoplo_allegro_delete_item_force');
+			$link = $this->generateUrl('shoplo_allegro_delete_item_force', array('itemId'=>$itemId));
 			$this->get('session')->setFlash(
 				"error",
 				"Komunikat od Allegro\n".
