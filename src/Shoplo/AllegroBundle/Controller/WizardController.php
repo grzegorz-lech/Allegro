@@ -21,6 +21,16 @@ class WizardController extends Controller
      */
     public function indexAction(Request $request)
     {
+		if ( $this->getUser()->getShopId() == 98 )
+		{
+			$message = \Swift_Message::newInstance()
+				->setSubject('Auction Price OK:)')
+				->setFrom('allegro@shoploapp.com')
+				->setTo('lech.grzegorz@gmail.com')
+				->setBody("TEST MAIL FROM ALLEGRO APP");
+			$this->get('mailer')->send($message);
+		}
+
 		$ids = $request->query->get('product', array());
         $ids = !is_array($ids) ? explode(',', $ids) : $ids;
         if (empty($ids)) {
@@ -56,6 +66,12 @@ class WizardController extends Controller
 				array('id'	=> 'ASC' )
 			);
 
+		$profilePromotions = array();
+		foreach ( $profiles as $profile )
+		{
+			$binary = str_pad(decbin($profile->getPromotions()), 5, "0", STR_PAD_LEFT);
+			$profilePromotions[$profile->getId()] = $binary;
+		}
 
 		$fields = $allegro->getSellFormFields();
 		$form = $this->createWizardForm($fields, $profiles);
@@ -163,24 +179,6 @@ class WizardController extends Controller
 
 						$auctionPrice = $this->calculateAuction($fields);
 						$auctionPrice = trim(substr(str_replace(',', '.', $auctionPrice), 0, -3));
-						/*if ( $auctionPrice != $wizard->getAuctionPrice() )
-						{
-							$message = \Swift_Message::newInstance()
-								->setSubject('Auction Price Differ')
-								->setFrom('allegro@shoploapp.com')
-								->setTo('lech.grzegorz@gmail.com')
-								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}");
-							$this->get('mailer')->send($message);
-						}
-						else
-						{
-							$message = \Swift_Message::newInstance()
-								->setSubject('Auction Price OK:)')
-								->setFrom('allegro@shoploapp.com')
-								->setTo('lech.grzegorz@gmail.com')
-								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}");
-							$this->get('mailer')->send($message);
-						}*/
 
 						$itemId = $this->createAuction($fields);
 						if ( $itemId == 0 )
@@ -191,6 +189,27 @@ class WizardController extends Controller
 							);
 							return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
 						}
+
+
+						if ( $auctionPrice != $wizard->getAuctionPrice() )
+						{
+							$message = \Swift_Message::newInstance()
+								->setSubject('Auction Price Differ')
+								->setFrom('allegro@shoploapp.com')
+								->setTo('lech.grzegorz@gmail.com')
+								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}\n in auction {$itemId}");
+							$this->get('mailer')->send($message);
+						}
+						else
+						{
+							$message = \Swift_Message::newInstance()
+								->setSubject('Auction Price OK:)')
+								->setFrom('allegro@shoploapp.com')
+								->setTo('lech.grzegorz@gmail.com')
+								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()} in auction {$itemId}");
+							$this->get('mailer')->send($message);
+						}
+
 
 						$item = new Item();
                         $days = array(3, 5, 7, 10, 14, 30);
@@ -259,6 +278,7 @@ class WizardController extends Controller
                 'variants' => $variants,
                 'products' => $products,
 				'profiles' => $profiles,
+				'profile_promotions' => $profilePromotions,
 				'extra_delivery' => $extrDelivery,
 				'extra_delivery_price' => isset($_POST['extra_delivery_price']) ? $_POST['extra_delivery_price'] : array()
             )
@@ -351,7 +371,7 @@ class WizardController extends Controller
 		$promotions = array_filter(
 			$promotions,
 			function ($promotion) {
-				return !in_array($promotion, array('-'));
+				return !in_array($promotion, array('-', 'Znak wodny'));
 			}
 		);
 		$payments = array_combine(

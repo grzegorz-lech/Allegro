@@ -174,7 +174,7 @@ class SettingsController extends Controller
 		$promotions = array_filter(
 			$promotions,
 			function ($promotion) {
-				return !in_array($promotion, array('-'));
+				return !in_array($promotion, array('-', 'Znak wodny'));
 			}
 		);
 

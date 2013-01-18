@@ -28,11 +28,8 @@
 		<script src="{{ asset_url }}"></script>
 	{% endjavascripts %}
 
-	{% javascripts '@ShoploAllegroBundle/Resources/public/js/wizard.js' %}
-		<script src="{{ asset_url }}"></script>
-	{% endjavascripts %}
-
-    <script>
+	<script>
+		var profiles = {};
         $(function () {
             $("img[rel=popover]").popover({
                 html:true,
@@ -82,8 +79,16 @@
                     }
                 }
             });
+
+			{% for k,v in profile_promotions %}
+				profiles[{{ k }}] = '{{ v }}'.split('');
+			{% endfor %}
         });
     </script>
+
+	{% javascripts '@ShoploAllegroBundle/Resources/public/js/wizard.js' %}
+	<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 {% endblock %}
 
 
@@ -458,10 +463,10 @@
 				</ul>
 
 				<div class="summary row offset1">
-					<div class="span8 alignRight">
+					<div class="span7 alignRight">
 						Razem
 					</div>
-					<div class="span4 alignRight">
+					<div class="span5 alignRight">
 						<span class="price-all">0.00</span> zł
 					</div>
 				</div>

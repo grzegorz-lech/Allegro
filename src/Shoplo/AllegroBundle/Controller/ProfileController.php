@@ -58,6 +58,20 @@ class ProfileController extends Controller
 	 */
 	public function deleteAction($profileId)
 	{
+		$profiles = $this->getDoctrine()
+			->getRepository('ShoploAllegroBundle:Profile')
+			->findBy(
+			array('user_id'=>$this->getUser()->getId())
+		);
+		if ( count($profiles) == 1 )
+		{
+			$this->get('session')->setFlash(
+				"error",
+				"Nie można usunąć tego profilu, gdyż musi zostać co najmniej jeden profil."
+			);
+			return $this->redirect($this->generateUrl('shoplo_allegro_profiles'));
+		}
+
 		$profile = $this->getDoctrine()
 			->getRepository('ShoploAllegroBundle:Profile')
 			->findOneById($profileId);

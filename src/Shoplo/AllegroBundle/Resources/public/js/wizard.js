@@ -1,11 +1,13 @@
+var wizard;
 $(function(){
     /*** AUCTION PRICE ***/
-    var wizard = new Wizard();
+    wizard = new Wizard();
 
     wizard.changePrice(false);
     wizard.changeQuantity(false);
     wizard.changeImage(false);
     wizard.changePromotions(false);
+    wizard.changeProfile(false);
     wizard.changeCategory(false);
     wizard.recalculate();
 
@@ -151,6 +153,8 @@ function changeProfile()
     else {
         $('.profile').hide();
     }
+
+    wizard.changeProfile();
 }
 
 function Wizard()
@@ -278,72 +282,11 @@ function Wizard()
         $('#form_promotions input[type=checkbox]').each(function(){
             if ( $(this).is(':checked') && $('#auctionPrice li#promotion'+$(this).val()).length == 0 )
             {
-                var item = $('#auctionPrice li.template').clone().removeClass('hide').removeClass('template').attr('id', 'promotion'+$(this).val());
-                var count = $('#auctionPrice li.variant').length;
-
-                switch( parseInt($(this).val()) )
-                {
-                    case 1: // Pogrubienie
-                        $(item).find('.title').text( 'Pogrubienie' );
-                        $(item).find('.provision').text( parseFloat($this._promotion_bold_price*count).toFixed(2) );
-                        break;
-                    case 2: // Miniaturka
-                        $(item).find('.title').text( 'Miniaturka' );
-                        $(item).find('.provision').text( parseFloat($this._promotion_thumbnail_price*count).toFixed(2) );
-                        break;
-                    case 4: // Podświetlenie
-                        $(item).find('.title').text( 'Podświetlenie' );
-                        $(item).find('.provision').text( parseFloat($this._promotion_higllight_price*count).toFixed(2) );
-                        break;
-                    case 8: // Wyróżnienie
-                        var price = 0;
-                        $('#auctionPrice li.variant').each(function(){
-                            var categories = $(this).attr('data-category-tree') ? $(this).attr('data-category-tree').split('-') : [];
-                            var hasIntersection = $this.hasIntersection($this._promotion_distinction_rare_categories, categories);
-
-                            price += hasIntersection  ? $this._promotion_distinction_rare_price : $this._promotion_distinction_common_price;
-                        });
-                        $(item).find('.title').text( 'Wyróżnienie' );
-                        $(item).find('.provision').text( price );
-                        break;
-                    case 16: // Strona kategorii
-                        var price = 0;
-                        $('#auctionPrice li.variant').each(function(){
-                            var categories = $(this).attr('data-category-tree') ? $(this).attr('data-category-tree').split('-') : [];
-
-
-                            var hasIntersection;
-                            if ( hasIntersection = $this.hasIntersection($this._promotion_category_page_section_1_categories, categories) )
-                            {
-                                price += $this._promotion_category_page_section_1_price;
-                            }
-                            else if ( hasIntersection = $this.hasIntersection($this._promotion_category_page_section_2_categories, categories) )
-                            {
-                                price += $this._promotion_category_page_section_2_price;
-                            }
-                            else if ( hasIntersection = $this.hasIntersection($this._promotion_category_page_section_3_categories, categories) )
-                            {
-                                price += $this._promotion_category_page_section_3_price;
-                            }
-                            else if ( hasIntersection = $this.hasIntersection($this._promotion_category_page_section_4_categories, categories) )
-                            {
-                                price += $this._promotion_category_page_section_4_price;
-                            }
-                            else
-                            {
-                                price = 0;
-                            }
-                        });
-                        $(item).find('.title').text( 'Strona kategorii' );
-                        $(item).find('.provision').text( price );
-                        break;
-                }
-
-                $(item).insertBefore('#auctionPrice .template');
+                $this.addPromotionBlock( $(this).val() );
             }
             else if ( !$(this).is(':checked') && $('#auctionPrice li#promotion'+$(this).val()).length > 0 )
             {
-                $('#auctionPrice li#promotion'+$(this).val()).remove();
+                $this.removePromotionBlock( $(this).val() );
             }
         });
 
@@ -353,7 +296,130 @@ function Wizard()
         }
     }
 
-    this.recalculate = function(  )
+    this.changeProfile = function(recalculate)
+    {
+        $('#auctionPrice li.promotion:not(.template)').remove();
+        $('#form_promotions input[type=checkbox]').each(function(){
+            $(this).attr('checked', false);
+        });
+
+        if ( $('#form_profiles option:selected').val() > 0 )
+        {
+            var promotions = profiles[$('#form_profiles option:selected').val()];
+            console.log(profiles, $('#form_profiles option:selected').val(), promotions);
+            for ( var i=0; i<promotions.length; i++ )
+            {
+                var promotionId = 0;
+                switch ( i )
+                {
+                    case 0:
+                        promotionId = 16;
+                        break;
+                    case 1:
+                        promotionId = 8;
+                        break;
+                    case 2:
+                        promotionId = 4;
+                        break;
+                    case 3:
+                        promotionId = 2;
+                        break;
+                    case 4:
+                        promotionId = 1;
+                        break;
+                }
+
+                if ( promotions[i] == 0 )
+                {
+                    this.removePromotionBlock(promotionId);
+                }
+                else
+                {
+                    this.addPromotionBlock(promotionId);
+                }
+            }
+        }
+
+        if ( typeof(recalculate) == 'undefined' )
+        {
+            this.recalculate();
+        }
+    }
+
+    this.addPromotionBlock = function( promotionId )
+    {
+        $this = this;
+
+        var item = $('#auctionPrice li.template').clone().removeClass('hide').removeClass('template').attr('id', 'promotion'+promotionId);
+        var count = $('#auctionPrice li.variant').length;
+
+        switch( parseInt(promotionId) )
+        {
+            case 1: // Pogrubienie
+                $(item).find('.title').text( 'Pogrubienie' );
+                $(item).find('.provision').text( parseFloat($this._promotion_bold_price*count).toFixed(2) );
+                break;
+            case 2: // Miniaturka
+                $(item).find('.title').text( 'Miniaturka' );
+                $(item).find('.provision').text( parseFloat($this._promotion_thumbnail_price*count).toFixed(2) );
+                break;
+            case 4: // Podświetlenie
+                $(item).find('.title').text( 'Podświetlenie' );
+                $(item).find('.provision').text( parseFloat($this._promotion_higllight_price*count).toFixed(2) );
+                break;
+            case 8: // Wyróżnienie
+                var price = 0;
+                $('#auctionPrice li.variant').each(function(){
+                    var categories = $(this).attr('data-category-tree') ? $(this).attr('data-category-tree').split('-') : [];
+                    var hasIntersection = $this.hasIntersection($this._promotion_distinction_rare_categories, categories);
+
+                    price += hasIntersection  ? $this._promotion_distinction_rare_price : $this._promotion_distinction_common_price;
+                });
+                $(item).find('.title').text( 'Wyróżnienie' );
+                $(item).find('.provision').text( price );
+                break;
+            case 16: // Strona kategorii
+                var price = 0;
+                $('#auctionPrice li.variant').each(function(){
+                    var categories = $(this).attr('data-category-tree') ? $(this).attr('data-category-tree').split('-') : [];
+
+
+                    var hasIntersection;
+                    if ( hasIntersection = $this.hasIntersection($this._promotion_category_page_section_1_categories, categories) )
+                    {
+                        price += $this._promotion_category_page_section_1_price;
+                    }
+                    else if ( hasIntersection = $this.hasIntersection($this._promotion_category_page_section_2_categories, categories) )
+                    {
+                        price += $this._promotion_category_page_section_2_price;
+                    }
+                    else if ( hasIntersection = $this.hasIntersection($this._promotion_category_page_section_3_categories, categories) )
+                    {
+                        price += $this._promotion_category_page_section_3_price;
+                    }
+                    else if ( hasIntersection = $this.hasIntersection($this._promotion_category_page_section_4_categories, categories) )
+                    {
+                        price += $this._promotion_category_page_section_4_price;
+                    }
+                    else
+                    {
+                        price = 0;
+                    }
+                });
+                $(item).find('.title').text( 'Strona kategorii' );
+                $(item).find('.provision').text( price );
+                break;
+        }
+
+        $(item).insertBefore('#auctionPrice .template');
+    }
+
+    this.removePromotionBlock = function( promotionId )
+    {
+        $('#auctionPrice li#promotion'+promotionId).remove();
+    }
+
+    this.recalculate = function()
     {
         $this = this;
 
