@@ -7,7 +7,7 @@ use Shoplo\AllegroBundle\Entity\Deal;
 
 class Allegro extends \SoapClient
 {
-	const LIMIT_ALLEGRO_TITLE = 50;
+	const LIMIT_ALLEGRO_TITLE = 50; // limit jest 50, ale niektore znaki zajmuja wiecej niz 1 znak - sick
 
     /**
      * @var string

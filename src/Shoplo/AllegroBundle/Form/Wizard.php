@@ -131,6 +131,7 @@ class Wizard
         $description = str_ireplace($search, $replace, $this->getDescription());
 
 		$title = substr($title, 0, Allegro::LIMIT_ALLEGRO_TITLE);
+		$title = str_replace(array('"', '\''), array(), $title);
 
         $fields[] = $this->createField(1, $title);
         $fields[] = $this->createField(2, (int) $categoryId);
