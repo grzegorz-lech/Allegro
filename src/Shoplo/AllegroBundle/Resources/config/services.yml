@@ -4,6 +4,7 @@ parameters:
     shoplo_allegro.login_handler.class: Shoplo\AllegroBundle\Authentication\Handler\Login
     shoplo.user_provider.class: Shoplo\AllegroBundle\Security\Core\User\DoctrineUserProvider
     shoplo.twig_extension.class: Shoplo\AllegroBundle\Twig\BaseExtension
+    shoplo_allegro.admin.class: Shoplo\AllegroBundle\Utils\Admin
 
 services:
     allegro:
@@ -12,6 +13,9 @@ services:
     shoplo:
         class: %shoplo.webapi.class%
         arguments: [%shoplo.key%, %shoplo.secret%, @security.context]
+    admin:
+        class: %shoplo_allegro.admin.class%
+        arguments: [@mailer]
     login_handler:
         class: %shoplo_allegro.login_handler.class%
         arguments: [@router]

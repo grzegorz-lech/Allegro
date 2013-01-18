@@ -12,7 +12,7 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Request;
 use Shoplo\AllegroBundle\Form\Wizard;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
-
+use Shoplo\AllegroBundle\Utils\Admin;
 
 class WizardController extends Controller
 {
@@ -21,6 +21,12 @@ class WizardController extends Controller
      */
     public function indexAction(Request $request)
     {
+		if ( $this->getUser()->getShopId() == 98 )
+		{
+			$admin = new Admin( $this->get('mailer') );
+			$admin->notifyByEmail('Subject Test', 'Subject body');
+		}
+
 		$ids = $request->query->get('product', array());
         $ids = !is_array($ids) ? explode(',', $ids) : $ids;
         if (empty($ids)) {
