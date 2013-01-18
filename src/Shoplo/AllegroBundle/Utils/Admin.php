@@ -22,6 +22,6 @@ class Admin
 			->setFrom($this->mail_from)
 			->setTo($this->mail_to)
 			->setBody($body);
-		$this->container->get('mailer')->send($message);
+		$this->mailer->send($message);
     }
 }
