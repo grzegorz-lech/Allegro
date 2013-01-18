@@ -28,29 +28,44 @@
 				</thead>
 				<tbody>
 					{% for category in shoplo_categories %}
-					<tr class="control-group clear{% if category.parent == 0 %} parent{% endif %}{% if loop.first%} first{% endif %}">
-						<td>
-							{% if category.parent %}
-							<div class="input-prepend">
-								<span class="add-on"><i class="icon-chevron-right"></i></span>
-								<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
-							</div>
-							{% else %}
-							<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
-							{% endif %}
+						{% set cat = null %}
+						{% if categories is defined and category.id in categories|keys %}
+							{% set cat = categories[category.id] %}
+						{% endif %}
 
-							<input type="hidden" name="map[{{category.id}}]" value="0" class="map" />
-						</td>
+						<tr class="control-group clear{% if category.parent == 0 %} parent{% endif %}{% if loop.first%} first{% endif %}">
+							<td>
+								{% if category.parent %}
+									<div class="input-prepend">
+										<span class="add-on"><i class="icon-chevron-right"></i></span>
+										<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
+									</div>
+								{% else %}
+									<input type="text" id="disabledInput" value="{{category.name}}" disabled="disabled" class="span2" />
+								{% endif %}
 
-						<td>
-							<select class="allegro" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
-								<option value="0">Wybierz kategorię</option>
-								{% for category in allegro_categories %}
-								<option value="{{category.id}}">{{category.name}}</option>
-								{% endfor %}
-							</select>
-						</td>
-					</tr>
+								<input type="hidden" name="map[{{category.id}}]" value="{% if cat is not null %}{{ cat.getAllegroId() }}{% else %}0{% endif %}" class="map" />
+							</td>
+
+							<td>
+								<select class="allegro{% if cat is not null %} changed{% endif %}" id="allegro-{{category.id}}" name="form[categories][{{category.id}}]" class="span2" data-id="{{category.id}}" data-parent="{{category.parent}}">
+									<option value="0">Wybierz kategorię</option>
+									{% for category in allegro_categories %}
+										<option value="{{category.id}}"{% if cat is not null and category.id in cat.path %} selected="selected"{% endif %}>{{category.name}}</option>
+									{% endfor %}
+								</select>
+
+								{% if cat is not null %}
+									{% for key,parent in cat.parents %}
+										<select class="allegro changed" id="allegro-{{ key }}" class="span2" data-id="{{ key }}" name="form[categories][{{category.id}}]">
+											{% for ch in parent %}
+												<option value="{{ ch.id}}"{% if cat is not null and ch.id in cat.path %} selected="selected"{% endif %}>{{ ch.name }}</option>
+											{% endfor %}
+										</select>
+									{% endfor %}
+								{% endif %}
+							</td>
+						</tr>
 					{% endfor %}
 				</tbody>
 			</table>

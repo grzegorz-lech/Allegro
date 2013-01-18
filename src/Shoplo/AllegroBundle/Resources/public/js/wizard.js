@@ -48,20 +48,20 @@ $(function(){
             var windowOffset = $(window).scrollTop();
 
             if (windowOffset > origOffset) {
-                var maxOffset = ($('.container-fluid .content').offset().top + ($('.container-fluid .content')[0].offsetHeight - $floating[0].offsetHeight)) - 120;
+                var maxOffset = ($('.container-fluid .content').offset().top + ($('.container-fluid .content')[0].offsetHeight - $floating[0].offsetHeight));
 
                 $floating.addClass('sticked');
 
                 if (windowOffset > maxOffset) {
                     $floating.css({
-                        position: 'absolute'
-                        //top: maxOffset - $floating[0].offsetHeight
+                        position: 'absolute',
+                        top: maxOffset - $floating[0].offsetHeight
                     });
                 }
                 else {
                     $floating.css({
-                        position: ''
-                        //top: ''
+                        position: '',
+                        top: ''
                     }).addClass('sticked');
                 }
             }

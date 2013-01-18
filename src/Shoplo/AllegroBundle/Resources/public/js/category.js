@@ -45,6 +45,8 @@ function selectCategory(handler, automatic)
         return false;
     }
 
+    $(handler).parents('td').attr('class', 'loading');
+
     $.ajax({
         url: Routing.generate('shoplo_allegro_get_category_path', { id: category_id }),
         dataType: 'json',
@@ -71,6 +73,7 @@ function selectCategory(handler, automatic)
                     selectCategory($(this));
                 });
             }
+            $(handler).parents('td').attr('class', '');
         }
     });
 }

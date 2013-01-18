@@ -148,6 +148,12 @@ label, input, button, select, textarea {
 .box table.table td.alignCenter {
     text-align: center;
 }
+.box table tr td.loading {
+    background: url(../img/loader.gif) center no-repeat;
+}
+.box table tr td.loading select {
+    opacity: 0.5;
+}
 
 /* Actions */
 a.action { margin-left:5px; margin-right:0 !important; width:13px; height:13px; }

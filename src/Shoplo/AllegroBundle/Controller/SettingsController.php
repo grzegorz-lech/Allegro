@@ -459,7 +459,37 @@ class SettingsController extends Controller
             array('position' => 'ASC')
         );
 
-        // TODO: Pobranie i wyświetlenie już zmapowanych kategorii
+        $categories = $this->getDoctrine()
+			->getRepository('ShoploAllegroBundle:Category')
+			->findBy(
+				array('shop_id'=>$this->getUser()->getShopId()),
+				array('id' => 'ASC')
+		);
+		$tmp = $map = array();
+		foreach ( $categories as $c )
+		{
+			/** @var $c Category */
+
+			$path = $allegro->doGetCategoryPath($allegro->getSession(), $c->getAllegroId());
+			$c->parents = array();
+			foreach ( $path as $p )
+			{
+				if ( !isset($map[$p->{'cat-id'}]) )
+				{
+					$children = $this->getCategoryChildren($p->{'cat-id'});
+					$map[$p->{'cat-id'}] = $children;
+				}
+				$c->path[] = $p->{'cat-id'};
+				if ( !empty($map[$p->{'cat-id'}]) )
+				{
+					$c->parents[$p->{'cat-id'}] = $map[$p->{'cat-id'}];
+				}
+			}
+
+			$tmp[$c->getShoploId()] = $c;
+		}
+		$categories = $tmp;
+		//print_r($categories);exit;
 
         $form = $this->createFormBuilder()
             ->add(
@@ -477,7 +507,7 @@ class SettingsController extends Controller
 
             if ($form->isValid()) {
                 $data                 = $form->getData();
-                $allegroCategories    = $this->getDoctrine()
+				$allegroCategories    = $this->getDoctrine()
                     ->getRepository('ShoploAllegroBundle:CategoryAllegro')
                     ->findBy(array('id' => $data['categories']));
                 $allegroCategoriesMap = array();
@@ -492,6 +522,7 @@ class SettingsController extends Controller
                     'DELETE FROM ShoploAllegroBundle:Category c WHERE c.shop_id = ' . $shop['id']
                 );
                 $query->execute();
+				$em->flush();
 
                 foreach ($shoploCategories as $sc) {
                     /** @var $allegroCategory CategoryAllegro */
@@ -522,37 +553,14 @@ class SettingsController extends Controller
                 'form'               => $form->createView(),
                 'shoplo_categories'  => $matches,
                 'allegro_categories' => $allegroCategories,
+				'categories'		 => $categories,
             )
         );
     }
 
     public function getCategoryChildrenAction($id)
     {
-        $user    = $this->getUser();
-        $allegro = $this->container->get('allegro');
-        $allegro->login($user);
-
-        $allegroCategories = $this->getDoctrine()
-            ->getRepository('ShoploAllegroBundle:CategoryAllegro')
-            ->findBy(
-            array('country_id' => $allegro->getCountry(), 'parent' => $id),
-            array('position' => 'ASC')
-        );
-
-        $categories = array();
-        foreach ($allegroCategories as $ac) {
-            $categories[] = array(
-                'id'           => $ac->getId(),
-                'name'         => $ac->getName(),
-                'childs_count' => count(
-                    $this->getDoctrine()
-                        ->getRepository('ShoploAllegroBundle:CategoryAllegro')
-                        ->findBy(
-                        array('parent' => $ac->getId())
-                    )
-                )
-            );
-        }
+        $categories = $this->getCategoryChildren($id);
 
         $json     = json_encode($categories);
         $response = new Response();
@@ -647,4 +655,34 @@ class SettingsController extends Controller
 
         return $response;
     }
+
+	private function getCategoryChildren($id)
+	{
+		$user    = $this->getUser();
+		$allegro = $this->container->get('allegro');
+		$allegro->login($user);
+
+		$allegroCategories = $this->getDoctrine()
+			->getRepository('ShoploAllegroBundle:CategoryAllegro')
+			->findBy(
+			array('country_id' => $allegro->getCountry(), 'parent' => $id),
+			array('position' => 'ASC')
+		);
+
+		$categories = array();
+		foreach ($allegroCategories as $ac) {
+			$categories[] = array(
+				'id'           => $ac->getId(),
+				'name'         => $ac->getName(),
+				'childs_count' => count(
+					$this->getDoctrine()
+						->getRepository('ShoploAllegroBundle:CategoryAllegro')
+						->findBy(
+						array('parent' => $ac->getId())
+					)
+				)
+			);
+		}
+		return $categories;
+	}
 }
