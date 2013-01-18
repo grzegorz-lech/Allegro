@@ -17,7 +17,13 @@ shoplo_allegro_show_item:
 
 shoplo_allegro_delete_item:
     pattern:  /usun/{itemId}/{action}
-    defaults: { _controller: ShoploAllegroBundle:Homepage:delete, action: 'normal' }
+    defaults: { _controller: ShoploAllegroBundle:Homepage:delete }
+    requirements:
+        itemId: \d+
+
+shoplo_allegro_delete_item_force:
+    pattern:  /usun/{itemId}/force
+    defaults: { _controller: ShoploAllegroBundle:Homepage:delete, force: true }
     requirements:
         itemId: \d+
 

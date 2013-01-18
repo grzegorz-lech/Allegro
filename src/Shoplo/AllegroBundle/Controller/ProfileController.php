@@ -32,7 +32,7 @@ class ProfileController extends Controller
             'ShoploAllegroBundle::profiles.html.twig',
             array(
                 'profiles' 	=> $profiles,
-				'days'		=> array(3, 5, 7, 10, 14, 30),
+				'days'		=> array(3, 5, 7, 10, 14),
             )
         );
     }

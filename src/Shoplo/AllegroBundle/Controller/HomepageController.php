@@ -114,7 +114,7 @@ class HomepageController extends Controller
         return $this->redirect(sprintf($url, $itemId));
     }
 
-	public function deleteAction($itemId, $action)
+	public function deleteAction($itemId, $force=false)
 	{
 		$item = $this->getDoctrine()
 			->getRepository('ShoploAllegroBundle:Item')
@@ -130,7 +130,7 @@ class HomepageController extends Controller
 		$allegro->login($this->getUser());
 
 		$result = $allegro->removeItem($itemId);
-		if ( $result === true || $action == 'force' )
+		if ( $result === true || $force == true )
 		{
 			$em = $this->getDoctrine()->getManager();
 			$em->remove($item);
@@ -143,7 +143,7 @@ class HomepageController extends Controller
 		}
 		else
 		{
-			$link = $this->generateUrl('shoplo_allegro_delete_item', array('action'=>'force'));
+			$link = $this->generateUrl('shoplo_allegro_delete_item_force');
 			$this->get('session')->setFlash(
 				"error",
 				"Komunikat od Allegro\n".
