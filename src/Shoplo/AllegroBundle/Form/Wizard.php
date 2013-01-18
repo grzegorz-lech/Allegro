@@ -5,6 +5,7 @@ namespace Shoplo\AllegroBundle\Form;
 use Symfony\Component\Form\Exception\InvalidPropertyException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Shoplo\AllegroBundle\Entity\Profile;
+use Shoplo\AllegroBundle\WebAPI\Allegro;
 
 class Wizard
 {
@@ -129,7 +130,7 @@ class Wizard
         $title       = str_ireplace($search, $replace, $this->getTitle());
         $description = str_ireplace($search, $replace, $this->getDescription());
 
-		$title = str_replace(array('"'), array(), $title);
+		$title = substr($title, 0, Allegro::LIMIT_ALLEGRO_TITLE);
 
         $fields[] = $this->createField(1, $title);
         $fields[] = $this->createField(2, (int) $categoryId);

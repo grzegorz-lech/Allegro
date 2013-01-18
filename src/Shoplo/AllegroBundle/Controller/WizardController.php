@@ -404,7 +404,7 @@ class WizardController extends Controller
 
 		$wizard = new Wizard();
 		$form   = $this->createFormBuilder($wizard)
-			->add('title', 'text') // TODO: Ustawienie maksymalnej długości LIMIT_ALLEGRO-MAX(nazwa_wariantu)
+			->add('title', 'text', array('attr'=> array('maxlength'=>Allegro::LIMIT_ALLEGRO_TITLE))) // TODO: Ustawienie maksymalnej długości LIMIT_ALLEGRO-MAX(nazwa_wariantu)
 			->add('description', 'textarea')
 			->add('quantity', 'text')
 			->add('all_stock', 'checkbox', array('required' => false))

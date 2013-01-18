@@ -7,6 +7,8 @@ use Shoplo\AllegroBundle\Entity\Deal;
 
 class Allegro extends \SoapClient
 {
+	const LIMIT_ALLEGRO_TITLE = 50;
+
     /**
      * @var string
      */
