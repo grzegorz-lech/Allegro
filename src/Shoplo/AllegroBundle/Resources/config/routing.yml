@@ -21,9 +21,15 @@ shoplo_allegro_delete_item:
     requirements:
         itemId: \d+
 
-shoplo_allegro_delete_item_force:
-    pattern:  /usun/{itemId}/force
-    defaults: { _controller: ShoploAllegroBundle:Homepage:delete, force: true }
+shoplo_allegro_finish_item:
+    pattern:  /zakoncz/{itemId}
+    defaults: { _controller: ShoploAllegroBundle:Homepage:finish }
+    requirements:
+        itemId: \d+
+
+shoplo_allegro_finish_item_force:
+    pattern:  /zakoncz/{itemId}/force
+    defaults: { _controller: ShoploAllegroBundle:Homepage:finish, force: true }
     requirements:
         itemId: \d+
 

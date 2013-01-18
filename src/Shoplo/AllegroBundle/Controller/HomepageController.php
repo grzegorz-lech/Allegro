@@ -114,7 +114,31 @@ class HomepageController extends Controller
         return $this->redirect(sprintf($url, $itemId));
     }
 
-	public function deleteAction($itemId, $force=false)
+	public function deleteAction($itemId)
+	{
+		$item = $this->getDoctrine()
+			->getRepository('ShoploAllegroBundle:Item')
+			->findOneBy(
+			array('id' => $itemId, 'user_id' => $this->getUser()->getId())
+		);
+		if ( !($item instanceof Item) )
+		{
+			throw $this->createNotFoundException('Resource not found');
+		}
+
+		$em = $this->getDoctrine()->getManager();
+		$em->remove($item);
+		$em->flush();
+
+		$this->get('session')->setFlash(
+			"success",
+			"Aukcja została usunięta."
+		);
+
+		return $this->redirect( $this->generateUrl('shoplo_allegro_homepage') );
+	}
+
+	public function finishAction($itemId, $force=false)
 	{
 		$item = $this->getDoctrine()
 			->getRepository('ShoploAllegroBundle:Item')
@@ -133,22 +157,22 @@ class HomepageController extends Controller
 		if ( $result === true || $force == true )
 		{
 			$em = $this->getDoctrine()->getManager();
-			$em->remove($item);
+			$item->setEndAt( new \DateTime() );
 			$em->flush();
 
 			$this->get('session')->setFlash(
 				"success",
-				"Aukcja została usunięta."
+				"Aukcja została zakończona."
 			);
 		}
 		else
 		{
-			$link = $this->generateUrl('shoplo_allegro_delete_item_force', array('itemId'=>$itemId));
+			$link = $this->generateUrl('shoplo_allegro_finish_item_force', array('itemId'=>$itemId));
 			$this->get('session')->setFlash(
 				"error",
-				"Komunikat od Allegro\n".
-					$result."\n".
-					"<a href='{$link}'>Usuń aukcję z Shoplo</a>"
+				"Komunikat od Allegro<br />".
+					$result."<br />".
+					"<a href='{$link}'>Zakończ aukcję w Shoplo</a>"
 
 			);
 		}

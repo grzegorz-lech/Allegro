@@ -22,4 +22,13 @@ $(function(){
         }
         return true;
     });
+
+    /* Zakonczenie aukcji */
+    $('a.actionFinish').click(function(){
+        if ( !confirm('Czy napewno chcesz zakończyć tą aukcję?') )
+        {
+            return false;
+        }
+        return true;
+    });
 });

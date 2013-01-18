@@ -418,4 +418,12 @@ class Item
 	{
 		return $this->auction_price;
 	}
+
+	/**
+	 * @return float
+	 */
+	public function getFormattedAuctionPrice()
+	{
+		return sprintf("%01.2f", $this->auction_price);
+	}
 }

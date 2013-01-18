@@ -37,21 +37,23 @@
 
 	<div class="container{% block container_class %}{% endblock %}">
 		{% block messages %}
-			{% for flashMessage in app.session.flashbag.get('success') %}
-			<div class="alert alert-success alignCenter">
-				{{ flashMessage }}
-			</div>
-			{% endfor %}
-			{% for flashMessage in app.session.flashbag.get('error') %}
-			<div class="alert alert-error alignCenter">
-				{{ flashMessage }}
-			</div>
-			{% endfor %}
-			{% for flashMessage in app.session.flashbag.get('info') %}
-			<div class="alert alert-info alignCenter">
-				{{ flashMessage }}
-			</div>
-			{% endfor %}
+			{% autoescape false %}
+				{% for flashMessage in app.session.flashbag.get('success') %}
+				<div class="alert alert-success alignCenter">
+					{{ flashMessage }}
+				</div>
+				{% endfor %}
+				{% for flashMessage in app.session.flashbag.get('error') %}
+				<div class="alert alert-error alignCenter">
+					{{ flashMessage }}
+				</div>
+				{% endfor %}
+				{% for flashMessage in app.session.flashbag.get('info') %}
+				<div class="alert alert-info alignCenter">
+					{{ flashMessage }}
+				</div>
+				{% endfor %}
+			{% endautoescape %}
 		{% endblock %}
 
         {% block body %}{% endblock %}

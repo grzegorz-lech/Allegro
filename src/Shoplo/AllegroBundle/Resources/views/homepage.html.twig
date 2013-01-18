@@ -31,7 +31,7 @@
 								<th class="alignCenter medium">Koniec</th>
 								<th class="alignCenter medium">Sprzedanych</th>
 								<th class="alignCenter">Statystyki</th>
-								{#<th class="alignCenter medium">Koszt</th>#}
+								<th class="alignCenter medium">Koszt</th>
 								<th class="mini">&nbsp;</th>
 							</tr>
 						</thead>
@@ -51,10 +51,10 @@
 								<td class="alignCenter">{{ i.getEndAt()|nicedate }}</td>
 								<td class="alignCenter">{{ i.getQuantitySold() }}/{{ i.getQuantity() }}</td>
 								<td class="alignCenter">{{ i.getViewsCount() }}</td>
-								{#<td class="alignCenter">{{ i.price }} zł</td>#}
+								<td class="alignCenter">{{ i.getFormattedAuctionPrice() }} zł</td>
 								<td>
 									{#<a href="" class="action actionEdit"><span class="icon-edit"></span></a>#}
-									<a href="{{ path('shoplo_allegro_delete_item', {itemId: i.id}) }}" class="action actionDelete"><span class="icon-remove"></span></a>
+									<a href="{{ path('shoplo_allegro_finish_item', {itemId: i.id}) }}" class="action actionFinish"><span class="icon-time"></span></a>
 								</td>
 							</tr>
 							{% endfor %}
@@ -74,10 +74,10 @@
 								<td class="alignCenter">{{ i.getEndAt()|nicedate }}</td>
 								<td class="alignCenter">{{ i.getQuantitySold() }}/{{ i.getQuantity() }}</td>
 								<td class="alignCenter">{{ i.getViewsCount() }}</td>
-								{#<td class="alignCenter">{{ i.price }} zł</td>#}
+								<td class="alignCenter">{{ i.getFormattedAuctionPrice() }} zł</td>
 								<td>
 									{#<a href="" class="actionEdit"><i class="icon-edit"></i></a>#}
-									<a href="" class="actionDelete"><i class="icon-remove"></i></a>
+									<a href="{{ path('shoplo_allegro_delete_item', {itemId: i.id}) }}" class="action actionDelete"><i class="icon-remove"></i></a>
 								</td>
 							</tr>
 							{% endfor %}
