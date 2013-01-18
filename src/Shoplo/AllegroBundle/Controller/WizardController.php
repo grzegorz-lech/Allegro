@@ -21,12 +21,6 @@ class WizardController extends Controller
      */
     public function indexAction(Request $request)
     {
-		if ( $this->getUser()->getShopId() == 98 )
-		{
-			$admin = new Admin( $this->get('mailer') );
-			$admin->notifyByEmail('Subject Test', 'Subject body');
-		}
-
 		$ids = $request->query->get('product', array());
         $ids = !is_array($ids) ? explode(',', $ids) : $ids;
         if (empty($ids)) {
@@ -189,12 +183,11 @@ class WizardController extends Controller
 
 						if ( $auctionPrice != $wizard->getAuctionPrice() )
 						{
-							$message = \Swift_Message::newInstance()
-								->setSubject('Auction Price Differ')
-								->setFrom('allegro@shoploapp.com')
-								->setTo('lech.grzegorz@gmail.com')
-								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}\n in auction {$itemId}");
-							$this->get('mailer')->send($message);
+							$admin = new Admin( $this->get('mailer') );
+							$admin->notifyByEmail(
+								"Auction Price Differ",
+								"Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}\n in auction {$itemId}"
+							);
 						}
 
 
