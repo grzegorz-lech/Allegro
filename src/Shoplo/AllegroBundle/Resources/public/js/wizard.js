@@ -90,7 +90,7 @@ $(function(){
 
     /*** New price ***/
     $('#form_price').change(function(){
-        if ( $('#form_price option:selected').val() > 0 )
+        if ( $('#form_price option:selected').val() > 1 )
         {
             $('#form_extra_price').show();
             $('#form_extra_price').focus();
@@ -188,21 +188,22 @@ function Wizard()
     this.changePrice = function(recalculate)
     {
         var change;
-        if ( $('#form_price option:selected').val() == 0 )
+        if ( $('#form_price option:selected').val() == 0 || $('#form_price option:selected').val() == 1 )
         {
             change = 0;
             $('#form_extra_price').val(0);
         }
-        if ( $('#form_price option:selected').val() == 1 )
+        if ( $('#form_price option:selected').val() == 2 )
         {
             change = parseFloat($('#form_extra_price').val());
             change = isNaN(change) ? 0 : parseInt( change*100 );
         }
-        else if ( $('#form_price option:selected').val() == 2 )
+        else if ( $('#form_price option:selected').val() == 3 )
         {
             change = parseFloat($('#form_extra_price').val());
             change = isNaN(change) ? 0 : -parseInt( change*100 );
         }
+
 
         $('#auctionPrice li:not(.template)').each(function(){
             $(this).attr('data-price', parseInt($(this).data('price-orig'))+change);

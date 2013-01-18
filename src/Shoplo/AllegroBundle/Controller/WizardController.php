@@ -21,16 +21,6 @@ class WizardController extends Controller
      */
     public function indexAction(Request $request)
     {
-		if ( $this->getUser()->getShopId() == 98 )
-		{
-			$message = \Swift_Message::newInstance()
-				->setSubject('Auction Price OK:)')
-				->setFrom('allegro@shoploapp.com')
-				->setTo('lech.grzegorz@gmail.com')
-				->setBody("TEST MAIL FROM ALLEGRO APP");
-			$this->get('mailer')->send($message);
-		}
-
 		$ids = $request->query->get('product', array());
         $ids = !is_array($ids) ? explode(',', $ids) : $ids;
         if (empty($ids)) {
@@ -198,15 +188,6 @@ class WizardController extends Controller
 								->setFrom('allegro@shoploapp.com')
 								->setTo('lech.grzegorz@gmail.com')
 								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}\n in auction {$itemId}");
-							$this->get('mailer')->send($message);
-						}
-						else
-						{
-							$message = \Swift_Message::newInstance()
-								->setSubject('Auction Price OK:)')
-								->setFrom('allegro@shoploapp.com')
-								->setTo('lech.grzegorz@gmail.com')
-								->setBody("Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()} in auction {$itemId}");
 							$this->get('mailer')->send($message);
 						}
 

@@ -35,7 +35,7 @@
 
 								{{ p.name }}
 							</td>
-							<td class="alignCenter">{{ p.duration }} dni</td>
+							<td class="alignCenter">{{ days[p.duration] }} dni</td>
 							<td class="alignCenter">{{ p.getCreatedAt()|nicedate }}</td>
 							<td>
 								{#<a href="{{ path('shoplo_allegro_edit_profile', {profileId: p.id}) }}" class="action actionEdit"><span class="icon-edit"></span></a>#}

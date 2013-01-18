@@ -10,8 +10,9 @@ use Shoplo\AllegroBundle\WebAPI\Allegro;
 class Wizard
 {
 	const PRICE_THE_SAME = 0;
-	const PRICE_BIGGER_THEN = 1;
-	const PRICE_SMALLER_THEN = 2;
+	const PRICE_AS_PROVISION = 1;
+	const PRICE_BIGGER_THEN = 2;
+	const PRICE_SMALLER_THEN = 3;
 
     /**
      * @Assert\NotBlank()
@@ -96,6 +97,9 @@ class Wizard
 		switch ( $this->price )
 		{
 			case self::PRICE_THE_SAME:
+				break;
+			case self::PRICE_AS_PROVISION:
+				$price += (float) str_replace(',', '.', $this->auction_price);
 				break;
 			case self::PRICE_BIGGER_THEN:
 				$price += (float) str_replace(',', '.', $this->extra_price);
@@ -320,6 +324,7 @@ class Wizard
 	{
 		return array(
 			self::PRICE_THE_SAME		=>	'Taka jak w sklepie',
+			self::PRICE_AS_PROVISION	=>	'Powiększona o prowizję Allegro',
 			self::PRICE_BIGGER_THEN		=>	'Powiększona o',
 			self::PRICE_SMALLER_THEN	=>	'Pomniejszona o',
 		);

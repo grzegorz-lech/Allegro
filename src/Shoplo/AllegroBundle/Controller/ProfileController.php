@@ -31,7 +31,8 @@ class ProfileController extends Controller
         return $this->render(
             'ShoploAllegroBundle::profiles.html.twig',
             array(
-                'profiles' => $profiles
+                'profiles' 	=> $profiles,
+				'days'		=> array(3, 5, 7, 10, 14, 30),
             )
         );
     }
