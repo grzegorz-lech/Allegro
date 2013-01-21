@@ -30,6 +30,7 @@
 
 	<script>
 		var profiles = {};
+		var profile_durations = {};
         $(function () {
             $("img[rel=popover]").popover({
                 html:true,
@@ -82,6 +83,9 @@
 
 			{% for k,v in profile_promotions %}
 				profiles[{{ k }}] = '{{ v }}'.split('');
+			{% endfor %}
+			{% for k,v in profile_durations %}
+				profile_durations[{{ k }}] = '{{ v }}'.split('');
 			{% endfor %}
         });
     </script>

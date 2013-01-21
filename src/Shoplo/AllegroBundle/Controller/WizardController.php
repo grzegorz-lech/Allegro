@@ -56,11 +56,12 @@ class WizardController extends Controller
 				array('id'	=> 'ASC' )
 			);
 
-		$profilePromotions = array();
+		$profilePromotions = $profileDurations = array();
 		foreach ( $profiles as $profile )
 		{
 			$binary = str_pad(decbin($profile->getPromotions()), 5, "0", STR_PAD_LEFT);
 			$profilePromotions[$profile->getId()] = $binary;
+			$profileDurations[$profile->getId()] = $profile->getDuration();
 		}
 
 		$fields = $allegro->getSellFormFields();
@@ -259,6 +260,7 @@ class WizardController extends Controller
                 'products' => $products,
 				'profiles' => $profiles,
 				'profile_promotions' => $profilePromotions,
+				'profile_durations'	 => $profileDurations,
 				'extra_delivery' => $extrDelivery,
 				'extra_delivery_price' => isset($_POST['extra_delivery_price']) ? $_POST['extra_delivery_price'] : array()
             )

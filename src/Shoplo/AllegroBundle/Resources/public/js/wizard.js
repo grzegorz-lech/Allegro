@@ -8,6 +8,7 @@ $(function(){
     wizard.changeImage(false);
     wizard.changePromotions(false);
     wizard.changeProfile(false);
+    wizard.changeDuration(false);
     wizard.changeCategory(false);
     wizard.recalculate();
 
@@ -18,6 +19,7 @@ $(function(){
     $('#form_images input[type=radio]').change( function() { wizard.changeImage(); });
     $('#form_promotions input[type=checkbox]').change( function() { wizard.changePromotions(); });
     $('.product-category').change( function() { wizard.changeCategory(); });
+    $('#form_duration').change( function() { wizard.changeDuration(); });
     /*** END AUCTION PRICE ***/
 
     $('#dp').datepicker();
@@ -102,49 +104,6 @@ $(function(){
     });
 });
 
-/*function calculatePrice()
-{
-    var itemQuantity = $('#stock-quantity').val() ? $('#stock-quantity').val() : 1;
-    var productsQuantity = $('.summaryBox .unstyled').data('quantity');
-
-    // promocja przedmiotow
-    $('input.promotion').each(function(){
-        if ( $(this).is(':checked') ) {
-            if ( $('.summaryBox .unstyled #promotion'+$(this).data('id')).length == 0 ) {
-                $('<li class="row offset1" id="promotion'+$(this).data('id')+'"><div class="span7 alignRight">'+$(this).parents('.controls').find('.title').text()+'</div><div class="span5 alignRight"><span class="quantity">'+productsQuantity+'</span> x <span class="price">'+$(this).data('price')+'</span>zł</div></li>').appendTo('.summaryBox .unstyled');
-            }
-        }
-        else {
-            $('.summaryBox .unstyled').find('#promotion'+$(this).data('id')).remove();
-        }
-    });
-
-    // czyste koszty wystawienia przedmiotow
-    $('.product-category').each(function(){
-        $('li#product'+$(this).data('product-id')).find('.quantity').text(itemQuantity);
-        $('li#product'+$(this).data('product-id')).find('.price').text( $(this).find('option:selected').data('price') );
-    });
-
-    $('ul li.variant').each(function(){
-        if( $('#all-stock').is(':checked') ) {
-            var quantity = $(this).data('quantity');
-        }
-        else {
-            var quantity = $(this).data('quantity') < itemQuantity ? $(this).data('quantity') : itemQuantity;
-        }
-        $(this).find('.quantity').text(quantity);
-    });
-
-    var sum = 0;
-    $('.summaryBox .unstyled li').each(function(){
-        sum += (parseInt($(this).find('.quantity').text()) * parseFloat($(this).find('.price').text()));
-    });
-
-
-
-    $('.summaryBox .price-all').text( parseFloat(sum).toFixed(2) );
-}*/
-
 function changeProfile()
 {
     if ( $('select#form_profiles option:selected').val() <= 0 ) {
@@ -181,7 +140,8 @@ function Wizard()
     this._promotion_category_page_section_4_price = 22.00;
     this._promotion_category_page_section_4_categories = [64477, 1454, 63757]; // Biuro i Reklama, "Odzież, Obuwie, Dodatki", Erotyka
 
-
+    this._duration_14_days_without_distinction_or_category_page = 0.50;
+    this._duration_14_days_with_distinction_or_category_page = 2.00;
     /**
      * Zmiana ceny wystawianych przedmiotow
      */
@@ -291,6 +251,45 @@ function Wizard()
             }
         });
 
+        this.changeDuration(false);
+
+        if ( typeof(recalculate) == 'undefined' )
+        {
+            this.recalculate();
+        }
+    }
+
+    this.changeDuration = function(recalculate, choose14)
+    {
+        if ( $('#form_duration option:selected').val() == 4 || typeof(choose14) != 'undefined' )
+        {
+            if ( $('#auctionPrice li#duration4').length > 0 )
+            {
+                $('#auctionPrice li#duration4').remove();
+            }
+
+            // sprawdzamy czy zaznaczone sa promocje: wyroznienie lub strona kategorii
+            if ( $('#promotion8').length > 0 || $('#promotion16').length > 0 )
+            {
+                var price = $this._duration_14_days_with_distinction_or_category_page;
+            }
+            else
+            {
+                var price = $this._duration_14_days_without_distinction_or_category_page;
+            }
+
+            var item = $('#auctionPrice li.template').clone().attr('class', 'row offset1 duration').attr('id', 'duration4');
+            var count = $('#auctionPrice li.variant').length;
+
+            $(item).find('.title').text( '14 dni' );
+            $(item).find('.provision').text( parseFloat(price*count).toFixed(2) );
+            $(item).insertBefore('#auctionPrice .template');
+        }
+        else
+        {
+            $('#auctionPrice li#duration4').remove();
+        }
+
         if ( typeof(recalculate) == 'undefined' )
         {
             this.recalculate();
@@ -307,7 +306,6 @@ function Wizard()
         if ( $('#form_profiles option:selected').val() > 0 )
         {
             var promotions = profiles[$('#form_profiles option:selected').val()];
-            console.log(profiles, $('#form_profiles option:selected').val(), promotions);
             for ( var i=0; i<promotions.length; i++ )
             {
                 var promotionId = 0;
@@ -338,6 +336,23 @@ function Wizard()
                 {
                     this.addPromotionBlock(promotionId);
                 }
+            }
+
+            var duration = profile_durations[$('#form_profiles option:selected').val()];
+            if ( duration == 4 )
+            {
+                this.changeDuration(false, true);
+            }
+            else
+            {
+                $('#auctionPrice li#duration4').remove();
+            }
+        }
+        else
+        {
+            if ( $('#form_duration option:selected').val() != 4 )
+            {
+                $('#auctionPrice li#duration4').remove();
             }
         }
 
@@ -471,6 +486,10 @@ function Wizard()
         });
 
         $('#auctionPrice li.promotion:not(.template)').each(function(){
+            total += parseFloat($(this).find('.provision').text());
+        });
+
+        $('#auctionPrice li.duration').each(function(){
             total += parseFloat($(this).find('.provision').text());
         });
 
