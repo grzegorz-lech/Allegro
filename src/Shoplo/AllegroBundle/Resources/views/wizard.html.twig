@@ -75,7 +75,13 @@
                                 callback:function (e) {
                                     e.insertHtml('{product_price}')
                                 }
-                            }
+                            },
+							product_gallery:{
+								title:'Galeria produktu',
+								callback:function (e) {
+									e.insertHtml('{product_gallery}')
+								}
+							}
                         }
                     }
                 }
@@ -179,12 +185,6 @@
 								{{ form_label(form.profiles, 'Pobierz ustawienia z profilu:', {'label_attr': {'class': 'control-label'}}) }}
 								<div class="controls">
 									{{ form_widget(form.profiles) }}
-									{#<select name="profile" id="profile">
-										{% for p in profiles %}
-										<option value="{{ p.getId() }}">{{ p.getName() }}</option>
-										{% endfor %}
-										<option value="-1">Bez profilu ustawię ręcznie</option>
-									</select>#}
 								</div>
 							</div>
 						</div>
@@ -285,14 +285,14 @@
 					<div class="box">
 						<h3>Wygląd aukcji</h3>
 
-                        {#
-						<div class="row-fluid">
+
+						{#<div class="row-fluid">
 							{% for i in range(0,2) %}
 							<div class="span1 offset1">
 								<p align="center">
 									<input type="radio" value="{{ i }}" required="required" name="form[layout]"
-										   id="form_layout_{{ i }}"{% if i == 0 %} checked="checked"{% endif %}><br>
-									<br>
+										   id="form_layout_{{ i }}"{% if i == 0 %} checked="checked"{% endif %}>
+									<br />
 									<label for="form_layout_{{ i }}">
 										{% image '@ShoploAllegroBundle/Resources/public/img/default_theme_screenshot.jpg' %}
 										<img src="{{ asset_url }}" alt="Example"/>
@@ -302,8 +302,8 @@
 							</div>
 							{% endfor %}
 							{% do form.layout.setRendered %}
-						</div>
-						#}
+						</div>#}
+
 
 						<div class="row-fluid">
 							<div class="control-group">

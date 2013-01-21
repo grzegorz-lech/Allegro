@@ -113,6 +113,28 @@ class Wizard
 				break;
 		}
 
+
+		// Tytuł
+		$productTitle = $product['name'];
+		if ( isset($product['variant_properties']) && !empty($product['variant_properties']) )
+		{
+			foreach ( $product['variant_properties'] as $prop )
+			{
+				$productTitle .= ' '.$prop['name'].' '.$variant['property_name_'.$prop['pos']].',';
+			}
+			$productTitle = trim($productTitle, ',');
+		}
+
+
+
+
+		// Galeria
+		$gallery = array();
+		foreach ($product['images'] as $image) {
+			$gallery[] = $image['src'];
+		}
+		$gallery = '<p>'.implode('</p><p style="text-align:center;">', $gallery).'</p>';
+
         // Cena
         $variant['price'] = $price;
 
@@ -123,13 +145,15 @@ class Wizard
             '{product_description}',
             '{product_sku}',
             '{product_price}',
+			'{product_gallery}',
         );
         $replace     = array(
-            $product['name'],
+			$productTitle,
             $product['short_description'],
             $product['description'],
             $variant['sku'],
             number_format($variant['price'], 2, ',', ''),
+			$gallery,
         );
         $title       = str_ireplace($search, $replace, $this->getTitle());
         $description = str_ireplace($search, $replace, $this->getDescription());
