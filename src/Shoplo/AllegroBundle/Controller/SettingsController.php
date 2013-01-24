@@ -536,10 +536,11 @@ class SettingsController extends Controller
 					foreach ($shoploCategories as $sc) {
 						/** @var $allegroCategory CategoryAllegro */
 
+						$allegroCategory = $allegroCategoriesMap[$data['categories'][$sc['id']]];
+
 						$parent = $allegroCategory->getParent();
 						$parentId = $parent instanceof CategoryAllegro ? $parent->getId() : 0;
 
-						$allegroCategory = $allegroCategoriesMap[$data['categories'][$sc['id']]];
 						$c               = new Category();
 						$c->setAllegroId($allegroCategory->getId());
 						$c->setAllegroName($allegroCategory->getName());
