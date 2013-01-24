@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Shoplo\AllegroBundle\Entity\CategoryAllegro;
 use Shoplo\AllegroBundle\Entity\Category;
 use Shoplo\AllegroBundle\Entity\ShoploOrder;
+use Shoplo\AllegroBundle\Utils;
 
 class SettingsController extends Controller
 {
@@ -524,28 +525,40 @@ class SettingsController extends Controller
 
                 $shop  = $shoplo->get('shop');
                 $em    = $this->getDoctrine()->getManager();
-                $query = $em->createQuery(
-                    'DELETE FROM ShoploAllegroBundle:Category c WHERE c.shop_id = ' . $shop['id']
-                );
-                $query->execute();
-				$em->flush();
 
-                foreach ($shoploCategories as $sc) {
-                    /** @var $allegroCategory CategoryAllegro */
-                    $allegroCategory = $allegroCategoriesMap[$data['categories'][$sc['id']]];
-                    $c               = new Category();
-                    $c->setAllegroId($allegroCategory->getId());
-                    $c->setAllegroName($allegroCategory->getName());
-                    $c->setAllegroParent($allegroCategory->getParent()->getId());
-                    $c->setAllegroPosition($allegroCategory->getPosition());
-                    $c->setShopId($shop['id']);
-                    $c->setShoploId($sc['id']);
-                    $c->setShoploName($sc['name']);
-                    $c->setShoploParent($sc['parent']);
-                    $c->setShoploPosition($sc['pos']);
+				try
+				{
+					$query = $em->createQuery(
+						'DELETE FROM ShoploAllegroBundle:Category c WHERE c.shop_id = ' . $shop['id']
+					);
+					$query->execute();
 
-                    $em->persist($c);
-                }
+					foreach ($shoploCategories as $sc) {
+						/** @var $allegroCategory CategoryAllegro */
+
+						$parent = $allegroCategory->getParent();
+						$parentId = $parent instanceof CategoryAllegro ? $parent->getId() : 0;
+
+						$allegroCategory = $allegroCategoriesMap[$data['categories'][$sc['id']]];
+						$c               = new Category();
+						$c->setAllegroId($allegroCategory->getId());
+						$c->setAllegroName($allegroCategory->getName());
+						$c->setAllegroParent($parentId);
+						$c->setAllegroPosition($allegroCategory->getPosition());
+						$c->setShopId($shop['id']);
+						$c->setShoploId($sc['id']);
+						$c->setShoploName($sc['name']);
+						$c->setShoploParent($sc['parent']);
+						$c->setShoploPosition($sc['pos']);
+
+						$em->persist($c);
+					}
+				}
+				catch ( \Exception $e )
+				{
+					Admin::notifyByEmail('Mapping category error in shop:'.$shop['id'], $e->getMessage());
+				}
+
 
                 $em->flush();
 
