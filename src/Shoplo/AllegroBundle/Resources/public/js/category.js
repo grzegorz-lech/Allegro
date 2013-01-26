@@ -1,5 +1,7 @@
 $(function(){
+    console.log( 'It words' );
     $('select.allegro').change( function() {
+        console.log( 'change allegro select' );
         selectCategory($(this));
     });
 
