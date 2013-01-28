@@ -154,6 +154,9 @@ label, input, button, select, textarea {
 .box table tr td.loading select {
     opacity: 0.5;
 }
+.box table.table .image {
+    width: 50px;
+}
 
 /* Actions */
 a.action { margin-left:5px; margin-right:0 !important; width:13px; height:13px; }
@@ -402,10 +405,6 @@ ul.inline li:hover a {
     padding-top: 0;
     border-top: none;
 }
-.map-allegro .image {
-    width: 50px;
-}
-
 #form_payments input, #form_delivery input, #form_images input {
     float: left;
     margin-right: 10px !important;
