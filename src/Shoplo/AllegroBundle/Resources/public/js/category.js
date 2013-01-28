@@ -50,7 +50,7 @@ function selectCategory(handler, automatic)
     setTimeout(function (){
 
         $.ajax({
-            url: '',//Routing.generate('shoplo_allegro_get_category_path', { id: category_id }),
+            url: $('form.allegro-map').attr('data-url')+'/'+category_id,//Routing.generate('shoplo_allegro_get_category_path', { id: category_id }),
             dataType: 'json',
             success: function(data, status){
                 $(handler).nextUntil().remove();
