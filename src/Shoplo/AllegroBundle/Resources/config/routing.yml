@@ -80,10 +80,8 @@ shoplo_allegro_settings_mapping:
     defaults: { _controller: ShoploAllegroBundle:Settings:mapping }
 
 shoplo_allegro_get_category_path:
-    pattern:  /allegro/kategoria/{id}.json
+    pattern:  /allegro/kategoria/{id}
     defaults: { _controller: ShoploAllegroBundle:Settings:getCategoryChildren }
-    requirements:
-        id: \d+
     options:
         expose: true
 
