@@ -20,7 +20,7 @@
 			Każda kategoria z Shoplo musi być przypisana do kategorii z Allegro.
 		</div>
 
-		<form action="{{ path('shoplo_allegro_settings_mapping') }}" class="form-inline map-allegro" method="post" data-url="{{ path('shoplo_allegro_get_category_path') }}" {{ form_enctype(form) }}>
+		<form action="{{ path('shoplo_allegro_settings_mapping') }}" class="form-inline map-allegro" method="post" data-url="{{ path('shoplo_allegro_get_category_path', {'id': 0}) }}" {{ form_enctype(form) }}>
 			<table class="table">
 				<thead>
 					<th class="span2">Kategorie Shoplo</th>

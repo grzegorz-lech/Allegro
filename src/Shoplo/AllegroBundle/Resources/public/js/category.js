@@ -48,9 +48,12 @@ function selectCategory(handler, automatic)
     $(handler).parents('td').attr('class', 'loading');
 
     setTimeout(function (){
-
+        var url = $('form.map-allegro').attr('data-url');
+        console.log(url);
+        url = url.replace('/0', '/'+category_id);
+        console.log(url);
         $.ajax({
-            url: $('form.allegro-map').attr('data-url')+'/'+category_id,//Routing.generate('shoplo_allegro_get_category_path', { id: category_id }),
+            url: url,//Routing.generate('shoplo_allegro_get_category_path', { id: category_id }),
             dataType: 'json',
             success: function(data, status){
                 $(handler).nextUntil().remove();
