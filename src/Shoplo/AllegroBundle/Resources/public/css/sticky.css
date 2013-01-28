@@ -402,6 +402,9 @@ ul.inline li:hover a {
     padding-top: 0;
     border-top: none;
 }
+.map-allegro .image {
+    width: 50px;
+}
 
 #form_payments input, #form_delivery input, #form_images input {
     float: left;
