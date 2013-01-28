@@ -1,7 +1,5 @@
 $(function(){
-    console.log( 'It words' );
     $('select.allegro').change( function() {
-        console.log( 'change allegro select' );
         selectCategory($(this));
     });
 
@@ -49,35 +47,39 @@ function selectCategory(handler, automatic)
 
     $(handler).parents('td').attr('class', 'loading');
 
-    $.ajax({
-        url: Routing.generate('shoplo_allegro_get_category_path', { id: category_id }),
-        dataType: 'json',
-        success: function(data, status){
-            $(handler).nextUntil().remove();
-            if ( data.length > 0 )
-            {
-                var parent_id = $(handler).data('parent') == 0 ? $(handler).data('id') : $(handler).data('parent');
-                var select_id = $(handler).attr('id')+'-'+category_id;
-                var html = $('<select id="'+select_id+'" class="allegro span2" name="'+$(handler).attr('name')+'"></select>');
+    setTimeout(function(){
 
-                html.append('<option value="0">Wybierz kategorię</option>');
-                for ( d in data )
+        $.ajax({
+            url: Routing.generate('shoplo_allegro_get_category_path', { id: category_id }),
+            dataType: 'json',
+            success: function(data, status){
+                $(handler).nextUntil().remove();
+                if ( data.length > 0 )
                 {
-                    html.append('<option value="'+data[d]['id']+'" data-childs="'+data[d]['childs_count']+'">'+data[d]['name']+'</option>');
-                }
+                    var parent_id = $(handler).data('parent') == 0 ? $(handler).data('id') : $(handler).data('parent');
+                    var select_id = $(handler).attr('id')+'-'+category_id;
+                    var html = $('<select id="'+select_id+'" class="allegro span2" name="'+$(handler).attr('name')+'"></select>');
 
-                if ( $('select#'+select_id).length == 0 )
-                {
-                    html.insertAfter($(handler));
-                }
+                    html.append('<option value="0">Wybierz kategorię</option>');
+                    for ( d in data )
+                    {
+                        html.append('<option value="'+data[d]['id']+'" data-childs="'+data[d]['childs_count']+'">'+data[d]['name']+'</option>');
+                    }
 
-                $('select#'+select_id).change( function() {
-                    selectCategory($(this));
-                });
+                    if ( $('select#'+select_id).length == 0 )
+                    {
+                        html.insertAfter($(handler));
+                    }
+
+                    $('select#'+select_id).change( function() {
+                        selectCategory($(this));
+                    });
+                }
+                $(handler).parents('td').attr('class', '');
             }
-            $(handler).parents('td').attr('class', '');
-        }
-    });
+        });
+
+    }, 0);
 }
 
 function validateForm()
