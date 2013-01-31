@@ -130,7 +130,7 @@ class WizardController extends Controller
 
 						$repository = $this->getDoctrine()->getRepository('ShoploAllegroBundle:CategoryAllegro');
                         // Obsługa dodatkowych (wymaganych) pól Allegro
-                        $extraFields = $allegro->getCategoryFields($categoryId, false, $repository);
+                        $extraFields = $allegro->getCategoryFields($categoryId, true, $repository);
 						if (isset($_POST['extras'][$variant['id']])) {
                             foreach ($_POST['extras'][$variant['id']] as $key => $value) {
                                 $field = $extraFields[$key];
