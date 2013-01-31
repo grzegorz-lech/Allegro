@@ -122,16 +122,16 @@ class WizardController extends Controller
 					$profile->setExtras( $optDeliveries );
 				}
 
-                foreach ($products as $product) {
+				foreach ($products as $product) {
                     foreach ($product['variants'] as $variant) {
                         $categoryId = $_POST['category'][$variant['id']];
 
                         $fields     = $wizard->export($profile, $product, $variant, $categoryId);
 
+						$repository = $this->getDoctrine()->getRepository('ShoploAllegroBundle:CategoryAllegro');
                         // Obsługa dodatkowych (wymaganych) pól Allegro
-                        $extraFields = $allegro->getCategoryFields($categoryId);
-
-                        if (isset($_POST['extras'][$variant['id']])) {
+                        $extraFields = $allegro->getCategoryFields($categoryId, false, $repository);
+						if (isset($_POST['extras'][$variant['id']])) {
                             foreach ($_POST['extras'][$variant['id']] as $key => $value) {
                                 $field = $extraFields[$key];
 
@@ -229,7 +229,20 @@ class WizardController extends Controller
             foreach ($extras as $categoryId => $fields) {
                 foreach ($fields as $k => $field) {
                     switch ($field['sell-form-type']) {
-                        case 4: // combobox
+						case 1: // string
+						case 2: // integer
+						case 3: // float
+							$field = array(
+								'id'      => $field['sell-form-id'],
+								'label'   => $field['sell-form-title'],
+								'title'   => $field['sell-form-field-desc'],
+								'type'	  => 'input',
+								'required'=> $field['sell-form-opt'] == 1 ? true : false,
+							);
+							break;
+						case 4: // combobox
+						case 5: // radiobutton
+						case 6: // checkbox
                             $field = array(
                                 'id'      => $field['sell-form-id'],
                                 'label'   => $field['sell-form-title'],
@@ -238,9 +251,19 @@ class WizardController extends Controller
                                     explode('|', $field['sell-form-opts-values']),
                                     explode('|', $field['sell-form-desc'])
                                 ),
+								'type'	  => 'select',
+								'required'=> $field['sell-form-opt'] == 1 ? true : false,
                             );
                             break;
-
+						case 8: // text
+							$field = array(
+								'id'      => $field['sell-form-id'],
+								'label'   => $field['sell-form-title'],
+								'title'   => $field['sell-form-field-desc'],
+								'type'	  => 'textarea',
+								'required'=> $field['sell-form-opt'] == 1 ? true : false,
+							);
+							break;
                         default:
                             throw new InvalidArgumentException;
                     }

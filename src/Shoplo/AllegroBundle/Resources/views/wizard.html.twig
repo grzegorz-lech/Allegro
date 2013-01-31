@@ -411,15 +411,42 @@
                                         {% if attribute(extras, attribute(app.request.get('category'), variant.id)) is defined %}
                                             {% for field in attribute(extras, attribute(app.request.get('category'), variant.id)) %}
                                                 <div class="control-group">
-                                                    <label class="control-label span5" title="{{ field['title'] }}">
+                                                    <label class="control-label span5{% if field['required'] %} required{% endif %}" title="{{ field['title'] }}">
                                                         {{ field['label'] }}:&nbsp;&nbsp;
                                                     </label>
                                                     <div class="controls">
+														{% if field['type'] == 'select' %}
                                                         <select name="extras[{{ variant.id }}][{{ field['id'] }}]">
-                                                            {% for value, text in field['options'] %}
+															{% if not field['required'] %}
+																<option value="">Wybierz</option>
+															{% endif %}
+															{% for value, text in field['options'] %}
                                                                 <option value="{{ value }}">{{ text }}</option>
                                                             {% endfor %}
                                                         </select>
+														{% elseif field['type'] == 'input' %}
+															<input name="extras[{{ variant.id }}][{{ field['id'] }}]" type="text" >
+														{# {% elseif field['type'] == 'radio' %}
+															<ul class="unstyled">
+															{% for value, text in field['options'] %}
+																<li>
+																	<input type="radio" name="extras[{{ variant.id }}][{{ field['id'] }}]" value="{{ value }}"{% if value == field['value'] %} checked="checked"{% endif %}>{{ text }}
+																</li>
+															{% endfor %}
+															</ul>
+														{% elseif field['type'] == 'checkbox' %}
+															<ul class="unstyled">
+															{% for value, text in field['options'] %}
+																<li>
+																	<label class="checkbox">
+																		<input type="checkbox" name="extras[{{ variant.id }}][{{ field['id'] }}]" value="{{ value }}"{% if value == field['value'] %} checked="checked"{% endif %}>{{ text }}
+																	</label>
+																</li>
+															{% endfor %}
+															</ul> #}
+														{% elseif field['type'] == 'textarea' %}
+															<textarea name="extras[{{ variant.id }}][{{ field['id'] }}]"></textarea>
+														{% endif %}
                                                     </div>
                                                 </div>
                                             {% endfor %}

@@ -101,6 +101,9 @@ label, input, button, select, textarea {
 .floatLeft {
     float: left;
 }
+label.required {
+    font-weight: bold;
+}
 .box {
     padding: 10px;
     -moz-border-radius: 5px;

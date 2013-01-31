@@ -5,6 +5,7 @@ namespace Shoplo\AllegroBundle\WebAPI;
 use Shoplo\AllegroBundle\Entity\User;
 use Shoplo\AllegroBundle\Entity\Deal;
 use Symfony\Component\DependencyInjection\Container;
+use Shoplo\AllegroBundle\Entity\CategoryAllegro;
 
 class Allegro extends \SoapClient
 {
@@ -474,7 +475,7 @@ class Allegro extends \SoapClient
      * @param  bool  $onlyRequired
      * @return array
      */
-    public function getCategoryFields($categoryId, $onlyRequired = true)
+    public function getCategoryFields($categoryId, $onlyRequired = true, $repository=null)
     {
         $fields = $this->doGetSellFormFieldsForCategory($this->getKey(), $this->getCountry(), $categoryId);
         $fields = $fields->{'sell-form-fields-list'};
@@ -493,6 +494,19 @@ class Allegro extends \SoapClient
                 }
             );
         }
+		elseif ( !is_null($repository) ) {
+			/** @var CategoryAllegro $category  */
+			$category = $repository->findOneById($categoryId);
+			if ( $category instanceof CategoryAllegro )
+			{
+				$tree = explode('-', $category->getTree());
+				foreach ( $fields as $k => $field ) {
+					if ( $field['sell-form-cat'] == 0 || !in_array($field['sell-form-cat'], $tree) ) {
+						unset($fields[$k]);
+					}
+				}
+			}
+		}
 
         $output = array();
 
