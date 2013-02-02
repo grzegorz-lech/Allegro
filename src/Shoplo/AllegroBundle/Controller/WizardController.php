@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Shoplo\AllegroBundle\Form\Wizard;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
 use Shoplo\AllegroBundle\Utils\Admin;
+use Shoplo\AllegroBundle\Entity\Category;
 
 class WizardController extends Controller
 {
@@ -130,10 +131,16 @@ class WizardController extends Controller
 
 						$repository = $this->getDoctrine()->getRepository('ShoploAllegroBundle:CategoryAllegro');
                         // Obsługa dodatkowych (wymaganych) pól Allegro
-                        $extraFields = $allegro->getCategoryFields($categoryId, true, $repository);
-						if (isset($_POST['extras'][$variant['id']])) {
-                            foreach ($_POST['extras'][$variant['id']] as $key => $value) {
+                        $extraFields = $allegro->getCategoryFields($categoryId, false, $repository);
+						if (isset($_POST['extras'][$variant['id']][$categoryId])) {
+                            foreach ($_POST['extras'][$variant['id']][$categoryId] as $key => $value) {
                                 $field = $extraFields[$key];
+
+								// Pomijamy opcjonalne nieuzupelnione pola
+								if ( $field['sell-form-opt'] !== 1 && !$value ) {
+									unset($extraFields[$key]);
+									continue;
+								}
 
                                 switch ($field['sell-form-res-type']) {
                                     case 1: // string
@@ -273,6 +280,67 @@ class WizardController extends Controller
             }
         }
 
+		$repository = $this->getDoctrine()->getRepository('ShoploAllegroBundle:CategoryAllegro');
+		$extraParams = $categoryFields = array();
+		foreach ( $variants as $variant )
+		{
+			foreach ( $variant['categories'] as $category )
+			{
+				if ( !isset($categoryFields[$category->getAllegroId()]) )
+				{
+					/** @var Category $category **/
+					$extraFields = $allegro->getCategoryFields($category->getAllegroId(), false, $repository);
+					$categoryFields[$category->getAllegroId()] = $extraFields;
+
+					usort($extraFields, function($a, $b){
+						if ( $a['sell-form-opt'] == $b['sell-form-opt'] )
+						{
+							return 0;
+						}
+						return ($a['sell-form-opt'] < $b['sell-form-opt']) ? 1 : -1;
+					});
+				}
+				else
+				{
+					$extraFields = $categoryFields[$category->getAllegroId()];
+				}
+
+				foreach ( $extraFields as $k => $field )
+				{
+					$f = array(
+						'id'      => $field['sell-form-id'],
+						'label'   => $field['sell-form-title'],
+						'title'   => $field['sell-form-field-desc'],
+						'unit'	  => $field['sell-form-unit'],
+						'required'=> $field['sell-form-opt'] == 1 ? true : false,
+					);
+					switch ($field['sell-form-type']) {
+						case 1: // string
+						case 2: // integer
+						case 3: // float
+							$f['type'] = 'input';
+							break;
+						case 4: // combobox
+						case 5: // radiobutton
+						case 6: // checkbox
+							$f['type'] = 'select';
+							$f['options'] = array_combine(
+								explode('|', $field['sell-form-opts-values']),
+								explode('|', $field['sell-form-desc'])
+							);
+							break;
+						case 8: // text
+							$f['type'] = 'textarea';
+							break;
+						default:
+							throw new InvalidArgumentException;
+					}
+
+					$extraParams[$variant['id']][$category->getAllegroId()][$k] = $f;
+				}
+			}
+		}
+
         return $this->render(
             'ShoploAllegroBundle::wizard.html.twig',
             array(
@@ -285,7 +353,8 @@ class WizardController extends Controller
 				'profile_promotions' => $profilePromotions,
 				'profile_durations'	 => $profileDurations,
 				'extra_delivery' => $extrDelivery,
-				'extra_delivery_price' => isset($_POST['extra_delivery_price']) ? $_POST['extra_delivery_price'] : array()
+				'extra_delivery_price' => isset($_POST['extra_delivery_price']) ? $_POST['extra_delivery_price'] : array(),
+				'extra_params' => $extraParams,
             )
         );
     }

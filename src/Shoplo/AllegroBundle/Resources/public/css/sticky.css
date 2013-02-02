@@ -104,6 +104,15 @@ label, input, button, select, textarea {
 label.required {
     font-weight: bold;
 }
+.form-horizontal .control-group.no-margin {
+    margin-bottom: 5px;
+}
+.control-group.invalid label {
+    color: #ee5f5b;
+}
+select.invalid, input.invalid, textarea.invalid {
+    border-color: #ee5f5b;
+}
 .box {
     padding: 10px;
     -moz-border-radius: 5px;

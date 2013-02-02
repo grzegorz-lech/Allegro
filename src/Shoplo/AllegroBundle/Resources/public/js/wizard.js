@@ -22,6 +22,8 @@ $(function(){
     $('#form_duration').change( function() { wizard.changeDuration(); });
     /*** END AUCTION PRICE ***/
 
+    $('#form-auction').submit( function() { result = wizard.submitForm(); return result; });
+
     $('#dp').datepicker();
 
 
@@ -209,6 +211,10 @@ function Wizard()
         $('.product-category').each(function(){
             var variantId = $(this).data('variant-id');
             $('#auctionPrice #product'+variantId).attr('data-category-tree', $(this).find('option:selected').data('tree'));
+
+            var parent = $(this).parents('.form-horizontal');
+            parent.find('.extra-params').hide();
+            $('#params-'+parent.data('variant')+'-'+$(this).find('option:selected').val()).show();
         });
 
         if ( typeof(recalculate) == 'undefined' )
@@ -508,5 +514,38 @@ function Wizard()
         }
         return false;
 
+    }
+
+    this.submitForm = function()
+    {
+        var errors = false;
+        $('.extra-params select.required:visible').each(function(){
+            if ( $(this).find('option:selected').val() == 0 ) {
+                errors = true;
+                $(this).addClass('invalid');
+                $(this).parents('.control-group').addClass('invalid');
+            }
+            else {
+                $(this).removeClass('invalid');
+                $(this).parents('.control-group').removeClass('invalid');
+            }
+        });
+
+        $('.extra-params input.required:visible').each(function(){
+            if ( $(this).val() == 0 ) {
+                errors = true;
+                $(this).addClass('invalid');
+                $(this).parents('.control-group').addClass('invalid');
+            }
+            else {
+                $(this).removeClass('invalid');
+                $(this).parents('.control-group').removeClass('invalid');
+            }
+        });
+
+        if ( errors ) {
+            return false;
+        }
+        return true;
     }
 }

@@ -129,7 +129,7 @@
 	<div class="container-fluid">
 		<div class="row-fluid content">
 			<div class="span9">
-				<form action="{{ path('shoplo_allegro_wizard', {product: ids}) }}#kategorie" method="post" {{ form_enctype(form) }}>
+				<form action="{{ path('shoplo_allegro_wizard', {product: ids}) }}#kategorie" method="post" id="form-auction" {{ form_enctype(form) }}>
 					<div class="box">
 						<h3>Wystaw produkty na Allegro</h3>
 
@@ -390,8 +390,8 @@
 						<h3 id="kategorie">Wystaw produkty w kategorii</h3>
 
 						{% for variant in variants %}
-							<div class="form-horizontal">
-								<div class="control-group">
+							<div class="form-horizontal" data-variant="{{ variant.id }}">
+								<div class="control-group no-margin">
 									<label class="control-label span5">
 										<img src="http://src.sencha.io/30/30/{{ variant.thumbnail }}" class="img-rounded">
 										{{variant.title}}:&nbsp;&nbsp;
@@ -406,7 +406,44 @@
 										</select>
 									</div>
 								</div>
-                                {% if attribute(app.request.get('category'), variant.id) is defined %}
+
+								<div class="control-group no-margin">
+									<label class="required control-label span5">
+										Parametry
+									</label>
+									<div class="controls">&nbsp;</div>
+								</div>
+
+								{% for category in variant.categories %}
+									<div class="extra-params{%if not loop.first %} hide{% endif %}" data-category="{{ category.getAllegroId() }}" id="params-{{ variant.id }}-{{ category.getAllegroId() }}">
+										{% for field in extra_params[variant.id][category.getAllegroId()] %}
+											<div class="control-group{% if not loop.last %} no-margin{% endif %}">
+												<label class="control-label span5{% if field['required'] %} required{% endif %}" title="{{ field['title'] }}">
+													{{ field['label'] }}:&nbsp;&nbsp;
+												</label>
+												<div class="controls">
+													{% if field['type'] == 'select' %}
+													<select name="extras[{{ variant.id }}][{{ category.getAllegroId() }}][{{ field['id'] }}]"{% if field['required'] %} class="required"{% endif %}>
+														{% for value, text in field['options'] %}
+														<option value="{{ value }}">{{ text }}</option>
+														{% endfor %}
+													</select>
+													{% elseif field['type'] == 'input' %}
+														<div class="input-append">
+															<input name="extras[{{ variant.id }}][{{ category.getAllegroId() }}][{{ field['id'] }}]" type="text"{% if field['required'] %} class="required"{% endif %} />
+															<span class="add-on">[{{ field['unit'] }}]</span>
+														</div>
+													{% elseif field['type'] == 'textarea' %}
+														<textarea name="extras[{{ variant.id }}][{{ category.getAllegroId() }}][{{ field['id'] }}]"{% if field['required'] %} class="required"{% endif %}></textarea>
+													{% endif %}
+												</div>
+											</div>
+										{% endfor %}
+									</div>
+								{% endfor %}
+
+
+								{# {% if attribute(app.request.get('category'), variant.id) is defined %}
                                     {% if attribute(app.request.get('category'), variant.id) is defined %}
                                         {% if attribute(extras, attribute(app.request.get('category'), variant.id)) is defined %}
                                             {% for field in attribute(extras, attribute(app.request.get('category'), variant.id)) %}
@@ -426,24 +463,6 @@
                                                         </select>
 														{% elseif field['type'] == 'input' %}
 															<input name="extras[{{ variant.id }}][{{ field['id'] }}]" type="text" >
-														{# {% elseif field['type'] == 'radio' %}
-															<ul class="unstyled">
-															{% for value, text in field['options'] %}
-																<li>
-																	<input type="radio" name="extras[{{ variant.id }}][{{ field['id'] }}]" value="{{ value }}"{% if value == field['value'] %} checked="checked"{% endif %}>{{ text }}
-																</li>
-															{% endfor %}
-															</ul>
-														{% elseif field['type'] == 'checkbox' %}
-															<ul class="unstyled">
-															{% for value, text in field['options'] %}
-																<li>
-																	<label class="checkbox">
-																		<input type="checkbox" name="extras[{{ variant.id }}][{{ field['id'] }}]" value="{{ value }}"{% if value == field['value'] %} checked="checked"{% endif %}>{{ text }}
-																	</label>
-																</li>
-															{% endfor %}
-															</ul> #}
 														{% elseif field['type'] == 'textarea' %}
 															<textarea name="extras[{{ variant.id }}][{{ field['id'] }}]"></textarea>
 														{% endif %}
@@ -452,8 +471,9 @@
                                             {% endfor %}
                                         {% endif %}
                                     {% endif %}
-                                {% endif %}
+                                {% endif %} #}
 							</div>
+							{% if not loop.last%}<hr />{% endif %}
 						{% endfor %}
 					</div>
 
