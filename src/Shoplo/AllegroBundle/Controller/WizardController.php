@@ -217,10 +217,10 @@ class WizardController extends Controller
                             ->setEndAt(new \DateTime('+' . $days[$profile->getDuration()] . ' days'));
 
                         $em->persist($item);
+						$em->flush();
                     }
                 }
 
-                $em->flush();
 
                 if (empty($extras)) {
 					$this->get('session')->setFlash(

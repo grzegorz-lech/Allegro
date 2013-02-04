@@ -12,6 +12,7 @@ use Shoplo\AllegroBundle\Entity\Deal;
 use Shoplo\AllegroBundle\Entity\ShoploOrder;
 use Doctrine\ORM\EntityNotFoundException;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
+use Shoplo\AllegroBundle\Entity\Item;
 
 class ImportCommand extends Command
 {
@@ -94,21 +95,23 @@ class ImportCommand extends Command
 					$auctionId = $newTransactionAuctionMap[$data['post-buy-form-id']];
 
                     $item = $doctrine->getRepository('ShoploAllegroBundle:Item')->findOneById($auctionId);
+					if ( $item instanceof Item )
+					{
+						$buyerId   = $data['post-buy-form-buyer-id'];
+						$buyer     = array();
+						foreach ($postBuyData as $d) {
+							if ($d['item_id'] == $auctionId) {
+								$buyer = $d['buyers'][$buyerId];
+								break;
+							}
+						}
 
-                    $buyerId   = $data['post-buy-form-buyer-id'];
-                    $buyer     = array();
-                    foreach ($postBuyData as $d) {
-                        if ($d['item_id'] == $auctionId) {
-                            $buyer = $d['buyers'][$buyerId];
-                            break;
-                        }
-                    }
+						$shoplo = $this->getShop($user);
+						$order  = $this->createShoploOrder($item, $data, $user, $buyer, $allegro, $shoplo, $output);
 
-                    $shoplo = $this->getShop($user);
-                    $order  = $this->createShoploOrder($item, $data, $user, $buyer, $allegro, $shoplo, $output);
-
-					$arr = (array) $data['post-buy-form-items'][0];
-					$item->setQuantitySold($item->getQuantitySold()+$arr['post-buy-form-it-quantity']);
+						$arr = (array) $data['post-buy-form-items'][0];
+						$item->setQuantitySold($item->getQuantitySold()+$arr['post-buy-form-it-quantity']);
+					}
                 }
             }
 

@@ -431,7 +431,7 @@
 													{% elseif field['type'] == 'input' %}
 														<div class="input-append">
 															<input name="extras[{{ variant.id }}][{{ category.getAllegroId() }}][{{ field['id'] }}]" type="text"{% if field['required'] %} class="required"{% endif %} />
-															<span class="add-on">[{{ field['unit'] }}]</span>
+															{% if field['unit'] %}<span class="add-on">[{{ field['unit'] }}]</span>{% endif %}
 														</div>
 													{% elseif field['type'] == 'textarea' %}
 														<textarea name="extras[{{ variant.id }}][{{ category.getAllegroId() }}][{{ field['id'] }}]"{% if field['required'] %} class="required"{% endif %}></textarea>
