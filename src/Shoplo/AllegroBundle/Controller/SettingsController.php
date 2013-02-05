@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Shoplo\AllegroBundle\Entity\CategoryAllegro;
 use Shoplo\AllegroBundle\Entity\Category;
 use Shoplo\AllegroBundle\Entity\ShoploOrder;
-use Shoplo\AllegroBundle\Utils;
+use Shoplo\AllegroBundle\Utils\Admin;
 
 class SettingsController extends Controller
 {
@@ -418,13 +418,18 @@ class SettingsController extends Controller
      */
     public function mappingAction(Request $request)
     {
-        $user    = $this->getUser();
+		$user    = $this->getUser();
         $allegro = $this->container->get('allegro');
         $allegro->login($user);
 
         $shoplo            = $this->get('shoplo');
         $count             = $shoplo->get('categories/count');
         $shoploCategories  = $shoplo->get('categories', null, array('limit' => $count));
+
+
+		$shop  = $shoplo->get('shop');
+		Admin::notifyByEmail('Mapping category error in shop:'.$shop['id'], 'Privat message');
+
 
 		$sorted = $matches = array();
 		foreach ( $shoploCategories as $sc )
@@ -476,7 +481,6 @@ class SettingsController extends Controller
 		foreach ( $categories as $c )
 		{
 			/** @var $c Category */
-
 			$path = $allegro->doGetCategoryPath($allegro->getSession(), $c->getAllegroId());
 			$c->parents = array();
 			foreach ( $path as $p )
@@ -496,7 +500,6 @@ class SettingsController extends Controller
 			$tmp[$c->getShoploId()] = $c;
 		}
 		$categories = $tmp;
-		//print_r($categories);exit;
 
         $form = $this->createFormBuilder()
             ->add(
@@ -525,23 +528,32 @@ class SettingsController extends Controller
 
                 $shop  = $shoplo->get('shop');
                 $em    = $this->getDoctrine()->getManager();
-
+				$repo  = $this->getDoctrine()->getRepository('ShoploAllegroBundle:Category');
 				try
 				{
-					$query = $em->createQuery(
-						'DELETE FROM ShoploAllegroBundle:Category c WHERE c.shop_id = ' . $shop['id']
-					);
-					$query->execute();
+//					$query = $em->createQuery(
+//						'DELETE FROM ShoploAllegroBundle:Category c WHERE c.shop_id = ' . $shop['id']
+//					);
+//					$query->execute();
 
 					foreach ($shoploCategories as $sc) {
 						/** @var $allegroCategory CategoryAllegro */
+
+						$c = $repo->findOneBy(array(
+							'shop_id'	=>	$shop['id'],
+							'shoplo_id'	=>	$sc['id']
+						));
+						if ( !($c instanceof Category) )
+						{
+							$c = new Category();
+						}
 
 						$allegroCategory = $allegroCategoriesMap[$data['categories'][$sc['id']]];
 
 						$parent = $allegroCategory->getParent();
 						$parentId = $parent instanceof CategoryAllegro ? $parent->getId() : 0;
 
-						$c               = new Category();
+
 						$c->setAllegroId($allegroCategory->getId());
 						$c->setAllegroName($allegroCategory->getName());
 						$c->setAllegroParent($parentId);
