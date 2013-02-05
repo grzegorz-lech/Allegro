@@ -427,11 +427,6 @@ class SettingsController extends Controller
         $shoploCategories  = $shoplo->get('categories', null, array('limit' => $count));
 
 
-		$shop  = $shoplo->get('shop');
-		$admin = new Admin( $this->get('mailer') );
-		$admin->notifyByEmail('Mapping category error in shop:'.$shop['id'], 'Privat message');
-
-
 		$sorted = $matches = array();
 		foreach ( $shoploCategories as $sc )
 		{
