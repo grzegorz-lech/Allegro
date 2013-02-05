@@ -428,7 +428,8 @@ class SettingsController extends Controller
 
 
 		$shop  = $shoplo->get('shop');
-		Admin::notifyByEmail('Mapping category error in shop:'.$shop['id'], 'Privat message');
+		$admin = new Admin( $this->get('mailer') );
+		$admin->notifyByEmail('Mapping category error in shop:'.$shop['id'], 'Privat message');
 
 
 		$sorted = $matches = array();
@@ -569,7 +570,8 @@ class SettingsController extends Controller
 				}
 				catch ( \Exception $e )
 				{
-					Admin::notifyByEmail('Mapping category error in shop:'.$shop['id'], $e->getMessage());
+					$admin = new Admin( $this->get('mailer') );
+					$admin->notifyByEmail('Mapping category error in shop:'.$shop['id'], $e->getMessage());
 				}
 
 
