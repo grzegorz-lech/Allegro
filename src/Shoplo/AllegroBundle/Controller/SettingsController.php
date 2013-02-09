@@ -157,15 +157,15 @@ class SettingsController extends Controller
             explode('|', $fields[4]->{'sell-form-opts-values'}),
             explode('|', $fields[4]->{'sell-form-desc'})
         );
-		$durations = array_filter(
-			$durations,
-			function ($duration) {
-				return !in_array($duration, array('30'));
-			}
-		);
+//		$durations = array_filter(
+//			$durations,
+//			function ($duration) {
+//				return !in_array($duration, array('30'));
+//			}
+//		);
 		$durations          = array_map(
             function ($value) {
-                return $value . ' dni';
+                return $value == 30 ? $value . ' dni - sklepy allegro' : $value . ' dni';
             },
             $durations
         );
