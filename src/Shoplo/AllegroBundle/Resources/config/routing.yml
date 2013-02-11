@@ -1,3 +1,7 @@
+shoplo_allegro_homepage_start:
+    pattern:  /
+    defaults: { _controller: ShoploAllegroBundle:Homepage:index, action: trwajace, page: 1 }
+
 shoplo_allegro_homepage:
     pattern:  /{action}/{page}
     defaults: { _controller: ShoploAllegroBundle:Homepage:index, action: trwajace, page: 1 }
