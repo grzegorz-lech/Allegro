@@ -193,6 +193,12 @@ class Wizard
             }
         }
 
+		// Sklepy Allegro
+		if ( $profile->getDuration() == 30 )
+		{
+			$fields[] = $this->createField(29, 1);
+		}
+
         // Dodatkowe pola
         foreach ($profile->getExtras() as $key => $value) {
             $fields[] = $this->createField($key, (float) $value);
