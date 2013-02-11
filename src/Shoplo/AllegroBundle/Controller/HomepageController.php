@@ -12,8 +12,9 @@ class HomepageController extends Controller
     /**
      * @Secure(roles="ROLE_ADMIN")
      */
-    public function indexAction(Request $request)
+    public function indexAction($action, $page)
     {
+		$request = $this->getRequest();
         if ($ids = $request->query->get('ids')) {
             $ids = explode(',', $ids);
 
@@ -23,25 +24,46 @@ class HomepageController extends Controller
         $shoplo  = $this->container->get('shoplo');
 		$shop   = $shoplo->get('shop');
 
-		# TODO: stronicowanie
-        $items = $this->getDoctrine()
-            ->getRepository('ShoploAllegroBundle:Item')
-            ->findBy(
-            array('user_id' => $this->getUser()->getId()),
-            array('id' => 'DESC')
-        );
+
+		$limit = 2;
+		$offset = ($page-1)*$limit;
+
+		$now = date('Y-m-d H:i:s');
+		$where = $action == 'zakonczone' ? "WHERE i.end_at < '{$now}' OR i.quantity = i.quantity_sold" : "WHERE i.end_at > '{$now}' AND i.quantity > i.quantity_sold";
+		$total = $this->getDoctrine()
+			->getManager()
+			->createQuery('SELECT COUNT(i) FROM ShoploAllegroBundle:Item i '.$where)
+			->getSingleScalarResult();
+		if ( $total == 0 )
+		{
+			$total = $this->getDoctrine()
+				->getManager()
+				->createQuery('SELECT COUNT(i) FROM ShoploAllegroBundle:Item i')
+				->getSingleScalarResult();
+			if ( $total > 0 )
+			{
+				return $this->redirect($this->generateUrl('shoplo_allegro_homepage', array(
+					'action' => $action == 'zakonczone' ? 'trwajace' : 'zakonczone',
+					'page'	 => 1
+				)));
+			}
+		}
+
+		$items = $this->getDoctrine()
+            ->getManager()
+			->createQuery('SELECT i FROM ShoploAllegroBundle:Item i '.$where. ' ORDER BY i.id DESC')
+			->setFirstResult($offset)
+			->setMaxResults($limit)
+			->getResult();
 
 		$finishItems = $activeItems = array();
-		foreach ( $items as $item )
+		if ( $action == 'zakonczone' )
 		{
-			if ( $item->isFinish() )
-			{
-				$finishItems[$item->getId()] = $item;
-			}
-			else
-			{
-				$activeItems[$item->getId()] = $item;
-			}
+			$finishItems = $items;
+		}
+		else
+		{
+			$activeItems = $items;
 		}
 
 		$allegro = $this->get('allegro');
@@ -63,8 +85,28 @@ class HomepageController extends Controller
 
 		}
 
+		$currentPage = $page;
+		$lastPage = floor($total/$limit);
+		$pager = (object) array(
+			'base_url'			=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action)),
+			'current_page'	=>	$currentPage,
+			'first_page'	=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>1)),
+			'last_page'		=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$lastPage)),
+			'total_page'	=>	$lastPage,
+			'previous_page' =>	$currentPage > 1 ? $this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$currentPage-1)) : null,
+			'next_page'		=>	$offset+$limit < $total ? $this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$currentPage+1)) : null,
+			'pagination_need'=> $lastPage > 1 ? true : false
+		);
 
-        return $this->render('ShoploAllegroBundle::homepage.html.twig', array('active_items' => $activeItems, 'finish_items' => $finishItems, 'shoplo' => $shoplo, 'shop'=>$shop));
+        return $this->render('ShoploAllegroBundle::homepage.html.twig', array(
+			'active_items' => $activeItems,
+			'finish_items' => $finishItems,
+			'shoplo' => $shoplo,
+			'shop'	 => $shop,
+			'pager'	 => $pager,
+			'finish_url'	=> $this->generateUrl('shoplo_allegro_homepage', array('action'=>'zakonczone', 'page'=>1)),
+			'active_url'	=> $this->generateUrl('shoplo_allegro_homepage', array('action'=>'trwajace', 'page'=>1)),
+		));
     }
 
     /**

@@ -1,7 +1,8 @@
 $(function(){
     /* Filtrowanie aukcji */
     $('select[name=filter]').change(function(){
-        if ( $('select[name=filter] option:selected').val() == 1 )
+        window.location.href = $('select[name=filter] option:selected').attr('data-url');
+        /*if ( $('select[name=filter] option:selected').val() == 1 )
         {
             $('table tr.active').show();
             $('table tr.finish').hide();
@@ -10,7 +11,7 @@ $(function(){
         {
             $('table tr.finish').show();
             $('table tr.active').hide();
-        }
+        }*/
     });
 
 

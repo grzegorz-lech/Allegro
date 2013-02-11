@@ -18,8 +18,8 @@
 
 						<span class="floatRight">
 							<select name="filter" class="span12">
-								<option value="1"{% if active_items|count > 0 %} selected="selected"{% endif %}{% if active_items|count == 0 %} disabled="disabled"{% endif %}>Trwające</option>
-								<option value="0"{% if active_items|count == 0 and finish_items|count > 0 %} selected="selected"{% endif %}{% if finish_items|count == 0 %} disabled="disabled"{% endif %}>Zakończone</option>
+								<option data-url="{{ active_url }}" value="1"{% if active_items|count > 0 %} selected="selected"{% endif %}{% if active_items|count == 0 %} disabled="disabled"{% endif %}>Trwające</option>
+								<option data-url="{{ finish_url }}" value="0"{% if active_items|count == 0 and finish_items|count > 0 %} selected="selected"{% endif %}{% if finish_items|count == 0 %} disabled="disabled"{% endif %}>Zakończone</option>
 							</select>
 						</span>
 					</h3>
@@ -84,6 +84,18 @@
 						</tbody>
 					</table>
 
+					{% if pager.pagination_need %}
+					<div class="pagination">
+						<ul>
+							<li{% if pager.current_page == 1 %} class="disabled"{% endif %}><a href="{{ pager.previous_page }}">&laquo; Prev</a></li>
+							<li{% if pager.current_page == 1 %} class="disabled"{% endif %}><a href="{{ pager.first_page }}">1</a></li>
+							{% for p in range(2, pager.total_page) %}
+							<li{% if pager.current_page == p %} class="disabled"{% endif %}><a href="{{ pager.base_url }}/{{ p }}">{{ p }}</a></li>
+							{% endfor %}
+							<li{% if pager.current_page == pager.total_page %} class="disabled"{% endif %}><a href="{{ pager.next_page}}">Next &raquo;</a></li>
+						</ul>
+					</div>
+					{% endif %}
 				</div>
 
 				<div class="span2 sidebar">
