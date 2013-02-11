@@ -88,13 +88,13 @@ class HomepageController extends Controller
 		$currentPage = $page;
 		$lastPage = floor($total/$limit);
 		$pager = (object) array(
-			'base_url'			=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action)),
+			'base_url'			=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action), true),
 			'current_page'	=>	$currentPage,
-			'first_page'	=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>1)),
-			'last_page'		=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$lastPage)),
+			'first_page'	=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>1), true),
+			'last_page'		=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$lastPage), true),
 			'total_page'	=>	$lastPage,
-			'previous_page' =>	$currentPage > 1 ? $this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$currentPage-1)) : null,
-			'next_page'		=>	$offset+$limit < $total ? $this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$currentPage+1)) : null,
+			'previous_page' =>	$currentPage > 1 ? $this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$currentPage-1), true) : null,
+			'next_page'		=>	$offset+$limit < $total ? $this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$currentPage+1), true) : null,
 			'pagination_need'=> $lastPage > 1 ? true : false
 		);
 
@@ -104,8 +104,8 @@ class HomepageController extends Controller
 			'shoplo' => $shoplo,
 			'shop'	 => $shop,
 			'pager'	 => $pager,
-			'finish_url'	=> $this->generateUrl('shoplo_allegro_homepage', array('action'=>'zakonczone', 'page'=>1)),
-			'active_url'	=> $this->generateUrl('shoplo_allegro_homepage', array('action'=>'trwajace', 'page'=>1)),
+			'finish_url'	=> $this->generateUrl('shoplo_allegro_homepage', array('action'=>'zakonczone', 'page'=>1), true),
+			'active_url'	=> $this->generateUrl('shoplo_allegro_homepage', array('action'=>'trwajace', 'page'=>1), true),
 		));
     }
 
