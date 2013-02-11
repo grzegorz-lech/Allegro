@@ -30,7 +30,8 @@ class HomepageController extends Controller
 		$offset = ($page-1)*$limit;
 
 		$now = date('Y-m-d H:i:s');
-		$where = $action == 'zakonczone' ? "WHERE i.end_at < '{$now}' OR i.quantity = i.quantity_sold" : "WHERE i.end_at > '{$now}' AND i.quantity > i.quantity_sold";
+		$where = "WHERE i.user_id = " . $this->getUser()->getId();
+		$where .= $action == 'zakonczone' ? " AND (i.end_at < '{$now}' OR i.quantity = i.quantity_sold)" : " AND i.end_at > '{$now}' AND i.quantity > i.quantity_sold";
 		$total = $this->getDoctrine()
 			->getManager()
 			->createQuery('SELECT COUNT(i) FROM ShoploAllegroBundle:Item i '.$where)
