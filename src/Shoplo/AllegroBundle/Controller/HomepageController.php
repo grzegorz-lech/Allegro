@@ -26,7 +26,7 @@ class HomepageController extends Controller
 		$shop   = $shoplo->get('shop');
 
 
-		$limit = 25;
+		$limit = 2;
 		$offset = ($page-1)*$limit;
 
 		$now = date('Y-m-d H:i:s');
@@ -86,10 +86,11 @@ class HomepageController extends Controller
 
 		}
 
+		$url = $this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>3), true);
 		$currentPage = $page;
 		$lastPage = floor($total/$limit);
 		$pager = (object) array(
-			'base_url'			=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action), true),
+			'base_url'		=>	substr($url, 0, strrpos($url, '/')),
 			'current_page'	=>	$currentPage,
 			'first_page'	=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>1), true),
 			'last_page'		=>	$this->generateUrl('shoplo_allegro_homepage', array('action'=>$action, 'page'=>$lastPage), true),
