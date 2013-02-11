@@ -46,6 +46,11 @@ class Allegro extends \SoapClient
 		$this->_logger = $logger;
     }
 
+	public function getLogger()
+	{
+		return $this->_logger;
+	}
+
     /**
      * @return string
      */

@@ -32,6 +32,8 @@ class WizardController extends Controller
 		$allegro = $this->get('allegro');
 		$allegro->login($this->getUser());
 
+		$allegro->getLogger()->err('TEST ME!!!');
+
         // Informacje o produktach
         $shoplo = $this->get('shoplo');
 		try {
@@ -531,7 +533,7 @@ class WizardController extends Controller
 		} catch (\SoapFault $sf) {
 			$this->_logger->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 
-			return 0;
+			return false;
 		}
 		return $item['item-price'];
 	}
