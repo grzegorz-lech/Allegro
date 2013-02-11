@@ -25,7 +25,7 @@ class HomepageController extends Controller
 		$shop   = $shoplo->get('shop');
 
 
-		$limit = 2;
+		$limit = 25;
 		$offset = ($page-1)*$limit;
 
 		$now = date('Y-m-d H:i:s');
