@@ -184,7 +184,9 @@ class WizardController extends Controller
 								"error",
 								$this->_message
 							);
-							return $this->redirect($this->getRequest()->getUri());
+							$url = $this->getRequest()->getUri();
+							$url = substr($url, 0, strpos($url, '#'));
+							return $this->redirect($url);
 						}
 						$auctionPrice = trim(substr(str_replace(',', '.', $auctionPrice), 0, -3));
 
@@ -195,7 +197,9 @@ class WizardController extends Controller
 								"error",
 								$this->_message
 							);
-							return $this->redirect($this->getRequest()->getUri());
+							$url = $this->getRequest()->getUri();
+							$url = substr($url, 0, strpos($url, '#'));
+							return $this->redirect($url);
 						}
 
 
