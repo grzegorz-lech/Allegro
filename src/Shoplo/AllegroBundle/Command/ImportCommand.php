@@ -42,6 +42,10 @@ class ImportCommand extends Command
         $allegro = $this->getContainer()->get('allegro');
 
         foreach ($users as $user) {
+			if ( !$user['username'] ) {
+				continue;
+			}
+
             if (!$allegro->login($user)) {
                 $output->writeln('<error>Unable to log-in to Allegro</error>');
                 continue;
