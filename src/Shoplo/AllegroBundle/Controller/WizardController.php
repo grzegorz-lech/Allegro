@@ -32,8 +32,6 @@ class WizardController extends Controller
 		$allegro = $this->get('allegro');
 		$allegro->login($this->getUser());
 
-		$allegro->getLogger()->err('TEST ME!!!');
-
         // Informacje o produktach
         $shoplo = $this->get('shoplo');
 		try {
