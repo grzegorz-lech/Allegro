@@ -10,6 +10,7 @@ use Sensio\Bundle\GeneratorBundle\Command\Helper\DialogHelper;
 use Doctrine\ORM\EntityManager;
 use Shoplo\AllegroBundle\Entity\CategoryAllegro;
 use Symfony\Component\Console\Input\InputArgument;
+
 class TestMailCommand extends Command
 {
     protected function configure()
@@ -23,11 +24,16 @@ class TestMailCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 		$emailTo = $input->getArgument('email');
-        $message = \Swift_Message::newInstance()
+
+		/** @var $mailer \Swift_Mailer */
+		$mailer = $this->getContainer()->get('mailer');
+		$message = \Swift_Message::newInstance()
 			->setSubject('Tst mail')
 			->setFrom('sebastian@nexis.pl')
 			->setTo($emailTo)
 			->setBody('TEST MAIL');
-		$this->getContainer()->get('mailer')->send($message);
+		$result = $mailer->send($message);
+		$str = print_r($result, true);
+		echo "Result: {$str}\n";
     }
 }
