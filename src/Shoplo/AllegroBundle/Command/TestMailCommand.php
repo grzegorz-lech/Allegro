@@ -9,23 +9,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Sensio\Bundle\GeneratorBundle\Command\Helper\DialogHelper;
 use Doctrine\ORM\EntityManager;
 use Shoplo\AllegroBundle\Entity\CategoryAllegro;
-
+use Symfony\Component\Console\Input\InputArgument;
 class TestMailCommand extends Command
 {
     protected function configure()
     {
         $this
             ->setName('mail:test')
-            ->setDescription('Test sending emails');
+            ->setDescription('Test sending emails')
+			->addArgument('email', InputArgument::OPTIONAL, 'mail to', 'lech.grzegorz@gmail.com');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+		$emailTo = $input->getArgument('email');
         $message = \Swift_Message::newInstance()
 			->setSubject('Tst mail')
 			->setFrom('sebastian@nexis.pl')
-			->setTo('lech.grzegorz@gmail.com')
+			->setTo($emailTo)
 			->setBody('TEST MAIL');
-		$this->get('mailer')->send($message);
+		$this->getContainer()->get('mailer')->send($message);
     }
 }
