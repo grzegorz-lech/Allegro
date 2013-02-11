@@ -17,6 +17,8 @@ use Shoplo\AllegroBundle\Entity\Category;
 
 class WizardController extends Controller
 {
+	protected $_message = null;
+
     /**
      * @Secure(roles="ROLE_ADMIN")
      */
@@ -176,16 +178,24 @@ class WizardController extends Controller
                         }
 
 						$auctionPrice = $this->calculateAuction($fields);
-						$auctionPrice = trim(substr(str_replace(',', '.', $auctionPrice), 0, -3));
-
-						$itemId = $this->createAuction($fields);
-						if ( $itemId == 0 )
+						if ( $auctionPrice === false )
 						{
 							$this->get('session')->setFlash(
 								"error",
-								"Wystąpił problem. Prosimy spróbować później."
+								$this->_message
 							);
-							return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+							return $this->redirect($this->getRequest()->getUri());
+						}
+						$auctionPrice = trim(substr(str_replace(',', '.', $auctionPrice), 0, -3));
+
+						$itemId = $this->createAuction($fields);
+						if ( $itemId === false )
+						{
+							$this->get('session')->setFlash(
+								"error",
+								$this->_message
+							);
+							return $this->redirect($this->getRequest()->getUri());
 						}
 
 
@@ -529,7 +539,8 @@ class WizardController extends Controller
 		try {
 			$item = $allegro->doCheckNewAuctionExt($allegro->getSession(), $fields);
 		} catch (\SoapFault $sf) {
-			$this->_logger->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+			$this->_message = $sf->getMessage();
+			$this->get('logger')->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 
 			return false;
 		}
@@ -547,10 +558,9 @@ class WizardController extends Controller
 		try {
 			$item = $allegro->doNewAuctionExt($allegro->getSession(), $fields);
 		} catch (\SoapFault $sf) {
-			print_r($sf->getCode());
-			print_r($sf->getMessage());
-			exit;
-			return 0;
+			$this->_message = $sf->getMessage();
+			$this->get('logger')->err('Method: doNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+			return false;
 		}
 
 
