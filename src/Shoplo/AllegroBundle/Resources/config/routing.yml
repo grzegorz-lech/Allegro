@@ -1,6 +1,8 @@
 shoplo_allegro_homepage:
     pattern:  /{action}/{page}
     defaults: { _controller: ShoploAllegroBundle:Homepage:index, action: trwajace, page: 1 }
+    requirements:
+        action: trwajace|zakonczone
 
 shoplo_allegro_login:
     pattern:  /zaloguj
