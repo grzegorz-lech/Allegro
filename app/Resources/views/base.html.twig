@@ -43,11 +43,16 @@
 					{{ flashMessage }}
 				</div>
 				{% endfor %}
-				{% for flashMessage in app.session.flashbag.get('error') %}
-				<div class="alert alert-error alignCenter">
-					{{ flashMessage }}
-				</div>
-				{% endfor %}
+				{% if app.session.hasFlash('error') %}
+					<div class="alert alert-error alignCenter">
+						{{ app.session.flash('error') }}
+					</div>
+					{% for flashMessage in app.session.flashbag.get('error') %}
+					<div class="alert alert-error alignCenter">
+						{{ flashMessage }}
+					</div>
+					{% endfor %}
+				{% endif %}
 				{% for flashMessage in app.session.flashbag.get('info') %}
 				<div class="alert alert-info alignCenter">
 					{{ flashMessage }}
