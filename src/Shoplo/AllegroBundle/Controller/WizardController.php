@@ -45,7 +45,7 @@ class WizardController extends Controller
 
 
 		if ( !empty($productsWithNoCategories) ) {
-			$this->get('session')->setFlash(
+			$this->getRequest()->getSession()->setFlash(
 				'error',
 				'Produkty "'.implode('", "', $productsWithNoCategories).'" nie mają przypisanych kategorii w Twoim sklepie.'
 			);
@@ -182,7 +182,7 @@ class WizardController extends Controller
 						{
 							$url = $this->getRequest()->getUri();
 
-							$this->get('session')->setFlash(
+							$this->getRequest()->getSession()->setFlash(
 								"error",
 								$this->_message
 							);
@@ -194,7 +194,7 @@ class WizardController extends Controller
 						$itemId = $this->createAuction($fields);
 						if ( $itemId === false )
 						{
-							$this->get('session')->setFlash(
+							$this->getRequest()->getSession()->setFlash(
 								"error",
 								$this->_message
 							);
@@ -238,7 +238,7 @@ class WizardController extends Controller
 
 
                 if (empty($extras)) {
-					$this->get('session')->setFlash(
+					$this->getRequest()->getSession()->setFlash(
 						"success",
 						"Gratulacje. Twoja Aukcja została utworzona:) Będzie ona widoczna w przeciągu kilku minut."
 					);
