@@ -560,7 +560,7 @@ class WizardController extends Controller
 				"error",
 				$sf->getMessage()
 			);
-			$this->get('logger')->err('Method: doNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+			//$this->get('logger')->err('Method: doNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 			return false;
 		}
 
