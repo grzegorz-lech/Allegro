@@ -534,11 +534,11 @@ class WizardController extends Controller
 		try {
 			$item = $allegro->doCheckNewAuctionExt($allegro->getSession(), $fields);
 		} catch (\SoapFault $sf) {
-			$this->getRequest()->getSession()->setFlash(
+			$this->get('logger')->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+			$this->get('session')->setFlash(
 				"error",
 				$sf->getMessage()
 			);
-			$this->get('logger')->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 
 			return false;
 		}
