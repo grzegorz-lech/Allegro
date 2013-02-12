@@ -538,7 +538,8 @@ class WizardController extends Controller
 		/** @var $allegro Allegro */
 		$allegro = $this->get('allegro');
 		if (!$allegro->login($this->getUser())) {
-			throw new AccessDeniedException();
+			return false;
+			//throw new AccessDeniedException();
 		}
 
 		try {
