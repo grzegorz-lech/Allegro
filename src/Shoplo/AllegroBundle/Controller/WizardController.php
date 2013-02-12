@@ -180,12 +180,13 @@ class WizardController extends Controller
 						$auctionPrice = $this->calculateAuction($fields);
 						if ( $auctionPrice === false )
 						{
+							$url = $this->getRequest()->getUri();
+
 							$this->get('session')->setFlash(
 								"error",
 								$this->_message
 							);
-							$url = $this->getRequest()->getUri();
-							//$url = str_replace('#kategorie', '', $url);
+
 							return $this->redirect($url);
 						}
 						$auctionPrice = trim(substr(str_replace(',', '.', $auctionPrice), 0, -3));
@@ -198,7 +199,7 @@ class WizardController extends Controller
 								$this->_message
 							);
 							$url = $this->getRequest()->getUri();
-							//$url = str_replace('#kategorie', '', $url);
+
 							return $this->redirect($url);
 						}
 
