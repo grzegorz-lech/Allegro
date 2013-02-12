@@ -181,12 +181,6 @@ class WizardController extends Controller
 						if ( $auctionPrice === false )
 						{
 							$url = $this->getRequest()->getUri();
-
-							$this->getRequest()->getSession()->setFlash(
-								"error",
-								$this->_message
-							);
-
 							return $this->redirect($url);
 						}
 						$auctionPrice = trim(substr(str_replace(',', '.', $auctionPrice), 0, -3));
@@ -194,12 +188,7 @@ class WizardController extends Controller
 						$itemId = $this->createAuction($fields);
 						if ( $itemId === false )
 						{
-							$this->getRequest()->getSession()->setFlash(
-								"error",
-								$this->_message
-							);
 							$url = $this->getRequest()->getUri();
-
 							return $this->redirect($url);
 						}
 
@@ -545,7 +534,10 @@ class WizardController extends Controller
 		try {
 			$item = $allegro->doCheckNewAuctionExt($allegro->getSession(), $fields);
 		} catch (\SoapFault $sf) {
-			$this->_message = $sf->getMessage();
+			$this->getRequest()->getSession()->setFlash(
+				"error",
+				$sf->getMessage()
+			);
 			$this->get('logger')->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 
 			return false;
@@ -564,7 +556,10 @@ class WizardController extends Controller
 		try {
 			$item = $allegro->doNewAuctionExt($allegro->getSession(), $fields);
 		} catch (\SoapFault $sf) {
-			$this->_message = $sf->getMessage();
+			$this->getRequest()->getSession()->setFlash(
+				"error",
+				$sf->getMessage()
+			);
 			$this->get('logger')->err('Method: doNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 			return false;
 		}
