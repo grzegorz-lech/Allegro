@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang="pl" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Shoplo.com</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="Shoplo.com - największe sklepy w Polsce" />
+	<meta name="keywords" content="" />
+	<link rel="shortcut icon" type="image/png" href="{{ asset('favicon.ico') }}" />
+
+	<style type="text/css" media="screen">
+		body, html {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+		}
+		body {
+			background: url({% image '@ShoploAllegroBundle/Resources/public/img/error_bg.png' %}{{ asset_url }}{% endimage %}) repeat;
+			font-family: Helvetica Neue;
+			overflow: hidden;
+		}
+		* html .errorPage {
+			height: 100%;
+		}
+		a, a:visited {
+			color: #118fc3;
+			text-decoration: none;
+			font-size: 20px;
+		}
+		a:hover {
+			color: #3caddb;
+		}
+		p {
+			font-size: 20px;
+		}
+		.errorPage {
+			width: 1200px;
+			min-height: 100%;
+			margin: 0 auto;
+			background: url({% image '@ShoploAllegroBundle/Resources/public/img/light_bg.png' %}{{ asset_url }}{% endimage %}) repeat-y;
+			padding: 20px;
+			text-align: center;
+		}
+		.errorPage h1 {
+			margin-top: 205px;
+			font-size: 40px;
+			margin-bottom: 45px;
+		}
+		.errorPage p {
+			margin-bottom: 45px;
+		}
+	</style>
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-27804578-1']);
+		_gaq.push(['_setDomainName', '.com']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+</head>
+<body>
+<div class="errorPage">
+	<h1>404 - chyba nie tej strony szukasz...</h1>
+
+	<p><a href="http://allegro.shoploapp.com" onclick="javascript: history.go(-1);">&laquo; Powróć na poprzednią stronę</a></p>
+
+	<a href="http://allegro.shoploapp.com">
+		<img src="http://www.shoplo.com/img/panel/logo_panel_top.png" alt="Shoplo Allegro" />
+	</a>
+</div>
+
+
+
+<script type="text/javascript">
+
+	/* WSADZIĆ KOD ANALYTICS'a */
+
+</script>
+</body>
+</html>
+
