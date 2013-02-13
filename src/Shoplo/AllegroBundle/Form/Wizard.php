@@ -174,7 +174,6 @@ class Wizard
         $fields[] = $this->createField(14, $profile->getPayments());
         $fields[] = $this->createField(32, $profile->getZipcode());
         $fields[] = $this->createField(24, $description);
-        $fields[] = $this->createField(29, 0);
 
         // Zdjęcia
         $id     = 16;
@@ -194,9 +193,13 @@ class Wizard
         }
 
 		// Sklepy Allegro
-		if ( $profile->getDuration() == 30 )
+		if ( $profile->getDuration() == 5 )
 		{
 			$fields[] = $this->createField(29, 1);
+		}
+		else
+		{
+			$fields[] = $this->createField(29, 0);
 		}
 
         // Dodatkowe pola
