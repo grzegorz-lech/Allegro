@@ -40,7 +40,7 @@ class HomepageController extends Controller
 		{
 			$total = $this->getDoctrine()
 				->getManager()
-				->createQuery('SELECT COUNT(i) FROM ShoploAllegroBundle:Item i')
+				->createQuery("SELECT COUNT(i) FROM ShoploAllegroBundle:Item i WHERE i.user_id = " . $this->getUser()->getId())
 				->getSingleScalarResult();
 			if ( $total > 0 )
 			{
