@@ -72,7 +72,7 @@ class HomepageController extends Controller
 		$allegro->login($this->getUser());
 		#TODO: odpytywac sie nie czesciej niz co 5min, uzyc cache'a
 		$ids = array_keys($activeItems);
-		$result = $allegro->getItemsInfo($ids);
+		$result = !empty($ids) ? $allegro->getItemsInfo($ids) : array();
 		if ( is_array($result) && !empty($result['array-item-list-info']) )
 		{
 			foreach ( $result['array-item-list-info'] as $itemInfo )
