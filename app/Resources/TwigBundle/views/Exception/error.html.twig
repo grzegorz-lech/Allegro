@@ -16,7 +16,7 @@
 			height: 100%;
 		}
 		body {
-			background: url({{ asset('error_bg.png') }}) repeat;
+			background: url({% image '@ShoploAllegroBundle/Resources/public/img/error_bg.png' %}{{ asset_url }}{% endimage %}) repeat;
 			font-family: Helvetica Neue;
 			overflow: hidden;
 		}
@@ -38,7 +38,7 @@
 			width: 1200px;
 			min-height: 100%;
 			margin: 0 auto;
-			background: url({{ asset('light_bg.png') }}) repeat-y;
+			background: url({% image '@ShoploAllegroBundle/Resources/public/img/light_bg.png' %}{{ asset_url }}{% endimage %}) repeat-y;
 			padding: 20px;
 			text-align: center;
 		}
@@ -67,11 +67,11 @@
 </head>
 <body>
 <div class="errorPage">
-	<h1>Upps, coś poszło nie tak...</h1>
+	<h1>Uppsss, coś poszło nie tak...</h1>
 
-	<p>Drogi użytkowniku, udało Ci się osiagnąć coś czego my nie przewidzieliśmy.</p>
+	<p>Nasz zespół interwencyjny już sprawdza w czym tkwi problem.</p>
 
-	<p><a href="http://allegro.shoploapp.com">&laquo; Wróć na poprzednią stronę, a my ogarniemy temat.</a></p>
+	<p><a href="http://allegro.shoploapp.com">&laquo; Powróć na stronę główną</a></p>
 
 	<a href="http://allegro.shoploapp.com">
 		<img src="http://www.shoplo.com/img/panel/logo_panel_top.png" alt="Shoplo Allegro" />
