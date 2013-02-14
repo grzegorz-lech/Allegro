@@ -42,7 +42,7 @@ class ImportCommand extends Command
         $allegro = $this->getContainer()->get('allegro');
 
         foreach ($users as $user) {
-			if ( !$user['username'] ) {
+			if ( !$user->getUsername()) {
 				continue;
 			}
 
