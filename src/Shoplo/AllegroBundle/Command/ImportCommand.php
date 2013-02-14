@@ -88,9 +88,10 @@ class ImportCommand extends Command
                 }
             }
 
-            $postBuyData = $allegro->getPostBuyData(array_unique($auctionsIds));
+			$auctionsIds = array_unique($auctionsIds);
+			$postBuyData = !empty($auctionsIds) ? $allegro->getPostBuyData($auctionsIds) : array();
 
-            if ( !empty($newTransactionAuctionMap) )
+            if ( !empty($newTransactionAuctionMap) && !empty($auctionsIds) )
 			{
                 $buyersFormsData = $allegro->getBuyersData(array_keys($newTransactionAuctionMap));
 				foreach ($buyersFormsData as $data)
