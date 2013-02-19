@@ -20,6 +20,14 @@ class HomepageController extends Controller
 
             return $this->redirect($this->generateUrl('shoplo_allegro_wizard', array('product' => $ids)));
         }
+		$security = $this->get('security.context');
+		$user = $security->getToken()->getUser();
+		if (!$user->getUsername()) {
+			return $this->redirect($this->generateUrl('shoplo_allegro_settings'));
+		}
+
+
+
 		$action = !$action ? 'trwajace' : $action;
 
         $shoplo  = $this->container->get('shoplo');
