@@ -10,23 +10,22 @@ use Shoplo\AllegroBundle\Entity\Item;
 class HomepageController extends Controller
 {
     /**
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_USER")
      */
     public function indexAction($action, $page)
     {
-		$request = $this->getRequest();
-        if ($ids = $request->query->get('ids')) {
-            $ids = explode(',', $ids);
-
-            return $this->redirect($this->generateUrl('shoplo_allegro_wizard', array('product' => $ids)));
-        }
 		$security = $this->get('security.context');
 		$user = $security->getToken()->getUser();
 		if (!$user->getUsername()) {
 			return $this->redirect($this->generateUrl('shoplo_allegro_settings'));
 		}
 
+		$request = $this->getRequest();
+        if ($ids = $request->query->get('ids')) {
+            $ids = explode(',', $ids);
 
+            return $this->redirect($this->generateUrl('shoplo_allegro_wizard', array('product' => $ids)));
+        }
 
 		$action = !$action ? 'trwajace' : $action;
 
