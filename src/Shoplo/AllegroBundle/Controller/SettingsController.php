@@ -605,15 +605,15 @@ class SettingsController extends Controller
 
 		$time6 = microtime(true);
 
-		if ( $user->getUsername() == 'AntykwariatWaw' )
-		{
-			echo "TIME 1: " . (($time2-$time1)*1000) . "ms\n";
-			echo "TIME 2: " . (($time3-$time2)*1000) . "ms\n";
-			echo "TIME 3: " . (($time4-$time3)*1000) . "ms\n";
-			echo "TIME 4: " . (($time5-$time4)*1000) . "ms\n";
-			echo "TIME 5: " . (($time6-$time5)*1000) . "ms\n";
-			exit;
-		}
+//		if ( $user->getUsername() == 'AntykwariatWaw' )
+//		{
+//			echo "TIME 1: " . (($time2-$time1)*1000) . "ms\n";
+//			echo "TIME 2: " . (($time3-$time2)*1000) . "ms\n";
+//			echo "TIME 3: " . (($time4-$time3)*1000) . "ms\n";
+//			echo "TIME 4: " . (($time5-$time4)*1000) . "ms\n";
+//			echo "TIME 5: " . (($time6-$time5)*1000) . "ms\n";
+//			exit;
+//		}
         return $this->render(
             'ShoploAllegroBundle::categories.html.twig',
             array(
