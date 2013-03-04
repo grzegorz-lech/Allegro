@@ -477,7 +477,8 @@ class SettingsController extends Controller
 		foreach ( $categories as $c )
 		{
 			/** @var $c Category */
-			$path = $allegro->doGetCategoryPath($allegro->getSession(), $c->getAllegroId());
+			//$path = $allegro->doGetCategoryPath($allegro->getSession(), $c->getAllegroId());
+			$path = $allegro->getCategoryPath($allegro->getSession(), $c->getAllegroId());
 			$c->parents = array();
 			foreach ( $path as $p )
 			{
