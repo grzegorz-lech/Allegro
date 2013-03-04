@@ -235,7 +235,13 @@ class Allegro extends \SoapClient
 
     public function getCategoryPath($categoryId)
     {
-        return $this->doGetCategoryPath($this->session['session-handle-part'], 101359);
+		$cacheKey = sprintf('[%s][%d]', __FUNCTION__, $this->getCountry());
+		if (false === $path = apc_fetch($cacheKey)) {
+			$path = $this->doGetCategoryPath($this->session['session-handle-part'], $categoryId);//101359);
+			apc_store($cacheKey, $path);
+		}
+		return $path;
+        //return $this->doGetCategoryPath($this->session['session-handle-part'], $categoryId);//101359);
     }
 
     /**
