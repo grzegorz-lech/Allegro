@@ -473,24 +473,41 @@ class SettingsController extends Controller
 				array('shop_id'=>$this->getUser()->getShopId()),
 				array('id' => 'ASC')
 		);
+		$allegroCategoryIds = array();
+		foreach ( $categories as $c )
+		{
+			$allegroCategoryIds[] = $c->getAllegroId();
+		}
+		$allegroCategoryChildrens    = $this->getDoctrine()
+			->getRepository('ShoploAllegroBundle:CategoryAllegro')
+			->findBy(array('id' => $allegroCategoryIds));
+		$allegroCategoriesMap = array();
+		foreach ($allegroCategoryChildrens as $ac) {
+			/** @var $ac CategoryAllegro */
+			$allegroCategoriesMap[$ac->getId()] = $ac->getTree();
+		}
+
 		$tmp = $map = array();
 		foreach ( $categories as $c )
 		{
 			/** @var $c Category */
 			//$path = $allegro->doGetCategoryPath($allegro->getSession(), $c->getAllegroId());
-			$path = $allegro->getCategoryPath($c->getAllegroId());
+			//$path = $allegro->getCategoryPath($c->getAllegroId());
+			$path = explode('-', $allegroCategoriesMap[$c->getAllegroId()]);
+			array_shift($path);
+
 			$c->parents = array();
 			foreach ( $path as $p )
 			{
-				if ( !isset($map[$p->{'cat-id'}]) )
+				if ( !isset($map[$p]) )
 				{
-					$children = $this->getCategoryChildren($p->{'cat-id'});
-					$map[$p->{'cat-id'}] = $children;
+					$children = $this->getCategoryChildren($p);
+					$map[$p] = $children;
 				}
-				$c->path[] = $p->{'cat-id'};
-				if ( !empty($map[$p->{'cat-id'}]) )
+				$c->path[] = $p;
+				if ( !empty($map[$p]) )
 				{
-					$c->parents[$p->{'cat-id'}] = $map[$p->{'cat-id'}];
+					$c->parents[$p] = $map[$p];
 				}
 			}
 
