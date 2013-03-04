@@ -2,7 +2,7 @@ set     :application,           "Allegro"
 set     :user,                  "www-data"
 set     :deploy_to,             "/var/www/allegro.shoploapp.com"
 set     :app_path,              "app"
-set     :repository,            "git@github.com:sgrodzicki/Allegro.git"
+set     :repository,            "git@github.com:grzegorz-lech/Allegro.git"
 set     :scm,                   :git
 set     :scm_verbose,           true
 set     :model_manager,         "doctrine"
@@ -18,9 +18,9 @@ set     :shared_files,          ["app/config/parameters.yml"]
 set     :deploy_via,            :remote_cache
 set     :writable_dirs,         ["app/cache", "app/logs"]
 set     :webserver_user,        "apache"
-role    :web,                   "vps.nexis.pl"
-role    :app,                   "vps.nexis.pl"
-role    :db,                    "vps.nexis.pl", :primary => true
+role    :web,                   "allegro.shoploapp.com"
+role    :app,                   "allegro.shoploapp.com"
+role    :db,                    "allegro.shoploapp.com", :primary => true
 
 # Configuration file
 after "deploy:setup", "upload_parameters"
