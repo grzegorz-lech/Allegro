@@ -725,31 +725,40 @@ class SettingsController extends Controller
 
 	private function getCategoryChildren($id)
 	{
-		$user    = $this->getUser();
-		$allegro = $this->container->get('allegro');
-		$allegro->login($user);
-
 		$allegroCategories = $this->getDoctrine()
 			->getRepository('ShoploAllegroBundle:CategoryAllegro')
 			->findBy(
-			array('country_id' => $allegro->getCountry(), 'parent' => $id),
+			array('country_id' => 1, 'parent' => $id),
 			array('position' => 'ASC')
 		);
+		$ids = $categories = array();
+		if ( $allegroCategories )
+		{
+			foreach ($allegroCategories as $ac)
+			{
+				$ids[] = $ac->getId();
+			}
 
-		$categories = array();
-		foreach ($allegroCategories as $ac) {
-			$categories[] = array(
-				'id'           => $ac->getId(),
-				'name'         => $ac->getName(),
-				'childs_count' => count(
-					$this->getDoctrine()
-						->getRepository('ShoploAllegroBundle:CategoryAllegro')
-						->findBy(
-						array('parent' => $ac->getId())
-					)
-				)
-			);
+			/** @var $dbh \Doctrine\DBAL\Connection */
+			$dbh = $this->getDoctrine()->getConnection();
+			$sth = $dbh->query('SELECT COUNT(c.id) as childs_count, c.parent_id FROM CategoryAllegro c WHERE c.parent_id IN ('.implode(',', $ids).') GROUP BY c.parent_id');
+			$result = $sth->fetchAll(\PDO::FETCH_ASSOC);
+			$map = array();
+			foreach ( $result as $r )
+			{
+				$map[$r['parent_id']] = $r['childs_count'];
+			}
+
+			foreach ($allegroCategories as $ac) {
+
+				$categories[] = array(
+					'id'           => $ac->getId(),
+					'name'         => $ac->getName(),
+					'childs_count' => isset($map[$ac->getId()]) ? $map[$ac->getId()] : 0
+				);
+			}
 		}
+
 		return $categories;
 	}
 }
