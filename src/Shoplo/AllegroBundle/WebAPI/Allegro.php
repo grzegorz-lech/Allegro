@@ -601,7 +601,7 @@ class Allegro extends \SoapClient
 				}
 			}
 
-			$this->_logger->err('Method: doFInishItem | Username: '.$this->username.' | ItemId: '.$itemId.' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+			//$this->_logger->err('Method: doFInishItem | Username: '.$this->username.' | ItemId: '.$itemId.' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 
 			return $sf->getMessage();
 		}
