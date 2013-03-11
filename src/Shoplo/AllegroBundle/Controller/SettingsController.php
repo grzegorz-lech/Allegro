@@ -93,7 +93,7 @@ class SettingsController extends Controller
         );
         if (false !== $json = @file_get_contents($url)) {
             if (false !== $data = json_decode($json, true)) {
-                if (false !== $key = array_search($data['province'], $states)) {
+                if (isset($data['province']) && false !== $key = array_search($data['province'], $states)) {
                     $preferredStates[] = $key;
                 }
             }
