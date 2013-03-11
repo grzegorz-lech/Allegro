@@ -483,14 +483,19 @@ class SettingsController extends Controller
 		{
 			$allegroCategoryIds[] = $c->getAllegroId();
 		}
-		$allegroCategoryChildrens    = $this->getDoctrine()
-			->getRepository('ShoploAllegroBundle:CategoryAllegro')
-			->findBy(array('id' => $allegroCategoryIds));
+
 		$allegroCategoriesMap = array();
-		foreach ($allegroCategoryChildrens as $ac) {
-			/** @var $ac CategoryAllegro */
-			$allegroCategoriesMap[$ac->getId()] = $ac->getTree();
+		if ( !empty($allegroCategoryIds) )
+		{
+			$allegroCategoryChildrens    = $this->getDoctrine()
+				->getRepository('ShoploAllegroBundle:CategoryAllegro')
+				->findBy(array('id' => $allegroCategoryIds));
+			foreach ($allegroCategoryChildrens as $ac) {
+				/** @var $ac CategoryAllegro */
+				$allegroCategoriesMap[$ac->getId()] = $ac->getTree();
+			}
 		}
+
 
 		$time4 = microtime(true);
 
