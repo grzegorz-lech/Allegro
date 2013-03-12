@@ -559,11 +559,6 @@ class SettingsController extends Controller
 				$repo  = $this->getDoctrine()->getRepository('ShoploAllegroBundle:Category');
 				try
 				{
-//					$query = $em->createQuery(
-//						'DELETE FROM ShoploAllegroBundle:Category c WHERE c.shop_id = ' . $shop['id']
-//					);
-//					$query->execute();
-
 					foreach ($shoploCategories as $sc) {
 						/** @var $allegroCategory CategoryAllegro */
 
@@ -606,6 +601,13 @@ class SettingsController extends Controller
 
                 return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
             }
+			else
+			{
+				$this->get('session')->setFlash(
+					"error",
+					"Popraw błędy w formularzu"
+				);
+			}
         }
 
 		$time6 = microtime(true);
