@@ -418,17 +418,9 @@ class SettingsController extends Controller
      */
     public function mappingAction(Request $request)
     {
-		$time1 = microtime(true);
-
-		$user    = $this->getUser();
-        //$allegro = $this->container->get('allegro');
-        //$allegro->login($user);
-
-        $shoplo            = $this->get('shoplo');
+		$shoplo            = $this->get('shoplo');
         $count             = $shoplo->get('categories/count');
         $shoploCategories  = $shoplo->get('categories', null, array('limit' => $count));
-
-		$time2 = microtime(true);
 
 		$sorted = $matches = array();
 		foreach ( $shoploCategories as $sc )
@@ -463,9 +455,7 @@ class SettingsController extends Controller
 
 		}
 
-		$time3 = microtime(true);
-
-        $allegroCategories = $this->getDoctrine()
+		$allegroCategories = $this->getDoctrine()
             ->getRepository('ShoploAllegroBundle:CategoryAllegro')
             ->findBy(
             array('country_id' => 1/*$allegro->getCountry()*/, 'parent' => null),
@@ -497,14 +487,9 @@ class SettingsController extends Controller
 		}
 
 
-		$time4 = microtime(true);
-
 		$tmp = $map = array();
 		foreach ( $categories as $c )
 		{
-			/** @var $c Category */
-			//$path = $allegro->doGetCategoryPath($allegro->getSession(), $c->getAllegroId());
-			//$path = $allegro->getCategoryPath($c->getAllegroId());
 			$path = explode('-', $allegroCategoriesMap[$c->getAllegroId()]);
 			array_shift($path);
 
@@ -527,7 +512,6 @@ class SettingsController extends Controller
 		}
 		$categories = $tmp;
 
-		$time5 = microtime(true);
 
         $form = $this->createFormBuilder()
             ->add(
@@ -543,7 +527,7 @@ class SettingsController extends Controller
         if ($this->getRequest()->isMethod('POST')) {
             $form->bind($request);
 
-            if ($form->isValid()) {
+            //if ($form->isValid()) {
                 $data                 = $form->getData();
 				$allegroCategories    = $this->getDoctrine()
                     ->getRepository('ShoploAllegroBundle:CategoryAllegro')
@@ -600,27 +584,17 @@ class SettingsController extends Controller
                 $em->flush();
 
                 return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
-            }
-			else
-			{
-				$this->get('session')->setFlash(
-					"error",
-					"Popraw błędy w formularzu"
-				);
-			}
+//            }
+//			else
+//			{
+//				$this->get('session')->setFlash(
+//					"error",
+//					"Popraw błędy w formularzu"
+//				);
+//			}
         }
 
-		$time6 = microtime(true);
 
-//		if ( $user->getUsername() == 'AntykwariatWaw' )
-//		{
-//			echo "TIME 1: " . (($time2-$time1)*1000) . "ms\n";
-//			echo "TIME 2: " . (($time3-$time2)*1000) . "ms\n";
-//			echo "TIME 3: " . (($time4-$time3)*1000) . "ms\n";
-//			echo "TIME 4: " . (($time5-$time4)*1000) . "ms\n";
-//			echo "TIME 5: " . (($time6-$time5)*1000) . "ms\n";
-//			exit;
-//		}
         return $this->render(
             'ShoploAllegroBundle::categories.html.twig',
             array(
