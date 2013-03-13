@@ -529,9 +529,10 @@ class SettingsController extends Controller
 
             //if ($form->isValid()) {
                 $data                 = $form->getData();
+				$ids  = array_unique(array_values($data['categories']));
 				$allegroCategories    = $this->getDoctrine()
                     ->getRepository('ShoploAllegroBundle:CategoryAllegro')
-                    ->findBy(array('id' => $data['categories']));
+                    ->findBy(array('id' => $ids));
                 $allegroCategoriesMap = array();
                 foreach ($allegroCategories as $ac) {
                     /** @var $ac CategoryAllegro */
@@ -545,6 +546,10 @@ class SettingsController extends Controller
 				{
 					foreach ($shoploCategories as $sc) {
 						/** @var $allegroCategory CategoryAllegro */
+						if ( !isset($allegroCategoriesMap[$data['categories'][$sc['id']]]) )
+						{
+							continue;
+						}
 
 						$c = $repo->findOneBy(array(
 							'shop_id'	=>	$shop['id'],
@@ -582,6 +587,11 @@ class SettingsController extends Controller
 
 
                 $em->flush();
+
+				$this->get('session')->setFlash(
+					"success",
+					"Kategorie zostały zmapowane"
+				);
 
                 return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
 //            }
