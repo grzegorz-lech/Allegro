@@ -546,7 +546,7 @@ class SettingsController extends Controller
 				{
 					foreach ($shoploCategories as $sc) {
 						/** @var $allegroCategory CategoryAllegro */
-						if ( !isset($allegroCategoriesMap[$data['categories'][$sc['id']]]) )
+						if ( !isset($data['categories'][$sc['id']]) || !isset($allegroCategoriesMap[$data['categories'][$sc['id']]]) )
 						{
 							continue;
 						}
