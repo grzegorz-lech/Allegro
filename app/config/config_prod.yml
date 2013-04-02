@@ -52,8 +52,8 @@ monolog:
             to_email:   lech.grzegorz@gmail.com
             subject:    "[Allegro] Internal Server Error"
             level:      debug
-            formatter:  html_table_formatter
-            content_type: "text/html"
+            #formatter:  html_table_formatter
+            #content_type: "text/html"
 
 assetic:
     java: /usr/bin/java
