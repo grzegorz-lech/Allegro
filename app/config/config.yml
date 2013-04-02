@@ -86,3 +86,7 @@ shoplo_allegro:
     shoplo:
         key: %oauth_consumer_key%
         secret: %oauth_consumer_secret%
+
+services:
+    html_table_formatter:
+        class: Monolog\Formatter\HtmlTableFormatter
