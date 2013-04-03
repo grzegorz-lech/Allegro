@@ -68,6 +68,15 @@ class WizardController extends Controller
 		}
 
 		$fields = $allegro->getSellFormFields();
+//		$counter = 0;
+//		foreach ( $fields as $f )
+//		{
+//			$counter++;
+//			print_r($f);
+//			if ( $counter == 50 )
+//				exit;
+//		}
+//		exit;
 		$form = $this->createWizardForm($fields, $profiles);
 
 
@@ -101,15 +110,18 @@ class WizardController extends Controller
 				{
 					$defaultProfile = array_shift($profiles);
 
+					$delivery = $wizard->getDelivery();
+					$delivery = !empty($delivery) ? (int) array_sum($delivery) : 0;
+
+
 					$profile = new Profile();
 					$profile->setDuration( $wizard->getDuration() );
 					$profile->setCountry( $defaultProfile->getCountry() );
 					$profile->setCity( $defaultProfile->getCity() );
 					$profile->setState( $defaultProfile->getState() );
 					$profile->setZipcode( $defaultProfile->getZipcode() );
-					$profile->setDelivery( $wizard->getDelivery() );
+					$profile->setDelivery( $delivery );
 					$profile->setPayments( $wizard->getPayments() );
-
 
 					$extraDelivery = $wizard->getExtraDelivery();
 					$optDeliveries = array();

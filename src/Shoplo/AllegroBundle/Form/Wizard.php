@@ -170,10 +170,10 @@ class Wizard
         $fields[] = $this->createField(10, $profile->getState());
         $fields[] = $this->createField(11, $profile->getCity());
         $fields[] = $this->createField(12, 1);
-        $fields[] = $this->createField(13, $profile->getDelivery());
-        $fields[] = $this->createField(14, $profile->getPayments());
-        $fields[] = $this->createField(32, $profile->getZipcode());
-        $fields[] = $this->createField(24, $description);
+		$fields[] = $this->createField(14, $profile->getPayments());
+		$fields[] = $this->createField(32, $profile->getZipcode());
+		$fields[] = $this->createField(24, $description);
+		$fields[] = $this->createField(35, $profile->getDelivery());
 
         // Zdjęcia
         $id     = 16;
