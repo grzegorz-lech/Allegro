@@ -140,6 +140,15 @@ class User implements UserInterface
      */
     private $lastEventId = 0;
 
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Column(name="disable", type="integer")
+	 *
+	 * @Assert\NotBlank()
+	 */
+	private $disable = 0;
+
     /**
      * @param  int  $lastEventId
      * @return User
@@ -158,6 +167,25 @@ class User implements UserInterface
     {
         return $this->lastEventId;
     }
+
+	/**
+	 * @param  int  $disable
+	 * @return User
+	 */
+	public function setDisable($disable)
+	{
+		$this->disable = $disable;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getDisable()
+	{
+		return $this->disable;
+	}
 
     /**
      * @param  int  $country
