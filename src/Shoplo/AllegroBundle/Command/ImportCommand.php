@@ -13,6 +13,7 @@ use Shoplo\AllegroBundle\Entity\ShoploOrder;
 use Doctrine\ORM\EntityNotFoundException;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
 use Shoplo\AllegroBundle\Entity\Item;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class ImportCommand extends Command
 {
@@ -49,6 +50,45 @@ class ImportCommand extends Command
             if (!$allegro->login($user)) {
                 $output->writeln('<error>Unable to log-in to Allegro</error>');
                 continue;
+            }
+
+            $sellAgainItems = $doctrine
+                ->getRepository('ShoploAllegroBundle:sellAgainItem')
+                ->findBy(
+                    array('user_id' => $user->getId())
+                );
+
+            foreach($sellAgainItems as $sellAgainItem)
+            {
+                $result = $allegro->doVerifyItem($allegro->getSession(), $sellAgainItem->getLocalId());
+                if($result['item-listed'] == 1)
+                {
+                    $item = $doctrine
+                        ->getRepository('ShoploAllegroBundle:Item')
+                        ->findOneBy(
+                            array('id' => $sellAgainItem->getItemId(), 'user_id' => $user->getId())
+                        );
+
+                    $newItem = new Item();
+                    $endTime = strtotime('+' . $sellAgainItem->getDuration() . ' days', $result['item-starting-time']);
+                    $newItem
+                        ->setId($result['item-id'])
+                        ->setUser($user)
+                        ->setVariantId($item->getVariantId())
+                        ->setProductId($item->getProductId())
+                        ->setPrice($item->getPrice())
+                        ->setQuantity($item->getQuantity())
+                        ->setQuantityAll($item->getQuantityAll())
+                        ->setQuantitySold(0)
+                        ->setViewsCount(0)
+                        ->setWatchCount(0)
+                        ->setAuctionPrice($item->getAuctionPrice())
+                        ->setStartAt(new \DateTime(date('Y-m-d H:i:s', $result['item-starting-time'])))
+                        ->setEndAt(new \DateTime(date('Y-m-d H:i:s', $endTime)));
+
+                    $manager->remove($sellAgainItem);
+                    $manager->persist($newItem);
+                }
             }
 
             $auctionsIds = $newTransactionAuctionMap = array();

@@ -95,6 +95,10 @@ shoplo_allegro_wizard:
     pattern:  /kreator
     defaults: { _controller: ShoploAllegroBundle:Wizard:index }
 
+shoplo_allegro_sell_again:
+    pattern:  /wystaw
+    defaults: { _controller: ShoploAllegroBundle:Homepage:sellagain }
+
 shoplo_allegro_webhook:
     pattern:  /hookme
     defaults: { _controller: ShoploAllegroBundle:Settings:webhook }

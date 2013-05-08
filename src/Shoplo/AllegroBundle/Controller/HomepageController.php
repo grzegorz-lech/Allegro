@@ -2,6 +2,7 @@
 
 namespace Shoplo\AllegroBundle\Controller;
 
+use Shoplo\AllegroBundle\Entity\SellAgainItem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Request;
@@ -178,6 +179,20 @@ class HomepageController extends Controller
 			throw $this->createNotFoundException('Resource not found');
 		}
 
+        $sellAgainItem = $this->getDoctrine()
+            ->getRepository('ShoploAllegroBundle:SellAgainItem')
+            ->findOneBy(
+                array('item_id' => $itemId, 'user_id' => $this->getUser()->getId())
+            );
+        if ( $sellAgainItem instanceof SellAgainItem )
+        {
+            $this->get('session')->setFlash(
+                "error",
+                "Aukcja jest ponownie wystawiana. Spróbuj ponownie później."
+            );
+            return $this->redirect( $this->generateUrl('shoplo_allegro_homepage') );
+        }
+
 		$em = $this->getDoctrine()->getManager();
 		$em->remove($item);
 		$em->flush();
@@ -231,4 +246,96 @@ class HomepageController extends Controller
 
 		return $this->redirect( $this->generateUrl('shoplo_allegro_homepage') );
 	}
+
+    public function sellagainAction()
+    {
+        $itemId = $this->getRequest()->request->get('item_id');
+        $duration = $this->getRequest()->request->get('duration');
+        $item = $this->getDoctrine()
+            ->getRepository('ShoploAllegroBundle:Item')
+            ->findOneBy(
+                array('id' => $itemId, 'user_id' => $this->getUser()->getId())
+            );
+        if ( !($item instanceof Item) )
+        {
+            throw $this->createNotFoundException('Resource not found');
+        }
+
+        $allegro = $this->get('allegro');
+        if (!$allegro->login($this->getUser())) {
+            throw new AccessDeniedException();
+        }
+
+        $localId = rand(1, 999999);
+
+        try {
+            $result = $allegro->doSellSomeAgain($allegro->getSession(), array($itemId), 0, $duration, null, array($localId));
+        }
+        catch ( \SoapFault $e ) {
+            $this->getRequest()->getSession()->setFlash(
+                "error",
+                $e->getMessage()
+            );
+            return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+        }
+
+        $em     = $this->get('doctrine')->getManager();
+
+        $verifyResult = $allegro->doVerifyItem($allegro->getSession(), $localId);
+        if($verifyResult['item-listed'] == 1)
+        {
+            $newItem = new Item();
+            $endTime = strtotime('+' . $duration . ' days', $verifyResult['item-starting-time']);
+            $newItem
+                ->setId($verifyResult['item-id'])
+                ->setUser($this->getUser())
+                ->setVariantId($item->getVariantId())
+                ->setProductId($item->getProductId())
+                ->setPrice($item->getPrice())
+                ->setQuantity($item->getQuantity())
+                ->setQuantityAll($item->getQuantityAll())
+                ->setQuantitySold(0)
+                ->setViewsCount(0)
+                ->setWatchCount(0)
+                ->setAuctionPrice($item->getAuctionPrice())
+                ->setStartAt(new \DateTime(date('Y-m-d H:i:s', $verifyResult['item-starting-time'])))
+                ->setEndAt(new \DateTime(date('Y-m-d H:i:s', $endTime)));
+
+            $em->persist($newItem);
+            $message = "Gratulacje. Twoja Aukcja została utworzona:) Będzie ona widoczna w przeciągu kilku minut.";
+            $this->getRequest()->getSession()->setFlash(
+                "success",
+                $message
+            );
+            return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+        }
+        elseif($verifyResult['item-listed'] == -1)
+        {
+            $message = 'Wystąpił błąd i oferta nie została wystawiona. Spróbuj ponownie później.';
+            $this->getRequest()->getSession()->setFlash(
+                "error",
+                $message
+            );
+            return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+        }
+        else
+        {
+            $message = 'Aukcja czeka w kolejce do wystawienia.';
+        }
+
+        $sellAgainItem = new SellAgainItem();
+        $sellAgainItem->setItemId($result['items-sell-again'][0]->{'sell-item-id'});
+        $sellAgainItem->setLocalId($localId);
+        $sellAgainItem->setDuration($duration);
+        $sellAgainItem->setUserId( $this->getUser()->getId() );
+
+        $em->persist($sellAgainItem);
+        $em->flush();
+
+        $this->getRequest()->getSession()->setFlash(
+            "success",
+            $message
+        );
+        return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+    }
 }

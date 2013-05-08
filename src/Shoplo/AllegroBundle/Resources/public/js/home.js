@@ -32,4 +32,17 @@ $(function(){
         }
         return true;
     });
+
+    /* Wystaw ponownie */
+    $('#sell-again-dialog').modal({
+        show: false
+    });
+
+    $('.actionRefresh').click(function(){
+        var itemId = $(this).attr('rel');
+        $('#sell-again-dialog .modal-body .title').html('Aukcja: ' + $('#item-title-'+itemId).html());
+        $('#sell-again-dialog #item_id').val(itemId);
+        $('#sell-again-dialog').modal('show');
+        return false;
+    });
 });
