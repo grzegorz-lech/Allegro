@@ -279,6 +279,22 @@ class HomepageController extends Controller
             return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
         }
 
+        if( !empty($result['items-sell-not-found']) )
+        {
+            $this->get('logger')->err('doSellSomeAgain: items-sell-not-found, item id: '.$itemId.', result: '.print_r($result, true));
+        }
+
+        if( !empty($result['items-sell-failed']) )
+        {
+            $this->get('logger')->err('doSellSomeAgain: items-sell-failed, item id: '.$itemId.', result: '.print_r($result, true));
+            $message = $result['items-sell-failed'][0]->{'sell-fault-string'};
+            $this->getRequest()->getSession()->setFlash(
+                "error",
+                $message
+            );
+            return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
+        }
+
         $em     = $this->get('doctrine')->getManager();
 
         $verifyResult = $allegro->doVerifyItem($allegro->getSession(), $localId);
