@@ -52,7 +52,7 @@ class ImportCommand extends Command
                 continue;
             }
 
-            $sellAgainItems = $doctrine
+            /*$sellAgainItems = $doctrine
                 ->getRepository('ShoploAllegroBundle:sellAgainItem')
                 ->findBy(
                     array('user_id' => $user->getId())
@@ -89,7 +89,7 @@ class ImportCommand extends Command
                     $manager->remove($sellAgainItem);
                     $manager->persist($newItem);
                 }
-            }
+            }*/
 
             $auctionsIds = $newTransactionAuctionMap = array();
             $deals       = $allegro->getDeals($user->getLastEventId(), $manager, $dealRepository);
