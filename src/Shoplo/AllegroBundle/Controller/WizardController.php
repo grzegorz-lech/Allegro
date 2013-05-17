@@ -245,7 +245,20 @@ class WizardController extends Controller
 					);
                     return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
                 }
+				else {
+					$this->getRequest()->getSession()->setFlash(
+						"error",
+						"Uzupełnij brakujące pola przypisane do kategorii."
+					);
+				}
             }
+			else
+			{
+				$this->getRequest()->getSession()->setFlash(
+					"error",
+					"Uzupełnij brakujące pola formularza."
+				);
+			}
         }
 
         if (!empty($extras)) {
