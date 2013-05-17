@@ -269,19 +269,10 @@ class HomepageController extends Controller
         $localId = rand(1, 999999);
         try {
             $result = $allegro->doSellSomeAgain($allegro->getSession(), array($itemId), 0, $duration, null, array($localId));
-            $lastRequest = $allegro->__getLastRequest();
-            $lastResponse = $allegro->__getLastResponse();
+//            $lastRequest = $allegro->__getLastRequest();
+//            $lastResponse = $allegro->__getLastResponse();
 //            $this->get('logger')->err('doSellSomeAgain request: '.$lastRequest);
 //            $this->get('logger')->err('doSellSomeAgain response: '.$lastResponse);
-
-            if( $this->getUser()->getUsername() == 'matt_ck')
-            {
-                echo $lastRequest;
-                echo "\r\n\r\n\r\n";
-                echo $lastResponse;
-                exit;
-            }
-
         }
         catch ( \SoapFault $e ) {
             $this->getRequest()->getSession()->setFlash(

@@ -52,44 +52,54 @@ class ImportCommand extends Command
                 continue;
             }
 
-            /*$sellAgainItems = $doctrine
-                ->getRepository('ShoploAllegroBundle:sellAgainItem')
-                ->findBy(
-                    array('user_id' => $user->getId())
-                );
-
-            foreach($sellAgainItems as $sellAgainItem)
+            try
             {
-                $result = $allegro->doVerifyItem($allegro->getSession(), $sellAgainItem->getLocalId());
-                if($result['item-listed'] == 1)
+                $sellAgainItems = $doctrine
+                    ->getRepository('ShoploAllegroBundle:sellAgainItem')
+                    ->findBy(
+                        array('user_id' => $user->getId())
+                    );
+
+                foreach($sellAgainItems as $sellAgainItem)
                 {
-                    $item = $doctrine
-                        ->getRepository('ShoploAllegroBundle:Item')
-                        ->findOneBy(
-                            array('id' => $sellAgainItem->getItemId(), 'user_id' => $user->getId())
-                        );
+                    $result = $allegro->doVerifyItem($allegro->getSession(), $sellAgainItem->getLocalId());
+                    if($result['item-listed'] == 1)
+                    {
+                        $item = $doctrine
+                            ->getRepository('ShoploAllegroBundle:Item')
+                            ->findOneBy(
+                                array('id' => $sellAgainItem->getItemId(), 'user_id' => $user->getId())
+                            );
 
-                    $newItem = new Item();
-                    $endTime = strtotime('+' . $sellAgainItem->getDuration() . ' days', $result['item-starting-time']);
-                    $newItem
-                        ->setId($result['item-id'])
-                        ->setUser($user)
-                        ->setVariantId($item->getVariantId())
-                        ->setProductId($item->getProductId())
-                        ->setPrice($item->getPrice())
-                        ->setQuantity($item->getQuantity())
-                        ->setQuantityAll($item->getQuantityAll())
-                        ->setQuantitySold(0)
-                        ->setViewsCount(0)
-                        ->setWatchCount(0)
-                        ->setAuctionPrice($item->getAuctionPrice())
-                        ->setStartAt(new \DateTime(date('Y-m-d H:i:s', $result['item-starting-time'])))
-                        ->setEndAt(new \DateTime(date('Y-m-d H:i:s', $endTime)));
+                        $newItem = new Item();
+                        $endTime = strtotime('+' . $sellAgainItem->getDuration() . ' days', $result['item-starting-time']);
+                        $newItem
+                            ->setId($result['item-id'])
+                            ->setUser($user)
+                            ->setVariantId($item->getVariantId())
+                            ->setProductId($item->getProductId())
+                            ->setPrice($item->getPrice())
+                            ->setQuantity($item->getQuantity())
+                            ->setQuantityAll($item->getQuantityAll())
+                            ->setQuantitySold(0)
+                            ->setViewsCount(0)
+                            ->setWatchCount(0)
+                            ->setAuctionPrice($item->getAuctionPrice())
+                            ->setStartAt(new \DateTime(date('Y-m-d H:i:s', $result['item-starting-time'])))
+                            ->setEndAt(new \DateTime(date('Y-m-d H:i:s', $endTime)));
 
-                    $manager->remove($sellAgainItem);
-                    $manager->persist($newItem);
+                        $manager->remove($sellAgainItem);
+                        $manager->persist($newItem);
+                    }
                 }
-            }*/
+            }
+            catch(Exception $e)
+            {
+                $output->writeln('<error>Sell again items error: '.$e->getMessage().'</error>');
+                continue;
+            }
+
+
 
             $auctionsIds = $newTransactionAuctionMap = array();
             $deals       = $allegro->getDeals($user->getLastEventId(), $manager, $dealRepository);
