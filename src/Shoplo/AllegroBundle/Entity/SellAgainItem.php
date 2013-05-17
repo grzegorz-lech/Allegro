@@ -24,7 +24,7 @@ class SellAgainItem
     /**
      * @var integer
      *
-     * @ORM\Column(name="item_id", type="integer")
+     * @ORM\Column(name="item_id", type="bigint")
      */
     private $item_id;
 
