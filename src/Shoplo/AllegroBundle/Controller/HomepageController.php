@@ -268,7 +268,9 @@ class HomepageController extends Controller
 
         $localId = rand(1, 999999);
         try {
-            $result = $allegro->doSellSomeAgain($allegro->getSession(), array( (string) $itemId ), 0, $duration, null, array($localId));
+            $itemIdSoap = (float) $itemId;
+            $itemIdSoap = new \SoapVar($itemIdSoap, XSD_STRING, "string", "http://www.w3.org/2001/XMLSchema");
+            $result = $allegro->doSellSomeAgain($allegro->getSession(), array( $itemIdSoap ), 0, $duration, null, array($localId));
 //            $lastRequest = $allegro->__getLastRequest();
 //            $lastResponse = $allegro->__getLastResponse();
 //            $this->get('logger')->err('doSellSomeAgain request: '.$lastRequest);
