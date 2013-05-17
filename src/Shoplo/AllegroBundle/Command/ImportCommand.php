@@ -13,6 +13,7 @@ use Shoplo\AllegroBundle\Entity\ShoploOrder;
 use Doctrine\ORM\EntityNotFoundException;
 use Shoplo\AllegroBundle\WebAPI\Allegro;
 use Shoplo\AllegroBundle\Entity\Item;
+use Shoplo\AllegroBundle\Entity\SellAgainItem;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 class ImportCommand extends Command
