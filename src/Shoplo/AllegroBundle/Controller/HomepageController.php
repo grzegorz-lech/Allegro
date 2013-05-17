@@ -37,7 +37,19 @@ class HomepageController extends Controller
 		$limit = 25;
 		$offset = ($page-1)*$limit;
 
-		$now = date('Y-m-d H:i:s');
+        $now = date('Y-m-d H:i:s');
+        $where = "WHERE i.user_id = " . $this->getUser()->getId()."  AND i.end_at > '{$now}' AND i.quantity > i.quantity_sold";
+        $totalActive = $this->getDoctrine()
+            ->getManager()
+            ->createQuery('SELECT COUNT(i) FROM ShoploAllegroBundle:Item i '.$where)
+            ->getSingleScalarResult();
+
+        $where = "WHERE i.user_id = " . $this->getUser()->getId()." AND (i.end_at < '{$now}' OR i.quantity = i.quantity_sold)";
+        $totalFinish = $this->getDoctrine()
+            ->getManager()
+            ->createQuery('SELECT COUNT(i) FROM ShoploAllegroBundle:Item i '.$where)
+            ->getSingleScalarResult();
+
 		$where = "WHERE i.user_id = " . $this->getUser()->getId();
 		$where .= $action == 'zakonczone' ? " AND (i.end_at < '{$now}' OR i.quantity = i.quantity_sold)" : " AND i.end_at > '{$now}' AND i.quantity > i.quantity_sold";
 		$total = $this->getDoctrine()
@@ -112,6 +124,8 @@ class HomepageController extends Controller
         return $this->render('ShoploAllegroBundle::homepage.html.twig', array(
 			'active_items' => $activeItems,
 			'finish_items' => $finishItems,
+            'total_active' => $totalActive,
+            'total_finish' => $totalFinish,
 			'shoplo' => $shoplo,
 			'shop'	 => $shop,
 			'pager'	 => $pager,
