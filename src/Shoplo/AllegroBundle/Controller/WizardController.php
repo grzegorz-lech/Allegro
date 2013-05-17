@@ -250,6 +250,7 @@ class WizardController extends Controller
 						"error",
 						"Uzupełnij brakujące pola przypisane do kategorii."
 					);
+					return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
 				}
             }
 			else
@@ -258,6 +259,7 @@ class WizardController extends Controller
 					"error",
 					"Uzupełnij brakujące pola formularza."
 				);
+				return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
 			}
         }
 
