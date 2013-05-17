@@ -56,7 +56,7 @@ class ImportCommand extends Command
             try
             {
                 $sellAgainItems = $doctrine
-                    ->getRepository('ShoploAllegroBundle:sellAgainItem')
+                    ->getRepository('ShoploAllegroBundle:SellAgainItem')
                     ->findBy(
                         array('user_id' => $user->getId())
                     );
