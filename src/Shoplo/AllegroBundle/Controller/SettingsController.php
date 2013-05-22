@@ -530,9 +530,17 @@ class SettingsController extends Controller
             //if ($form->isValid()) {
                 $data                 = $form->getData();
 				$ids  = array_unique(array_values($data['categories']));
-				$allegroCategories    = $this->getDoctrine()
-                    ->getRepository('ShoploAllegroBundle:CategoryAllegro')
-                    ->findBy(array('id' => $ids));
+				if ( !empty($ids) )
+				{
+					$allegroCategories    = $this->getDoctrine()
+						->getRepository('ShoploAllegroBundle:CategoryAllegro')
+						->findBy(array('id' => $ids));
+				}
+				else
+				{
+					$allegroCategories = array();
+				}
+
                 $allegroCategoriesMap = array();
                 foreach ($allegroCategories as $ac) {
                     /** @var $ac CategoryAllegro */
