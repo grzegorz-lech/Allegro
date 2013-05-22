@@ -18,8 +18,8 @@
 
 						<span class="floatRight">
 							<select name="filter" class="span12">
-								<option data-url="{{ active_url }}" value="1"{% if active_items|count > 0 %} selected="selected"{% endif %}{% if active_items|count == 0 %} disabled="disabled"{% endif %}>Trwające</option>
-								<option data-url="{{ finish_url }}" value="0"{% if active_items|count == 0 and finish_items|count > 0 %} selected="selected"{% endif %}{% if finish_items|count == 0 %} disabled="disabled"{% endif %}>Zakończone</option>
+								<option data-url="{{ active_url }}" value="1"{% if active_items|count > 0 %} selected="selected"{% endif %}{% if total_active == 0 %} disabled="disabled"{% endif %}>Trwające</option>
+								<option data-url="{{ finish_url }}" value="0"{% if active_items|count == 0 and finish_items|count > 0 %} selected="selected"{% endif %}{% if total_finish == 0 %} disabled="disabled"{% endif %}>Zakończone</option>
 							</select>
 						</span>
 					</h3>
