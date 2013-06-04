@@ -192,6 +192,11 @@ class WizardController extends Controller
 						$auctionPrice = $this->calculateAuction($fields);
 						if ( $auctionPrice === false )
 						{
+							$this->getRequest()->getSession()->setFlash(
+								"error",
+								$this->_message
+							);
+//							return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
 							$url = $this->getRequest()->getUri();
 							return $this->redirect($url);
 						}
@@ -200,6 +205,11 @@ class WizardController extends Controller
 						$itemId = $this->createAuction($fields);
 						if ( $itemId === false )
 						{
+							$this->getRequest()->getSession()->setFlash(
+								"error",
+								$this->_message
+							);
+//							return $this->redirect($this->generateUrl('shoplo_allegro_homepage'));
 							$url = $this->getRequest()->getUri();
 							return $this->redirect($url);
 						}
@@ -554,6 +564,7 @@ class WizardController extends Controller
 		/** @var $allegro Allegro */
 		$allegro = $this->get('allegro');
 		if (!$allegro->login($this->getUser())) {
+			$this->_message = 'Użytkownik nie jest zalogowany';
 			return false;
 			//throw new AccessDeniedException();
 		}
@@ -561,11 +572,12 @@ class WizardController extends Controller
 		try {
 			$item = $allegro->doCheckNewAuctionExt($allegro->getSession(), $fields);
 		} catch (\SoapFault $sf) {
-			$this->get('logger')->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
-			$this->get('session')->setFlash(
-				"error",
-				$sf->getMessage()
-			);
+			$this->_message = $sf->getMessage();
+//			$this->get('logger')->err('Method: doCheckNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
+//			$this->get('session')->setFlash(
+//				"error",
+//				$sf->getMessage()
+//			);
 
 			return false;
 		}
@@ -577,16 +589,18 @@ class WizardController extends Controller
         /** @var $allegro Allegro */
         $allegro = $this->get('allegro');
         if (!$allegro->login($this->getUser())) {
+			$this->_message = 'Użytkownik nie jest zalogowany';
             throw new AccessDeniedException();
         }
 
 		try {
 			$item = $allegro->doNewAuctionExt($allegro->getSession(), $fields);
 		} catch (\SoapFault $sf) {
-			$this->getRequest()->getSession()->setFlash(
-				"error",
-				$sf->getMessage()
-			);
+			$this->_message = $sf->getMessage();
+//			$this->getRequest()->getSession()->setFlash(
+//				"error",
+//				$sf->getMessage()
+//			);
 			//$this->get('logger')->err('Method: doNewAuctionExt | user id: '.$this->getUser()->getId().' | SoapFault code: '.$sf->getCode().' | SoapFault msg: '.$sf->getMessage());
 			return false;
 		}
