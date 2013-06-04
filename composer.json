@@ -18,7 +18,7 @@
         "sensio/generator-bundle": "2.1.*",
         "jms/security-extra-bundle": "1.2.*",
         "jms/di-extra-bundle": "1.1.*",
-        "hwi/oauth-bundle": "dev-master",
+        "hwi/oauth-bundle": "dev-master#7ca8d3d3165289f33fd809c5a0e0a19e7ac6cfe1",
         "friendsofsymfony/jsrouting-bundle": "1.1.0",
         "ext-apc": "*"
     },
