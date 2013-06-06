@@ -49,37 +49,37 @@
                             product_name:{
                                 title:'Nazwa produktu',
                                 callback:function (e) {
-                                    e.insertHtml('{product_name}')
+                                    this.insertHtml('{product_name}')
                                 }
                             },
                             product_short_description:{
                                 title:'Opis (krótki)',
                                 callback:function (e) {
-                                    e.insertHtml('{product_short_description}')
+									this.insertHtml('{product_short_description}')
                                 }
                             },
                             product_description:{
                                 title:'Opis (długi)',
                                 callback:function (e) {
-                                    e.insertHtml('{product_description}')
+									this.insertHtml('{product_description}')
                                 }
                             },
                             product_sku:{
                                 title:'Kod producenta',
                                 callback:function (e) {
-                                    e.insertHtml('{product_sku}')
+									this.insertHtml('{product_sku}')
                                 }
                             },
                             product_price:{
                                 title:'Cena',
                                 callback:function (e) {
-                                    e.insertHtml('{product_price}')
+									this.insertHtml('{product_price}')
                                 }
                             },
 							product_gallery:{
 								title:'Galeria produktu',
 								callback:function (e) {
-									e.insertHtml('{product_gallery}')
+									this.insertHtml('{product_gallery}')
 								}
 							}
                         }
