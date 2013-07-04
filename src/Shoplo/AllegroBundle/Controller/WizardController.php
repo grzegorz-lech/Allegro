@@ -449,7 +449,6 @@ class WizardController extends Controller
 
 			foreach ($product['variants'] as $variant) {
 				$variant['categories']    = array_values($categories);
-				$variant['thumbnail']     = $product['thumbnail'];
 				$variant['default_category'] = $variant['categories'][0];
 				$variant['image_count']	  = count($product['images']);
 				$variants[$variant['id']] = $variant;

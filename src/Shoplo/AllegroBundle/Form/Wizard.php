@@ -131,7 +131,7 @@ class Wizard
 		// Galeria
 		$gallery = array();
 		foreach ($product['images'] as $image) {
-			$gallery[] = $image['src'];
+			$gallery[] = "<img src=\"{$image['src']}\" />";
 		}
 		$gallery = '<p>'.implode('</p><p style="text-align:center;">', $gallery).'</p>';
 
