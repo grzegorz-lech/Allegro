@@ -228,6 +228,11 @@ class ImportCommand extends Command
 		$allegroCountriesMap = $allegro->getCountryMap();
 		$allegroCountriesMap = array_flip($allegroCountriesMap);
 
+        if( isset($shippingAddress['post-buy-form-adr-company']) && strlen($shippingAddress['post-buy-form-adr-company']) > 0 )
+        {
+            $shippingFirstName = $shippingAddress['post-buy-form-adr-company'];
+            $shippingLastName  = $shippingAddress['post-buy-form-adr-full-name'];
+        }
 
 		$order = array(
             'shipping_details' => array(

@@ -59,6 +59,11 @@ class WizardController extends Controller
 				array('id'	=> 'ASC' )
 			);
 
+        if( count($profiles) == 0 )
+        {
+            return $this->redirect($this->generateUrl('shoplo_allegro_settings_location'));
+        }
+
 		$profilePromotions = $profileDurations = array();
 		foreach ( $profiles as $profile )
 		{
