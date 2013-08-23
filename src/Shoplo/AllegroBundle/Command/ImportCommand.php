@@ -291,8 +291,8 @@ class ImportCommand extends Command
 		$formItems = (array) $auctionData['post-buy-form-items'];
 		foreach ( $formItems as $it )
 		{
-			$item = $items[$it['post-buy-form-it-id']];
 			$it = (array) $it;
+			$item = $items[$it['post-buy-form-it-id']];
 			$order['order_items'][] = array(
 				'variant_id' => $item->getVariantId(),
 				'quantity'   => $it['post-buy-form-it-quantity'],
