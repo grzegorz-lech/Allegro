@@ -245,6 +245,9 @@ class ImportCommand extends Command
             $shippingLastName  = $shippingAddress['post-buy-form-adr-full-name'];
         }
 
+		$refs = $items;
+		$ref = (count($items) == 1) ? array_pop($refs) : null;
+
 		$order = array(
             'shipping_details' => array(
                 'title' => isset($shippingMethods[$auctionData['post-buy-form-shipment-id']]) ? $shippingMethods[$auctionData['post-buy-form-shipment-id']]['shipment-name'] : 'Nie określony',
@@ -282,7 +285,7 @@ class ImportCommand extends Command
                     'price'      => $auctionData['post-buy-form-items']['post-buy-form-it-price'],
                 ),
             ),*/
-            'referring_site'   => (count($items) == 1) ? 'http://allegro.pl/i'.$items[0]->getId().'.html' : 'http://allegro.pl',
+            'referring_site'   => !is_null($ref) ? 'http://allegro.pl/i'.$ref->getId().'.html' : 'http://allegro.pl',
             'landing_site'     => '/',
             'notes'            => $auctionData['post-buy-form-msg-to-seller'],
         );
