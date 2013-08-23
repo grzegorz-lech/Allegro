@@ -40,7 +40,7 @@ class Allegro extends \SoapClient
 
     public function __construct($key, $logger)
     {
-        parent::__construct('https://webapi.allegro.pl/uploader.php?wsdl', array('trace' => 1));
+        parent::__construct('https://webapi.allegro.pl/uploader.php?wsdl', array('trace' => 1, 'encoding' => 'UTF-8'));
 
         $this->key = $key;
 		$this->_logger = $logger;

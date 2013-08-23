@@ -59,6 +59,11 @@ class WizardController extends Controller
 				array('id'	=> 'ASC' )
 			);
 
+        if( count($profiles) == 0 )
+        {
+            return $this->redirect($this->generateUrl('shoplo_allegro_settings_location'));
+        }
+
 		$profilePromotions = $profileDurations = array();
 		foreach ( $profiles as $profile )
 		{
@@ -449,7 +454,6 @@ class WizardController extends Controller
 
 			foreach ($product['variants'] as $variant) {
 				$variant['categories']    = array_values($categories);
-				$variant['thumbnail']     = $product['thumbnail'];
 				$variant['default_category'] = $variant['categories'][0];
 				$variant['image_count']	  = count($product['images']);
 				$variants[$variant['id']] = $variant;
