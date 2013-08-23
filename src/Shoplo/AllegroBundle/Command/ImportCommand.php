@@ -64,9 +64,7 @@ class ImportCommand extends Command
                 foreach($sellAgainItems as $sellAgainItem)
                 {
 					$result = $allegro->doVerifyItem($allegro->getSession(), $sellAgainItem->getLocalId());
-					print_r($result);
-					exit;
-                    if($result['item-listed'] == 1)
+					if($result['item-listed'] == 1)
                     {
                         $item = $doctrine
                             ->getRepository('ShoploAllegroBundle:Item')
@@ -152,8 +150,20 @@ class ImportCommand extends Command
 					$data = (array) $data;
 					$auctionId = $newTransactionAuctionMap[$data['post-buy-form-id']];
 
+					$items = array();
+					foreach ( $data['post-buy-form-items'] as $d )
+					{
+						$d = (array) $d;
+						$item = $doctrine->getRepository('ShoploAllegroBundle:Item')->findOneById($d['post-buy-form-it-id']);
+						if ( $item instanceof Item )
+						{
+							$item->setQuantitySold($item->getQuantitySold()+$d['post-buy-form-it-quantity']);
+							$items[$d['post-buy-form-it-id']] = $item;
+						}
+					}
+
                     $item = $doctrine->getRepository('ShoploAllegroBundle:Item')->findOneById($auctionId);
-					if ( $item instanceof Item )
+					if ( !empty($items) )
 					{
 						$buyerId   = $data['post-buy-form-buyer-id'];
 						$buyer     = array();
@@ -165,10 +175,9 @@ class ImportCommand extends Command
 						}
 
 						$shoplo = $this->getShop($user);
-						$order  = $this->createShoploOrder($item, $data, $user, $buyer, $allegro, $shoplo, $output);
+						$order  = $this->createShoploOrder($items, $data, $user, $buyer, $allegro, $shoplo, $output);
 
-						$arr = (array) $data['post-buy-form-items'][0];
-						$item->setQuantitySold($item->getQuantitySold()+$arr['post-buy-form-it-quantity']);
+
 					}
                 }
             }
@@ -211,7 +220,7 @@ class ImportCommand extends Command
      * @param  Shoplo  $shoplo
      * @return array
      */
-    public function createShoploOrder($item, $auctionData, $user, $buyer, Allegro $allegro, Shoplo $shoplo, OutputInterface $output)
+    public function createShoploOrder($items, $auctionData, $user, $buyer, Allegro $allegro, Shoplo $shoplo, OutputInterface $output)
     {
 		$shippingAddress = (array) $auctionData['post-buy-form-shipment-address'];
         list($shippingFirstName, $shippingLastName) = explode(' ', $shippingAddress['post-buy-form-adr-full-name'], 2);
@@ -273,15 +282,16 @@ class ImportCommand extends Command
                     'price'      => $auctionData['post-buy-form-items']['post-buy-form-it-price'],
                 ),
             ),*/
-            'referring_site'   => 'http://allegro.pl/i' . $item->getId() . '.html',
+            'referring_site'   => (count($items) == 1) ? 'http://allegro.pl/i'.$items[0]->getId().'.html' : 'http://allegro.pl',
             'landing_site'     => '/',
             'notes'            => $auctionData['post-buy-form-msg-to-seller'],
         );
 
 		$price = 0;
-		$items = (array) $auctionData['post-buy-form-items'];
-		foreach ( $items as $it )
+		$formItems = (array) $auctionData['post-buy-form-items'];
+		foreach ( $formItems as $it )
 		{
+			$item = $items[$it['post-buy-form-it-id']];
 			$it = (array) $it;
 			$order['order_items'][] = array(
 				'variant_id' => $item->getVariantId(),
