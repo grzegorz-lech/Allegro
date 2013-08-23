@@ -322,6 +322,8 @@ class ImportCommand extends Command
 
 		$output->writeln('<info>Order: '.print_r($order, true).'</info>');
 
+		exit;
+
         $result = $shoplo->post('orders', array('order' => $order));
 
 		if ( !empty($result) && isset($result['order']) )
