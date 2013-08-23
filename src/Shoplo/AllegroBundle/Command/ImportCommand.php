@@ -63,7 +63,9 @@ class ImportCommand extends Command
 
                 foreach($sellAgainItems as $sellAgainItem)
                 {
-                    $result = $allegro->doVerifyItem($allegro->getSession(), $sellAgainItem->getLocalId());
+					$result = $allegro->doVerifyItem($allegro->getSession(), $sellAgainItem->getLocalId());
+					print_r($result);
+					exit;
                     if($result['item-listed'] == 1)
                     {
                         $item = $doctrine

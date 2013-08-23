@@ -215,14 +215,14 @@ class WizardController extends Controller
 						}
 
 
-						if ( $auctionPrice != $wizard->getAuctionPrice() )
+						/*if ( $auctionPrice != $wizard->getAuctionPrice() )
 						{
 							$admin = new Admin( $this->get('mailer') );
 							$admin->notifyByEmail(
 								"Auction Price Differ",
 								"Allegro price: {$auctionPrice}\nOur price: {$wizard->getAuctionPrice()}\n in auction {$itemId}"
 							);
-						}
+						}*/
 
 
 						$item = new Item();
