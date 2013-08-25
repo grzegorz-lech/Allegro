@@ -352,7 +352,7 @@ class ImportCommand extends Command
 			$orderObj->setShippingZipCode($order['shipping_address']['zip_code']);
 			$orderObj->setShippingCountryCode($order['shipping_address']['country_code']);
 			$orderObj->setShippingPhone($order['shipping_address']['phone']);
-			$orderObj->setBillingName($order['billing_address']['company'] ? $order['billing_address']['company'] : $shippingFirstName.' '.$shippingLastName);
+			$orderObj->setBillingName(isset($order['billing_address']['company']) ? $order['billing_address']['company'] : $shippingFirstName.' '.$shippingLastName);
 			$orderObj->setBillingAddress1($order['billing_address']['street']);
 			$orderObj->setBillingCity($order['billing_address']['city']);
 			$orderObj->setBillingZipCode($order['billing_address']['zip_code']);
