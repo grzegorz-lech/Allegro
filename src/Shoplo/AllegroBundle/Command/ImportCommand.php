@@ -162,7 +162,7 @@ class ImportCommand extends Command
 						}
 					}
 
-                    $item = $doctrine->getRepository('ShoploAllegroBundle:Item')->findOneById($auctionId);
+                    //$item = $doctrine->getRepository('ShoploAllegroBundle:Item')->findOneById($auctionId);
 					if ( !empty($items) )
 					{
 						$buyerId   = $data['post-buy-form-buyer-id'];
@@ -295,13 +295,16 @@ class ImportCommand extends Command
 		foreach ( $formItems as $it )
 		{
 			$it = (array) $it;
-			$item = $items[$it['post-buy-form-it-id']];
-			$order['order_items'][] = array(
-				'variant_id' => $item->getVariantId(),
-				'quantity'   => $it['post-buy-form-it-quantity'],
-				'price'      => bcmul($it['post-buy-form-it-price'], 100, 2),
-			);
-			$price += bcmul($it['post-buy-form-it-price'], 100, 2);
+			if ( isset($items[$it['post-buy-form-it-id']]) )
+			{
+				$item = $items[$it['post-buy-form-it-id']];
+				$order['order_items'][] = array(
+					'variant_id' => $item->getVariantId(),
+					'quantity'   => $it['post-buy-form-it-quantity'],
+					'price'      => bcmul($it['post-buy-form-it-price'], 100, 2),
+				);
+				$price += bcmul($it['post-buy-form-it-price'], 100, 2);
+			}
 		}
 
         if ($auctionData['post-buy-form-invoice-option']) {
