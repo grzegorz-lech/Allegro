@@ -246,7 +246,7 @@ class ImportCommand extends Command
         }
 
 		$refs = $items;
-		$ref = (count($items) == 1) ? array_pop($refs) : null;
+		$ref = /*(count($items) == 1) ? array_pop($refs) : */null;
 
 		$order = array(
             'shipping_details' => array(
