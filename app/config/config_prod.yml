@@ -49,7 +49,7 @@ monolog:
         swift:
             type:       swift_mailer
             from_email: sebastian@nexis.pl
-            to_email:   [lech.grzegorz@gmail.com, mateusz@sojda.pl]
+            to_email:   [lech.grzegorz@gmail.com]
             subject:    "[Allegro] Internal Server Error"
             level:      debug
             #formatter:  html_table_formatter
